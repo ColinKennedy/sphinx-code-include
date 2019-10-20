@@ -5,6 +5,7 @@
 
 
 class MissingContent(Exception):
+    """If a user creates a code-include directive with no target."""
     pass
 
 

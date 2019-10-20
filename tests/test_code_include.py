@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # TODO : Consider reducing the inputs for test functinos
 """The main module that tests different uses of the code-include directive."""
-import json
 import os
 import textwrap
 import unittest
@@ -14,7 +13,6 @@ from sphinx.ext import intersphinx
 from code_include import error_classes
 from code_include import extension
 from code_include import helper
-from code_include import source_code
 
 
 _CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
@@ -54,18 +52,18 @@ class Inputs(unittest.TestCase):
 
     def test_no_required_argument(self):
         """Check that missing content raises the expected exception."""
-        self._test([""], error_classes.MissingContent)
+        self._test([""], error_classes.MissingContent)  # pylint: disable=no-value-for-parameter
 
     def test_incorrect_directive_target(self):
         """Check that a bad tag like ":foo:" raises the expected exception."""
-        self._test(
+        self._test(  # pylint: disable=no-value-for-parameter
             [u":nonexistent:tag:`some.module.that.may.exist`"],
             error_classes.MissingDirective,
         )
 
     def test_incorrect_namespace(self):
         """Check that a valid tag but incorrect namespace raises the expected exception."""
-        self._test(
+        self._test(  # pylint: disable=no-value-for-parameter
             [u":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace
         )
 
@@ -132,7 +130,7 @@ class RenderText(unittest.TestCase):
                 return 8'''
         )
 
-        self._test(data, content, expected)
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
     def test_attribute(self):
         """Check that a module's attribute is read properly."""
@@ -185,7 +183,7 @@ class Options(RenderText):
         """int: Get some value."""
         return 8'''
 
-        self._test(data, content, expected)
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
 
 @helper.memoize
@@ -200,20 +198,35 @@ def _load_cache(*paths):
     Returns:
         dict[str, dict[str, tuple[str, str, str, str]]]:
             Each directive target type, its namespace, and it's file-path/URL information.
-            e.g. {"py:method": {"fake_project.basic.MyKlass.get_method": ("fake_project", "", "api/fake_project.html#fake_project.basic.MyKlass.get_method", "-")}}
+            e.g. {
+                "py:method": {
+                    "fake_project.basic.MyKlass.get_method": (
+                        "fake_project",
+                        "",
+                        "api/fake_project.html#fake_project.basic.MyKlass.get_method",
+                        "-",
+                    )
+                }
+            }
 
     """
-    class MockConfiguration(object):
+
+    class MockConfiguration(object):  # pylint: disable=too-few-public-methods
+        """A fake set of settings for intersphinx to pass-through."""
+
         intersphinx_timeout = None  # type: int
         tls_verify = False
 
-    class MockApplication(object):
+    class MockApplication(object):  # pylint: disable=too-few-public-methods
+        """A fake state machine for intersphinx to consume and pass-through."""
+
         srcdir = ""
         config = MockConfiguration()
 
         @staticmethod
-        def warn(msg):
-            warnings.warn(msg)
+        def warn(message):
+            """Send a warning if bad-formatted text is encountered."""
+            warnings.warn(message)
 
     return intersphinx.fetch_inventory(
         MockApplication(), "", os.path.join(_CURRENT_DIRECTORY, *paths)
