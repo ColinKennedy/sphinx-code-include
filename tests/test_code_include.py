@@ -1,6 +1,1 @@
-
-from code_include import main
-
-
-def test_main():
-    pass
+"""The main module that tests different uses of the code-include directive."""

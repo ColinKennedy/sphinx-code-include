@@ -6,9 +6,9 @@
 import re
 import sys
 
-_DIRECTIVE_EXPRESSION = re.compile(":(?P<directive>[\w:]+):`(?P<namespace>[\w\.]+)`")
+_DIRECTIVE_EXPRESSION = re.compile(r":(?P<directive>[\w:]+):`(?P<namespace>[\w\.]+)`")
 _NAMED_DIRECTIVE_EXPRESSION = re.compile(
-    ":(?P<directive>[\w:]+):`(?P<location>[\w+\._]+)\s+<(?P<namespace>[\w\.]+)>`"
+    r":(?P<directive>[\w:]+):`(?P<location>[\w+\._]+)\s+<(?P<namespace>[\w\.]+)>`"
 )
 
 
@@ -79,7 +79,8 @@ def get_raw_content(text):
         patterns = [_DIRECTIVE_EXPRESSION.pattern, _NAMED_DIRECTIVE_EXPRESSION.pattern]
 
         raise RuntimeError(
-            'text "{text}" is not valid. Text must match one of these patterns: [{patterns}]".'.format(
+            'text "{text}" is not valid. Text must match one of these patterns: '
+            '[{patterns}]".'.format(
                 text=text, patterns="\n".join(sorted(patterns))
             )
         )

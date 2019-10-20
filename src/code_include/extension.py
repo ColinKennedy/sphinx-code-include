@@ -3,8 +3,6 @@
 
 """The main module that adds the code-include directive to Sphinx."""
 
-import os
-
 from docutils import frontend
 from docutils import nodes
 from docutils import utils
@@ -19,11 +17,11 @@ _SETTINGS = frontend.OptionParser().get_default_values()
 _REPORTER = utils.Reporter(
     "sphinx-code-include",
     1,
-    _SETTINGS.halt_level,
-    stream=_SETTINGS.warning_stream,
-    debug=_SETTINGS.debug,
-    encoding=_SETTINGS.error_encoding,
-    error_handler=_SETTINGS.error_encoding_error_handler,
+    _SETTINGS.halt_level,  # pylint: disable=no-member
+    stream=_SETTINGS.warning_stream,  # pylint: disable=no-member
+    debug=_SETTINGS.debug,  # pylint: disable=no-member
+    encoding=_SETTINGS.error_encoding,  # pylint: disable=no-member
+    error_handler=_SETTINGS.error_encoding_error_handler,  # pylint: disable=no-member
 )
 
 
@@ -121,14 +119,3 @@ def setup(application):
     application.add_directive("code-include", Directive)
 
     return {"parallel_read_safe": True, "parallel_write_safe": True}
-
-
-# TODO : Migrate this over
-# 3 packages were installed:
-#   beautifulsoup4-4.8.1: /home/selecaoone/packages/beautifulsoup4/4.8.1/package.py (ff5a17a870e473adea6d65972631222d54a381e6)
-#   soupsieve-1.9.4: /home/selecaoone/packages/soupsieve/1.9.4/package.py (3ff3e091e5895005aa8131c203654aa77b6eaff6)
-#   bs4-0.0.1: /home/selecaoone/packages/bs4/0.0.1/package.py (ff5a17a870e473adea6d65972631222d54a381e6)
-#
-# 1 packages were already installed:
-#   backports.functools_lru_cache-1.5: /home/selecaoone/packages/backports.functools_lru_cache/1.5/package.py (ff5a17a870e473adea6d65972631222d54a381e6)
-#

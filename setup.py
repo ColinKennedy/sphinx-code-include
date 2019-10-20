@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
+
+"""The main module that sets up this repository as a Python/PyPI package."""
+
 from __future__ import absolute_import
 from __future__ import print_function
 
@@ -16,11 +19,12 @@ from setuptools import setup
 
 
 def read(*names, **kwargs):
+    """str: Get the text of whatever file path is given."""
     with io.open(
         join(dirname(__file__), *names),
         encoding=kwargs.get('encoding', 'utf8')
-    ) as fh:
-        return fh.read()
+    ) as handler:
+        return handler.read()
 
 
 setup(

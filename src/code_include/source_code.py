@@ -176,7 +176,8 @@ def get_source_code(directive, namespace):
 
     if not cache:
         raise RuntimeError(
-            "No application could be found. Cannot render this node. Did intersphinx have a chance to run?"
+            "No application could be found. Cannot render this node. "
+            "Did intersphinx have a chance to run?"
         )
 
     try:

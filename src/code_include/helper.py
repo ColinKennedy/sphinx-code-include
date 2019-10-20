@@ -15,13 +15,16 @@ def memoize(function):
             Some Python callable that will be memoized by this function.
 
     Returns:
-        :class:`memodict`:
+        :class:`MemoDict`:
             A per-function instance that will only ever be called for a
             set of arguments once.
 
     """
-    class memodict(dict):
+    class MemoDict(dict):
+        """A class that stores a function and caches each unique function call."""
         def __init__(self, function):
+            super(MemoDict, self).__init__()
+
             self.function = function
 
         def __call__(self, *args):
@@ -32,4 +35,4 @@ def memoize(function):
 
             return ret
 
-    return memodict(function)
+    return MemoDict(function)
