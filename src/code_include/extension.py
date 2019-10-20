@@ -95,8 +95,15 @@ class Directive(rst.Directive):
         self.assert_has_content()
 
         target = self.content[0]
-        directive, namespace = formatter.get_raw_content(target)
 
+        if not target:
+            message = "No target for code-include directive was found"
+            self.error(message)
+
+            if self._reraise_exception():
+                raise error_classes.MissingContent(message)
+
+        directive, namespace = formatter.get_raw_content(target)
         directive = formatter.get_converted_directive(directive) or directive
 
         known_exceptions = (

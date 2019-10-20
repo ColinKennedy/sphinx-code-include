@@ -4,6 +4,10 @@
 """A collection of classes which are used for error/warning reporting."""
 
 
+class MissingContent(Exception):
+    pass
+
+
 class MissingDirective(Exception):
     """If the user specifies a directive that couldn't be found.
 
