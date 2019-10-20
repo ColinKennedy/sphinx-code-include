@@ -19,3 +19,9 @@ include requirements.txt
 include tox.ini .travis.yml .appveyor.yml
 
 global-exclude *.py[cod] __pycache__/* *.so *.dylib
+
+recursive-include fake_project *.bat
+recursive-include fake_project *.md
+recursive-include fake_project *.py
+recursive-include fake_project *.rst
+recursive-include fake_project Makefile
