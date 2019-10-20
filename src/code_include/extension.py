@@ -39,8 +39,10 @@ class Directive(rst.Directive):
         if not source_code.APPLICATION:
             return False
 
-        return hasattr(source_code.APPLICATION.config, 'code_include_reraise') \
+        return (
+            hasattr(source_code.APPLICATION.config, "code_include_reraise")
             and source_code.APPLICATION.config.code_include_reraise
+        )
 
     def _get_code(self, directive, namespace):
         try:

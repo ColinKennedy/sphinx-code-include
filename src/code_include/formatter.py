@@ -80,9 +80,7 @@ def get_raw_content(text):
 
         raise RuntimeError(
             'text "{text}" is not valid. Text must match one of these patterns: '
-            '[{patterns}]".'.format(
-                text=text, patterns="\n".join(sorted(patterns))
-            )
+            '[{patterns}]".'.format(text=text, patterns="\n".join(sorted(patterns)))
         )
 
     return match.group("directive"), match.group("namespace")

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 # TODO : Consider reducing the inputs for test functinos
 """The main module that tests different uses of the code-include directive."""
+
 import os
 import textwrap
 import unittest
@@ -52,7 +54,9 @@ class Inputs(unittest.TestCase):
 
     def test_no_required_argument(self):
         """Check that missing content raises the expected exception."""
-        self._test([""], error_classes.MissingContent)  # pylint: disable=no-value-for-parameter
+        self._test(
+            [""], error_classes.MissingContent
+        )  # pylint: disable=no-value-for-parameter
 
     def test_incorrect_directive_target(self):
         """Check that a bad tag like ":foo:" raises the expected exception."""
