@@ -5,7 +5,6 @@
 
 from docutils import frontend
 from docutils import nodes
-from docutils import utils
 from docutils.parsers import rst
 
 from . import error_classes
@@ -13,15 +12,6 @@ from . import formatter
 from . import source_code
 
 _SETTINGS = frontend.OptionParser().get_default_values()
-_REPORTER = utils.Reporter(
-    "sphinx-code-include",
-    1,
-    _SETTINGS.halt_level,  # pylint: disable=no-member
-    stream=_SETTINGS.warning_stream,  # pylint: disable=no-member
-    debug=_SETTINGS.debug,  # pylint: disable=no-member
-    encoding=_SETTINGS.error_encoding,  # pylint: disable=no-member
-    error_handler=_SETTINGS.error_encoding_error_handler,  # pylint: disable=no-member
-)
 
 
 class Directive(rst.Directive):
@@ -46,19 +36,18 @@ class Directive(rst.Directive):
         if not source_code.APPLICATION:
             return False
 
-        return hasattr('code_include_reraise', source_code.APPLICATION.config) \
+        return hasattr(source_code.APPLICATION.config, 'code_include_reraise') \
             and source_code.APPLICATION.config.code_include_reraise
 
-    @staticmethod
-    def _get_code(directive, namespace):
+    def _get_code(self, directive, namespace):
         try:
             return source_code.get_source_code(directive, namespace)
         except error_classes.NotFoundFile as error:
-            _REPORTER.warning('File "{error}" does not exist.'.format(error=error))
+            self.warning('File "{error}" does not exist.'.format(error=error))
 
             raise
         except error_classes.NotFoundUrl as error:
-            _REPORTER.warning(
+            self.warning(
                 'Website "{error}" does not exist or is not reachable.'.format(
                     error=error
                 )
@@ -66,7 +55,7 @@ class Directive(rst.Directive):
 
             raise
         except error_classes.MissingDirective:
-            _REPORTER.warning(
+            self.warning(
                 'Directive "{directive}" was not found in the intersphinx inventory.'.format(
                     directive=directive
                 )
@@ -74,7 +63,7 @@ class Directive(rst.Directive):
 
             raise
         except error_classes.MissingNamespace:
-            _REPORTER.warning(
+            self.warning(
                 'Namespace "{namespace}" was not found in the intersphinx inventory.'.format(
                     namespace=namespace
                 )
