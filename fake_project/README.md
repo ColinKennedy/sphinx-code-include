@@ -19,5 +19,5 @@ Add To Unittests
 Once the documentation is built, copy it to `sphinx-code-include` with this command:
 
 ```bash
-cp -r documentation/build ../tests/fake_project
+rm -rf ../tests/fake_project && cp -r documentation/build ../tests/fake_project
 ```
