@@ -54,9 +54,9 @@ class Inputs(unittest.TestCase):
 
     def test_no_required_argument(self):
         """Check that missing content raises the expected exception."""
-        self._test(
+        self._test(  # pylint: disable=no-value-for-parameter
             [""], error_classes.MissingContent
-        )  # pylint: disable=no-value-for-parameter
+        )
 
     def test_incorrect_directive_target(self):
         """Check that a bad tag like ":foo:" raises the expected exception."""
