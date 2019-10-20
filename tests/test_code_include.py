@@ -16,7 +16,6 @@ from code_include import error_classes
 from code_include import extension
 from code_include import helper
 
-
 _CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 
