@@ -38,6 +38,38 @@ class Directive(rst.Directive):
     has_content = True
     option_spec = {"no-unindent": rst.directives.flag}
 
+    @staticmethod
+    def _reraise_exception():
+        return hasattr('code_include_reraise', source_code.APPLICATION.config) \
+            and source_code.APPLICATION.config.code_include_reraise
+
+    @staticmethod
+    def _get_code(directive, namespace):
+        try:
+            return source_code.get_source_code(directive, namespace)
+        except error_classes.NotFoundFile as error:
+            _REPORTER.warning('File "{error}" does not exist.'.format(error=error))
+        except error_classes.NotFoundUrl as error:
+            _REPORTER.warning(
+                'Website "{error}" does not exist or is not reachable.'.format(
+                    error=error
+                )
+            )
+        except error_classes.MissingDirective:
+            _REPORTER.warning(
+                'Directive "{directive}" was not found in the intersphinx inventory.'.format(
+                    directive=directive
+                )
+            )
+        except error_classes.MissingNamespace:
+            _REPORTER.warning(
+                'Namespace "{namespace}" was not found in the intersphinx inventory.'.format(
+                    namespace=namespace
+                )
+            )
+
+        return ""
+
     def run(self):
         """Create the code block, if it can.
 
@@ -55,34 +87,18 @@ class Directive(rst.Directive):
 
         directive = formatter.get_converted_directive(directive) or directive
 
+        known_exceptions = (
+            error_classes.MissingDirective,
+            error_classes.MissingNamespace,
+            error_classes.NotFoundFile,
+            error_classes.NotFoundUrl,
+        )
+
         try:
-            code = source_code.get_source_code(directive, namespace)
-        except error_classes.NotFoundFile as error:
-            _REPORTER.warning('File "{error}" does not exist.'.format(error=error))
-
-            return []
-        except error_classes.NotFoundUrl as error:
-            _REPORTER.warning(
-                'Website "{error}" does not exist or is not reachable.'.format(
-                    error=error
-                )
-            )
-
-            return []
-        except error_classes.MissingDirective:
-            _REPORTER.warning(
-                'Directive "{directive}" was not found in the intersphinx inventory.'.format(
-                    directive=directive
-                )
-            )
-
-            return []
-        except error_classes.MissingNamespace:
-            _REPORTER.warning(
-                'Namespace "{namespace}" was not found in the intersphinx inventory.'.format(
-                    namespace=namespace
-                )
-            )
+            code = self._get_code(directive, namespace)
+        except known_exceptions:
+            if self._reraise_exception():
+                raise
 
             return []
 
