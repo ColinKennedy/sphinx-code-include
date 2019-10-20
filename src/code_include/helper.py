@@ -20,8 +20,10 @@ def memoize(function):
             set of arguments once.
 
     """
+
     class MemoDict(dict):
         """A class that stores a function and caches each unique function call."""
+
         def __init__(self, function):
             super(MemoDict, self).__init__()
 
