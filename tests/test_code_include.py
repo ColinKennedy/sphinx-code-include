@@ -39,10 +39,15 @@ class Inputs(unittest.TestCase):
         self._test([""], error_classes.MissingContent)
 
     def test_incorrect_namespace(self):
-        self._test([u":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace)
+        self._test(
+            [u":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace
+        )
 
     def test_incorrect_directive_target(self):
-        self._test([u":nonexistent:tag:`some.module.that.may.exist`"], error_classes.MissingDirective)
+        self._test(
+            [u":nonexistent:tag:`some.module.that.may.exist`"],
+            error_classes.MissingDirective,
+        )
 
 
 class RenderText(unittest.TestCase):
