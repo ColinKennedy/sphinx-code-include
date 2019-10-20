@@ -132,19 +132,17 @@ class RenderText(unittest.TestCase):
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
 
+    def test_attribute(self):
+        pass
 
-# class Permutations(unittest.TestCase):
-#     def test_class(self):
-#         pass
-#
-#     def test_method(self):
-#         pass
-#
-#     def test_function(self):
-#         pass
-#
-#     def test_attribute(self):
-#         pass
+    def test_class(self):
+        pass
+
+    def test_class_attribute(self):
+        pass
+
+    def test_function(self):
+        pass
 
 
 @helper.memoize
