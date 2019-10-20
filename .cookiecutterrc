@@ -1,0 +1,69 @@
+# This file exists so you can easily regenerate your project.
+#
+# `cookiepatcher` is a convenient shim around `cookiecutter`
+# for regenerating projects (it will generate a .cookiecutterrc
+# automatically for any template). To use it:
+#
+#    pip install cookiepatcher
+#    cookiepatcher gh:ionelmc/cookiecutter-pylibrary project-path
+#
+# See:
+#    https://pypi.org/project/cookiepatcher
+#
+# Alternatively, you can run:
+#
+#    cookiecutter --overwrite-if-exists --config-file=project-path/.cookiecutterrc gh:ionelmc/cookiecutter-pylibrary
+
+default_context:
+
+    _extensions:               [u'jinja2_time.TimeExtension']
+    _template:                 'gh:ionelmc/cookiecutter-pylibrary'
+    allow_tests_inside_package: 'no'
+    appveyor:                  'yes'
+    c_extension_function:      'longest'
+    c_extension_module:        '_code_include'
+    c_extension_optional:      'no'
+    c_extension_support:       'no'
+    c_extension_test_pypi:     'no'
+    c_extension_test_pypi_username: 'ColinKennedy'
+    codacy:                    'yes'
+    codacy_projectid:          'foo_bar_replace_later'
+    codeclimate:               'no'
+    codecov:                   'yes'
+    command_line_interface:    'no'
+    command_line_interface_bin_name: 'sphinx-code-include'
+    coveralls:                 'no'
+    coveralls_token:           '[Required for Appveyor, take it from https://coveralls.io/github/ColinKennedy/sphinx-code-include]'
+    distribution_name:         'sphinx-code-include'
+    email:                     'colinvfx@gmail.com'
+    full_name:                 'Colin Kennedy'
+    landscape:                 'no'
+    license:                   'BSD 2-Clause License'
+    linter:                    'flake8'
+    package_name:              'code_include'
+    project_name:              'Sphinx Code Include'
+    project_short_description: 'Include source code from any Sphinx project using only its import path'
+    pypi_badge:                'yes'
+    pypi_disable_upload:       'no'
+    release_date:              'today'
+    repo_hosting:              'github.com'
+    repo_hosting_domain:       'github.com'
+    repo_name:                 'sphinx-code-include'
+    repo_username:             'ColinKennedy'
+    requiresio:                'yes'
+    scrutinizer:               'no'
+    setup_py_uses_setuptools_scm: 'no'
+    setup_py_uses_test_runner: 'no'
+    sphinx_docs:               'yes'
+    sphinx_docs_hosting:       'https://sphinx-code-include.readthedocs.io/'
+    sphinx_doctest:            'no'
+    sphinx_theme:              'sphinx-rtd-theme'
+    test_matrix_configurator:  'no'
+    test_matrix_separate_coverage: 'no'
+    test_runner:               'pytest'
+    travis:                    'yes'
+    travis_osx:                'no'
+    version:                   '1.0.0'
+    website:                   'colinvfx.com'
+    year_from:                 '2019'
+    year_to:                   '2019'
