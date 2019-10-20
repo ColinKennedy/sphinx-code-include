@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# TODO : Consider reducing the inputs for test functinos
 """The main module that tests different uses of the code-include directive."""
 
 import json
@@ -56,43 +57,18 @@ class Inputs(unittest.TestCase):
         with self.assertRaises(error_classes.MissingDirective):
             directive.run()
 
-    # @mock.patch("code_include.source_code._get_app_inventory")
-    # def test_basic(self, _get_app_inventory):
-    #     with open(
-    #         os.path.join(_CURRENT_DIRECTORY, "example_cache.inv"), "r"
-    #     ) as handler:
-    #         data = json.load(handler)
-    #
-    #     _get_app_inventory.return_value = data
-    #
-    #     name = "code-include"
-    #     arguments = []
-    #     options = {}
-    #     # content = StringList(
-    #     #     [u':meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`'],
-    #     #     items=[(u'/home/selecaoone/repositories/test_project/source/index.rst', 10)],
-    #     # )
-    #     content = [u":meth:`ways.base.plugin.DataPlugin.get_hierarchy`"]
-    #     line_number = 11
-    #     content_offset = 10
-    #     block_text = u".. code-include:: :meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`\n"
-    #     state = mock.MagicMock()
-    #     state_machine = mock.MagicMock()
-    #
-    #     directive = extension.Directive(
-    #         name,
-    #         arguments,
-    #         options,
-    #         content,
-    #         line_number,
-    #         content_offset,
-    #         block_text,
-    #         state,
-    #         state_machine,
-    #     )
-    #
-    #     nodes = directive.run()
-    #     self.assertNotEqual([], nodes)
+    @mock.patch("code_include.extension.Directive._reraise_exception")
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def test_basic(self, _get_app_inventory, _reraise_exception):
+        data = _load_cache("example_cache.inv")
+
+        _get_app_inventory.return_value = data
+        _reraise_exception.return_value = True
+
+        content = [u":meth:`ways.base.plugin.DataPlugin.get_hierarchy`"]
+        directive = _make_mock_directive(content)
+
+        raise ValueError(directive.run())
 
 
 # class Permutations(unittest.TestCase):
@@ -107,6 +83,7 @@ class Inputs(unittest.TestCase):
 #
 #     def test_attribute(self):
 #         pass
+
 
 def _load_cache(*paths):
     with open(os.path.join(_CURRENT_DIRECTORY, *paths), "r") as handler:
