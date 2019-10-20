@@ -26,7 +26,10 @@ class Directive(rst.Directive):
     """
 
     has_content = True
-    option_spec = {"no-unindent": rst.directives.flag}
+    option_spec = {
+        "no-unindent": rst.directives.flag,
+        "language": rst.directives.unchanged,
+    }
 
     def _needs_unindent(self):
         return "no-unindent" not in self.options
@@ -114,7 +117,7 @@ class Directive(rst.Directive):
             code = formatter.unindent_outer_whitespace(code)
 
         node = nodes.literal_block(code, code)
-        node["language"] = "python"
+        node["language"] = self.options.get("language", "python")
 
         self.add_name(node)
 
