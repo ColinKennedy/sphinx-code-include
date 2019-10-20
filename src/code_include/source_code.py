@@ -4,10 +4,10 @@
 """The module responsible for getting the code that this extension displays."""
 
 import os
-import urllib2
 
 import bs4
 import six
+from six.moves import urllib
 
 from . import error_classes
 from . import helper
@@ -137,7 +137,7 @@ def _get_source_code(uri, tag):
             contents = handler.read()
     else:
         try:
-            contents = urllib2.urlopen(uri).read()
+            contents = urllib.urlopen(uri).read()  # pylint: disable=no-member
         except Exception:
             raise error_classes.NotFoundUrl(uri)
 
