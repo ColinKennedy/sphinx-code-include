@@ -6,32 +6,30 @@ import json
 import os
 import textwrap
 import unittest
+import warnings
 
 from code_include import error_classes
 from code_include import extension
 from code_include import source_code
 from six.moves import mock
+from sphinx.ext import intersphinx
 
 
 _CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 
 class Inputs(unittest.TestCase):
-    """Check that various input to the code-include directive works as-expected."""
+    """Check that different input to the code-include directive works as-expected."""
 
     @mock.patch("code_include.extension.Directive._reraise_exception")
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_no_required_argument(
-        self,
-        _get_app_inventory,
-        _reraise_exception,
-    ):
-        data = _load_cache("example_cache.inv")
+    def test_no_required_argument(self, _get_app_inventory, _reraise_exception):
+        data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
 
-        content = ['']
+        content = [""]
         directive = _make_mock_directive(content)
 
         with self.assertRaises(error_classes.MissingContent):
@@ -40,7 +38,7 @@ class Inputs(unittest.TestCase):
     @mock.patch("code_include.extension.Directive._reraise_exception")
     @mock.patch("code_include.source_code._get_app_inventory")
     def test_incorrect_namespace(self, _get_app_inventory, _reraise_exception):
-        data = _load_cache("example_cache.inv")
+        data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
@@ -54,7 +52,7 @@ class Inputs(unittest.TestCase):
     @mock.patch("code_include.extension.Directive._reraise_exception")
     @mock.patch("code_include.source_code._get_app_inventory")
     def test_incorrect_directive_target(self, _get_app_inventory, _reraise_exception):
-        data = _load_cache("example_cache.inv")
+        data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
@@ -70,7 +68,7 @@ class RenderText(unittest.TestCase):
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_app_inventory")
     def test_get_from_html(self, _get_app_inventory, _get_source_module_data):
-        data = _load_cache("example_cache.inv")
+        data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
         _get_source_module_data.return_value = (
@@ -78,22 +76,21 @@ class RenderText(unittest.TestCase):
                 _CURRENT_DIRECTORY,
                 "fake_project",
                 "_modules",
-                "ways",
-                "base",
-                "plugin.html",
+                "fake_project",
+                "basic.html",
             ),
-            "DataPlugin.get_hierarchy",
+            "MyKlass.get_method",
         )
 
-        content = [u":meth:`ways.base.plugin.DataPlugin.get_hierarchy`"]
+        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
         directive = _make_mock_directive(content)
 
         nodes = directive.run()
         expected = textwrap.dedent(
-            """\
-            def get_hierarchy(self):
-                '''tuple[str] or str: The location that this Plugin exists within.'''
-                return self._info['hierarchy']"""
+            '''\
+            def get_method(self):
+                """int: Get some value."""
+                return 8'''
         )
 
         self.assertNotEqual([], nodes)
@@ -107,7 +104,7 @@ class RenderText(unittest.TestCase):
         self, _get_app_inventory, _get_source_module_data, _needs_unindent
     ):
         _needs_unindent.return_value = False
-        data = _load_cache("example_cache.inv")
+        data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
         _get_source_module_data.return_value = (
@@ -115,21 +112,20 @@ class RenderText(unittest.TestCase):
                 _CURRENT_DIRECTORY,
                 "fake_project",
                 "_modules",
-                "ways",
-                "base",
-                "plugin.html",
+                "fake_project",
+                "basic.html",
             ),
-            "DataPlugin.get_hierarchy",
+            "MyKlass.get_method",
         )
 
-        content = [u":meth:`ways.base.plugin.DataPlugin.get_hierarchy`"]
+        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
         directive = _make_mock_directive(content)
 
         nodes = directive.run()
-        expected = """\
-    def get_hierarchy(self):
-        '''tuple[str] or str: The location that this Plugin exists within.'''
-        return self._info['hierarchy']"""
+        expected = '''\
+    def get_method(self):
+        """int: Get some value."""
+        return 8'''
 
         self.assertNotEqual([], nodes)
         self.assertEqual(1, len(nodes))
@@ -151,8 +147,24 @@ class RenderText(unittest.TestCase):
 
 
 def _load_cache(*paths):
-    with open(os.path.join(_CURRENT_DIRECTORY, *paths), "r") as handler:
-        return json.load(handler)
+    class MockConfiguration(object):
+        intersphinx_timeout = None  # type: int
+        tls_verify = False
+
+    class MockApplication(object):
+        srcdir = ""
+        config = MockConfiguration()
+
+        def warn(self, msg):
+            warnings.warn(msg)
+
+    return intersphinx.fetch_inventory(
+        MockApplication(), "", os.path.join(_CURRENT_DIRECTORY, *paths)
+    )
+
+    # TODO : Remove this
+    # with open(os.path.join(_CURRENT_DIRECTORY, *paths), "r") as handler:
+    #     return json.load(handler)
 
 
 def _make_mock_directive(content):
