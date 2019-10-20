@@ -10,6 +10,7 @@ import warnings
 
 from code_include import error_classes
 from code_include import extension
+from code_include import helper
 from code_include import source_code
 from six.moves import mock
 from sphinx.ext import intersphinx
@@ -146,6 +147,7 @@ class RenderText(unittest.TestCase):
 #         pass
 
 
+@helper.memoize
 def _load_cache(*paths):
     class MockConfiguration(object):
         intersphinx_timeout = None  # type: int
