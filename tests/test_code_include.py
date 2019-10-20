@@ -24,45 +24,25 @@ class Inputs(unittest.TestCase):
 
     @mock.patch("code_include.extension.Directive._reraise_exception")
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_no_required_argument(self, _get_app_inventory, _reraise_exception):
+    def _test(self, content, exception_class, _get_app_inventory, _reraise_exception):
         data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
 
-        content = [""]
         directive = _make_mock_directive(content)
 
-        with self.assertRaises(error_classes.MissingContent):
+        with self.assertRaises(exception_class):
             directive.run()
 
-    @mock.patch("code_include.extension.Directive._reraise_exception")
-    @mock.patch("code_include.source_code._get_app_inventory")
-    def test_incorrect_namespace(self, _get_app_inventory, _reraise_exception):
-        data = _load_cache("fake_project", "objects.inv")
+    def test_no_required_argument(self):
+        self._test([""], error_classes.MissingContent)
 
-        _get_app_inventory.return_value = data
-        _reraise_exception.return_value = True
+    def test_incorrect_namespace(self):
+        self._test([u":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace)
 
-        content = [u":meth:`path.that.does.not.exist`"]
-        directive = _make_mock_directive(content)
-
-        with self.assertRaises(error_classes.MissingNamespace):
-            directive.run()
-
-    @mock.patch("code_include.extension.Directive._reraise_exception")
-    @mock.patch("code_include.source_code._get_app_inventory")
-    def test_incorrect_directive_target(self, _get_app_inventory, _reraise_exception):
-        data = _load_cache("fake_project", "objects.inv")
-
-        _get_app_inventory.return_value = data
-        _reraise_exception.return_value = True
-
-        content = [u":nonexistent:tag:`some.module.that.may.exist`"]
-        directive = _make_mock_directive(content)
-
-        with self.assertRaises(error_classes.MissingDirective):
-            directive.run()
+    def test_incorrect_directive_target(self):
+        self._test([u":nonexistent:tag:`some.module.that.may.exist`"], error_classes.MissingDirective)
 
 
 class RenderText(unittest.TestCase):
