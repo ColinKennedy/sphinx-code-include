@@ -49,18 +49,24 @@ class Directive(rst.Directive):
             return source_code.get_source_code(directive, namespace)
         except error_classes.NotFoundFile as error:
             _REPORTER.warning('File "{error}" does not exist.'.format(error=error))
+
+            raise
         except error_classes.NotFoundUrl as error:
             _REPORTER.warning(
                 'Website "{error}" does not exist or is not reachable.'.format(
                     error=error
                 )
             )
+
+            raise
         except error_classes.MissingDirective:
             _REPORTER.warning(
                 'Directive "{directive}" was not found in the intersphinx inventory.'.format(
                     directive=directive
                 )
             )
+
+            raise
         except error_classes.MissingNamespace:
             _REPORTER.warning(
                 'Namespace "{namespace}" was not found in the intersphinx inventory.'.format(
@@ -68,7 +74,7 @@ class Directive(rst.Directive):
                 )
             )
 
-        return ""
+            raise
 
     def run(self):
         """Create the code block, if it can.
