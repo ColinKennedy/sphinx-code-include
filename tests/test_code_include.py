@@ -36,9 +36,24 @@ class Inputs(unittest.TestCase):
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
 
-        directive = _make_mock_directive()
+        content = [u":meth:`path.that.does.not.exist`"]
+        directive = _make_mock_directive(content)
 
         with self.assertRaises(error_classes.MissingNamespace):
+            directive.run()
+
+    @mock.patch("code_include.extension.Directive._reraise_exception")
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def test_incorrect_directive_target(self, _get_app_inventory, _reraise_exception):
+        data = _load_cache("example_cache.inv")
+
+        _get_app_inventory.return_value = data
+        _reraise_exception.return_value = True
+
+        content = [u":nonexistent:tag:`some.module.that.may.exist`"]
+        directive = _make_mock_directive(content)
+
+        with self.assertRaises(error_classes.MissingDirective):
             directive.run()
 
     # @mock.patch("code_include.source_code._get_app_inventory")
@@ -98,15 +113,10 @@ def _load_cache(*paths):
         return json.load(handler)
 
 
-def _make_mock_directive():
+def _make_mock_directive(content):
     name = "code-include"
     arguments = []
     options = {}
-    # content = StringList(
-    #     [u':meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`'],
-    #     items=[(u'/home/selecaoone/repositories/test_project/source/index.rst', 10)],
-    # )
-    content = [u":meth:`path.that.does.not.exist`"]
     line_number = 11
     content_offset = 10
     block_text = u".. code-include:: :meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`\n"
