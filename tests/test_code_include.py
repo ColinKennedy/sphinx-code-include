@@ -135,25 +135,25 @@ class RenderText(unittest.TestCase):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_attribute(self):
-        """Check that a module's attribute is read properly."""
-        pass
-
-    def test_class(self):
-        """Check that a class is read properly."""
-        pass
-
-    def test_class_attribute(self):
-        """Check that a class's attribute is read properly."""
-        pass
-
-    def test_function(self):
-        """Check that a module's function is read properly."""
-        pass
-
-    def test_module(self):
-        """Check that a module is read properly."""
-        pass
+    # def test_attribute(self):
+    #     """Check that a module's attribute is read properly."""
+    #     pass
+    #
+    # def test_class(self):
+    #     """Check that a class is read properly."""
+    #     pass
+    #
+    # def test_class_attribute(self):
+    #     """Check that a class's attribute is read properly."""
+    #     pass
+    #
+    # def test_function(self):
+    #     """Check that a module's function is read properly."""
+    #     pass
+    #
+    # def test_module(self):
+    #     """Check that a module is read properly."""
+    #     pass
 
 
 class Options(RenderText):
