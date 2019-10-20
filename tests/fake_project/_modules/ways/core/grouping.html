@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ways.core.grouping &mdash; Ways 1.0.0b1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.0.0b1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ways
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../why.html">Why</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../descriptors.html">Descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_basics.html">Plugin Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_advanced.html">Advanced Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parsing.html">Parsing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_details.html">API Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../common_patterns.html">Common Patterns And Best Practices</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../summary.html">API Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ways.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ways</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../ways.html">ways</a> &raquo;</li>
+        
+      <li>ways.core.grouping</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ways.core.grouping</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&#39;&#39;&#39;Various functions for grouping sequences of integers.&#39;&#39;&#39;</span>
+
+<span class="c1"># IMPORT STANDARD LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="c1"># IMPORT THIRD-PARTY LIBRARIES</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">moves</span>
+
+
+<div class="viewcode-block" id="has_common_elements"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.has_common_elements">[docs]</a><span class="k">def</span> <span class="nf">has_common_elements</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;bool: Tests a variable number of sequences for common elements.&#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">seq2</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">index</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">seq</span> <span class="k">if</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">seq2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="pairwise"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.pairwise">[docs]</a><span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="s2">&quot;Change an iterable item in to pairs -&gt; (s0,s1), (s1,s2), (s2, s3), ...&quot;</span>
+    <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">tee</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">moves</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="grouper"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.grouper">[docs]</a><span class="k">def</span> <span class="nf">grouper</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Group a list together by its items.</span>
+
+<span class="sd">    Slightly different result than ranges, in cases where outlier items lie</span>
+<span class="sd">    between two ranges.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; list(ranges([0, 1, 2, 3, 4, 7, 10, 12, 14, 16]))</span>
+<span class="sd">        &gt;&gt;&gt; [xrange(0, 4, 1), xrange(10, 16, 2)]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj (iterable): The list (or iterable) to process</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[int or tuple]: The ranges from the given list</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">pairwise</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="ranges"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.ranges">[docs]</a><span class="k">def</span> <span class="nf">ranges</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">return_range</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the start and end ranges for a list of discontinuous int ranges.</span>
+
+<span class="sd">    Reference: http://stackoverflow.com/questions/39709606/</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; list(ranges([0, 1, 2, 3, 4  7, 10, 12, 14, 16]))</span>
+<span class="sd">        &gt;&gt;&gt; [xrange(0, 4, 1), 7, xrange(10, 16, 2)]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj (list[int]): A list of integers to get the sequence of</span>
+<span class="sd">        return_range (bool): If you just need an iterable and you don&#39;t care</span>
+<span class="sd">                             about keeping the start/end/step, setting to True</span>
+<span class="sd">                             is more efficient on memory. If False, returns</span>
+<span class="sd">                             a tuple with start, end, and step.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        [int or range or tuple]: The ranges from the given list</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">iterobj</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="c1"># move to second element for comparison</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">iterobj</span><span class="p">)</span>  <span class="c1"># pylint: disable=stop-iteration-return</span>
+    <span class="n">grps</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterobj</span><span class="p">,</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">))))</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">grps</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># pylint: disable=stop-iteration-return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># catches single element v or gives us a step</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">index</span>  <span class="c1"># pylint: disable=stop-iteration-return</span>
+            <span class="n">nxt</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">grps</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]])[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">return_range</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">moves</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">nxt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">step</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">nxt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">step</span><span class="p">)</span>
+            <span class="c1"># outliers or another group</span>
+            <span class="k">if</span> <span class="n">nxt</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">nxt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">nxt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">next</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">grps</span><span class="p">)[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">nxt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">nxt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">return_range</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">moves</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="o">*</span><span class="n">output</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">output</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">index</span>  <span class="c1"># no seq</span></div>
+
+
+<div class="viewcode-block" id="get_difference"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.get_difference">[docs]</a><span class="k">def</span> <span class="nf">get_difference</span><span class="p">(</span><span class="n">list1</span><span class="p">,</span> <span class="n">list2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the elements of list1 that are not in list2.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This is NOT a symmetric_difference</span>
+
+<span class="sd">    Warning:</span>
+<span class="sd">        This function will cause you to lose list order of list1 and list2</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        list1 (list): The list to get the intersection with</span>
+<span class="sd">        list2 (list): The list to get the intersection against</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: The combination of list1 and list2</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">list2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_ordered_intersection"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.get_ordered_intersection">[docs]</a><span class="k">def</span> <span class="nf">get_ordered_intersection</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">memory_efficient</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the elements that exist in both given sequences.</span>
+
+<span class="sd">    This code will preserve the order of the first sequence given.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (iterable): The sequence to iterate. Also determines return order.</span>
+<span class="sd">        seq2 (iterable): The second sequence to compare against the first</span>
+<span class="sd">        memory_efficient (:obj:`bool`, optional):</span>
+<span class="sd">            If you know that every element in both sequences are small in size,</span>
+<span class="sd">            enable this option for a potential speed boost.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        iterable[any]: The common elements of the two sequences</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">memory_efficient</span><span class="p">:</span>
+        <span class="n">seq2</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">seq1</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">seq2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="filter_consecutive_items"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.filter_consecutive_items">[docs]</a><span class="k">def</span> <span class="nf">filter_consecutive_items</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Remove all consecutive elements but keep duplicate items.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj (iterable): The list (or iterable) to process</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[int or tuple]: The ranges from the given list</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">pairwise</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="uniquify_list"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.uniquify_list">[docs]</a><span class="k">def</span> <span class="nf">uniquify_list</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">idfun</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Order preserving way to get unique elements in a list.</span>
+
+<span class="sd">    This function is a bit dirty but extremely fast (see benchmark).</span>
+
+<span class="sd">    Reference: https://www.peterbe.com/plog/uniqifiers-benchmark</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (list): The list to make unique</span>
+<span class="sd">        idfun (func): An optional function to run, as part of the uniquifier</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: The uniquified list</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">idfun</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_idfun</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Return the original object and do nothing.&#39;&#39;&#39;</span>
+            <span class="k">return</span> <span class="n">obj</span>
+        <span class="n">idfun</span> <span class="o">=</span> <span class="n">_idfun</span>
+
+    <span class="n">seen</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">:</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="n">idfun</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="c1"># in old Python versions:</span>
+        <span class="c1"># if seen.has_key(marker)</span>
+        <span class="c1"># but in new ones:</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">seen</span><span class="p">[</span><span class="n">marker</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="group_into"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.group_into">[docs]</a><span class="k">def</span> <span class="nf">group_into</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">maximum</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Break a sequence up in a specified number of groups.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; seq = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+<span class="sd">        &gt;&gt;&gt; maximum = 4</span>
+<span class="sd">        &gt;&gt;&gt; group_into(seq=seq, maximum=maximum)</span>
+<span class="sd">        &gt;&gt;&gt; [[1, 4, 7, 10], [2, 5, 8], [3, 6, 9]]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (iterable): The sequence to split up</span>
+<span class="sd">        maximum (int): The number of groups to make</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[iterable]: Group of the original iterable sequence object</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">seq</span><span class="p">[</span><span class="n">item</span><span class="p">::</span><span class="n">maximum</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">moves</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">maximum</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="group_nth"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.group_nth">[docs]</a><span class="k">def</span> <span class="nf">group_nth</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="sd">&#39;&#39;&#39;Split the sequence by the given number.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; seq = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+<span class="sd">        &gt;&gt;&gt; maximum = 4</span>
+<span class="sd">        &gt;&gt;&gt; group_nth(seq=seq, by=by)</span>
+<span class="sd">        &gt;&gt;&gt; [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10]]</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The number of groups that will be made is (len(seq) // by) + 1</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (iterable): The sequence to split up into some groups</span>
+<span class="sd">        maximum (int):</span>
+<span class="sd">            The size of the groups that will be made from the original seqence</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[iterable]: A group of the original iterable sequence object</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">seq</span><span class="p">[</span><span class="n">value</span> <span class="o">*</span> <span class="n">by</span><span class="p">:(</span><span class="n">value</span> <span class="o">*</span> <span class="n">by</span><span class="p">)</span> <span class="o">+</span> <span class="n">by</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">moves</span><span class="o">.</span><span class="n">range</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">//</span> <span class="n">by</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">*</span> <span class="n">by</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="chunkwise_iter"><a class="viewcode-back" href="../../../ways.core.html#ways.core.grouping.chunkwise_iter">[docs]</a><span class="k">def</span> <span class="nf">chunkwise_iter</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;generator: Split the given sequence by `size`.&#39;&#39;&#39;</span>
+    <span class="n">block</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">moves</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">block</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Colin Kennedy
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

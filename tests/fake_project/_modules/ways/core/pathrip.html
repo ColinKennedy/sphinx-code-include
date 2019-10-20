@@ -1,0 +1,371 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ways.core.pathrip &mdash; Ways 1.0.0b1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.0.0b1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ways
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../why.html">Why</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../descriptors.html">Descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_basics.html">Plugin Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_advanced.html">Advanced Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parsing.html">Parsing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_details.html">API Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../common_patterns.html">Common Patterns And Best Practices</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../summary.html">API Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ways.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ways</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../ways.html">ways</a> &raquo;</li>
+        
+      <li>ways.core.pathrip</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ways.core.pathrip</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&#39;&#39;&#39;Tools for dealing with file paths.</span>
+
+<span class="sd">All of these functions should be OS-independent or at least indicate if not.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># IMPORT STANDARD LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># IMPORT THIRD-PARTY LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="c1"># IMPORT LOCAL LIBRARIES</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">check</span>
+
+
+<div class="viewcode-block" id="split_os_path_asunder"><a class="viewcode-back" href="../../../ways.core.html#ways.core.pathrip.split_os_path_asunder">[docs]</a><span class="k">def</span> <span class="nf">split_os_path_asunder</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Split up a path, even if it is in Windows and has a letter drive.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path to split up into parts.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[str]: The split path.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">drive</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitdrive</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="n">split_path_asunder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">drive</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">drive</span><span class="p">]</span> <span class="o">+</span> <span class="n">paths</span>
+    <span class="k">return</span> <span class="n">paths</span></div>
+
+
+<div class="viewcode-block" id="split_path_asunder"><a class="viewcode-back" href="../../../ways.core.html#ways.core.pathrip.split_path_asunder">[docs]</a><span class="k">def</span> <span class="nf">split_path_asunder</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Split a path up into individual folders.</span>
+
+<span class="sd">    This function is OS-independent but does not take into account Windows</span>
+<span class="sd">    drive letters. For that, check out split_os_path_asunder.</span>
+
+<span class="sd">    Reference:</span>
+<span class="sd">        http://www.stackoverflow.com/questions/4579908.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If this method is used on Windows paths, it&#39;s recommended to</span>
+<span class="sd">        os.path.splitdrive() before running this method on some path, to</span>
+<span class="sd">        handle edge cases where driver letters have different meanings</span>
+<span class="sd">        (example: c:path versus c:\path)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path to split up into parts.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[str]: The split path.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">newpath</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">newpath</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="n">tail</span>
+            <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">newpath</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">parts</span></div>
+
+
+<div class="viewcode-block" id="get_subfolder_root"><a class="viewcode-back" href="../../../ways.core.html#ways.core.pathrip.get_subfolder_root">[docs]</a><span class="k">def</span> <span class="nf">get_subfolder_root</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">subfolders</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;tail&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Find the path of some path, using some consecutive subfolders.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path to get the root of.</span>
+<span class="sd">        subfolders (list[str] or str): The folders to search for in the path.</span>
+<span class="sd">        method (:obj:`callable[str, list[str]] or str`, optional):</span>
+<span class="sd">            The strategy used to get the root subfolders. A function is</span>
+<span class="sd">            acceptable or a preset string can be used.</span>
+<span class="sd">            String options:</span>
+<span class="sd">            &#39;tail&#39;: Search a path to get the longest possible match (the last tail).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The root path that contains the subfolders.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">subfolders</span> <span class="o">=</span> <span class="n">check</span><span class="o">.</span><span class="n">force_itertype</span><span class="p">(</span><span class="n">subfolders</span><span class="p">)</span>
+    <span class="n">subfolders_copy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">subfolders</span><span class="p">)</span>
+    <span class="n">subfolders</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">subfolders_copy</span><span class="p">:</span>
+        <span class="n">subfolders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">split_os_path_asunder</span><span class="p">(</span><span class="n">folder</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;tail&#39;</span><span class="p">:</span> <span class="n">get_subfolder_root_tail</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">subfolders</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_subfolder_root_tail"><a class="viewcode-back" href="../../../ways.core.html#ways.core.pathrip.get_subfolder_root_tail">[docs]</a><span class="k">def</span> <span class="nf">get_subfolder_root_tail</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">subfolders</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the longest match of some path, using some subfolders.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; root = &#39;/jobs/rnd_ftrack/shots/sh01/maya/scenes/modeling/RELEASE/some_file_name.ma&#39;</span>
+<span class="sd">        &gt;&gt;&gt; subfolders = [&#39;maya/scenes&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; get_subfolder_root_tail(root, subfolders)</span>
+<span class="sd">        &#39;/jobs/rnd_ftrack/shots/sh01/maya/scenes&#39;</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If a path has more than one match for subfolders, the last match</span>
+<span class="sd">        is used.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path to get the root of.</span>
+<span class="sd">        subfolders (list[str] or str): The folders to search for in the path.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The path that matches some subfolder or an empty string.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">root_parts</span> <span class="o">=</span> <span class="n">split_os_path_asunder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">subfolders</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">subfolders</span><span class="p">))</span>
+    <span class="n">current_subfolder_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">final_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">part</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">root_parts</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">current_part_to_find</span> <span class="o">=</span> <span class="n">subfolders</span><span class="p">[</span><span class="n">current_subfolder_index</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">final_index</span> <span class="o">=</span> <span class="n">index</span>
+            <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">part</span> <span class="o">==</span> <span class="n">current_part_to_find</span><span class="p">:</span>
+            <span class="n">current_subfolder_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The subfolders are assumed to be consecutive - so if it&#39;s not a</span>
+            <span class="c1"># match, restart from the beginning and keep iterating over the</span>
+            <span class="c1"># path</span>
+            <span class="c1">#</span>
+            <span class="n">current_subfolder_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">final_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">root_parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">final_index</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">subfolders</span><span class="p">))])</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Colin Kennedy
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

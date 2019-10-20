@@ -38,8 +38,14 @@ class Directive(rst.Directive):
     has_content = True
     option_spec = {"no-unindent": rst.directives.flag}
 
+    def _needs_unindent(self):
+        return "no-unindent" not in self.options
+
     @staticmethod
     def _reraise_exception():
+        if not source_code.APPLICATION:
+            return False
+
         return hasattr('code_include_reraise', source_code.APPLICATION.config) \
             and source_code.APPLICATION.config.code_include_reraise
 
@@ -108,7 +114,7 @@ class Directive(rst.Directive):
 
             return []
 
-        if "no-unindent" not in self.options:
+        if self._needs_unindent():
             code = formatter.unindent_outer_whitespace(code)
 
         node = nodes.literal_block(code, code)

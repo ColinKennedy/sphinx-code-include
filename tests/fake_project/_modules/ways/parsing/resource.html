@@ -1,0 +1,1553 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ways.parsing.resource &mdash; Ways 1.0.0b1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.0.0b1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ways
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../why.html">Why</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../descriptors.html">Descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_basics.html">Plugin Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_advanced.html">Advanced Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parsing.html">Parsing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_details.html">API Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../common_patterns.html">Common Patterns And Best Practices</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../summary.html">API Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ways.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ways</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../ways.html">ways</a> &raquo;</li>
+        
+      <li>ways.parsing.resource</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ways.parsing.resource</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># pylint: disable=too-many-lines</span>
+<span class="sd">&#39;&#39;&#39;Asset objects are objects that store per-instance data for Context objects.</span>
+
+<span class="sd">They are necessary because Context objects are flyweights and, because of that,</span>
+<span class="sd">cannot carry instance data.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># IMPORT STANDARD LIBRARIES</span>
+<span class="c1"># scspell-id: 3c62e4aa-c280-11e7-be2b-382c4ac59cfd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="c1"># IMPORT THIRD-PARTY LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="c1"># IMPORT WAYS LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">ways</span>
+
+<span class="c1"># IMPORT LOCAL LIBRARIES</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">trace</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">registry</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">finder</span> <span class="k">as</span> <span class="n">find</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">situation</span> <span class="k">as</span> <span class="n">sit</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="k">import</span> <span class="n">check</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="k">import</span> <span class="n">compat</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="k">import</span> <span class="n">pylev</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="k">import</span> <span class="n">common</span>
+
+<span class="n">__DEFAULT_OBJECT</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Asset"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset">[docs]</a><span class="k">class</span> <span class="nc">Asset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;An object that contains a Context and data about the Context.</span>
+
+<span class="sd">    The idea of this class is to keep Context information abstract,</span>
+<span class="sd">    and let Context parse/use that information. Depending on what the Context</span>
+<span class="sd">    is for, it could be used to ground the information to a filesystem or</span>
+<span class="sd">    a database or some other structure that the Context knows about.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">parse_type</span><span class="o">=</span><span class="s1">&#39;regex&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create the instance and store its info and Context.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Keys in info must match all tokens in the Context</span>
+<span class="sd">            (or at least all required tokens) or the Context will fail to</span>
+<span class="sd">            initialize.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (dict or str):</span>
+<span class="sd">                The information about this asset to store.</span>
+<span class="sd">            context (ways.api.Context):</span>
+<span class="sd">                The context that this instance points to.</span>
+<span class="sd">            parse_type (:obj:`str`, optional):</span>
+<span class="sd">                The engine that will be used to used to check to make sure</span>
+<span class="sd">                that a value is OK before it is set on this instance.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If the information could not be found from a string or</span>
+<span class="sd">                if one or more of this Asset&#39;s tokens were not filled by</span>
+<span class="sd">                the information that was found.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Asset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_type</span> <span class="o">=</span> <span class="n">parse_type</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">expand_info</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="n">AssetFinder</span><span class="p">(</span><span class="n">finder</span><span class="o">=</span><span class="n">find</span><span class="o">.</span><span class="n">Find</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">),</span> <span class="n">asset</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">missing_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_missing_required_tokens</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">missing_tokens</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Info: &quot;</span><span class="si">{info}</span><span class="s1">&quot; could not resolve Context, &quot;</span><span class="si">{context}</span><span class="s1">&quot;. &#39;</span>
+                <span class="s1">&#39;Info is missing tokens, &quot;</span><span class="si">{keys}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">missing_tokens</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Asset.get_missing_required_tokens"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset.get_missing_required_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_missing_required_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Find any token that still needs to be filled for our parser.</span>
+
+<span class="sd">        If a token is missing but it has child tokens and all of the child</span>
+<span class="sd">        tokens are defined, it is excluded from the final output. If</span>
+<span class="sd">        the missing token is a child of some parent token that is defined,</span>
+<span class="sd">        then the value of the token is parsed. If the parse is successful,</span>
+<span class="sd">        the token is excluded from the final output.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: Any tokens that have no value.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">_get_missing_required_tokens</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Asset.get_str"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset.get_str">[docs]</a>    <span class="k">def</span> <span class="nf">get_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the full path to the asset, if any.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            required (:obj:`bool`, optional):</span>
+<span class="sd">                If True and there are tokens that are required that still</span>
+<span class="sd">                are not filled, raise an error.  If False, return the</span>
+<span class="sd">                incomplete string.  Default is True.</span>
+<span class="sd">            *args (list): Positional args to send to ContextParser.get_str.</span>
+<span class="sd">            **kwargs (list): Keywords args to send to ContextParser.get_str.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If required is True (in other words, we assume that)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The resolved string for this instance.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">):</span>
+            <span class="n">parser</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">unfilled_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_unfilled_tokens</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">unfilled_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+        <span class="n">required_tokens</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_required_tokens</span><span class="p">()</span>
+        <span class="n">missing_required_tokens</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_tokens</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">unfilled_tokens</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">required</span> <span class="ow">and</span> <span class="n">missing_required_tokens</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Required tokens: &quot;</span><span class="si">{tokens}</span><span class="s1">&quot; must be filled. &#39;</span>
+                             <span class="s1">&#39;Cannot retrieve path.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="n">tokens</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing_required_tokens</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_str</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Asset.get_token_parse"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset.get_token_parse">[docs]</a>    <span class="k">def</span> <span class="nf">get_token_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parse_type</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the parse expression for some token name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str):</span>
+<span class="sd">                The name of the token to get parse details from.</span>
+<span class="sd">            parse_type (:obj:`str`, optional):</span>
+<span class="sd">                The engine type whose expression will be returned. If no</span>
+<span class="sd">                parse_type is given, the stored parse_type is used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The parse expression used for the given token.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">parse_type</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">parse_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_type</span>
+
+        <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_token_parse</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">parse_type</span><span class="o">=</span><span class="n">parse_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Asset.get_unfilled_tokens"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset.get_unfilled_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_unfilled_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the tokens in this instance that still don&#39;t have values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            required_only (:obj:`bool`, optional):</span>
+<span class="sd">                If True, do not return optional tokens.</span>
+<span class="sd">                If False, return all tokens, required and optional.</span>
+<span class="sd">                Default is False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: The tokens that still need values.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_tokens</span><span class="p">(</span><span class="n">required_only</span><span class="o">=</span><span class="n">required_only</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">token</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Asset.get_value"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get some information about this asset, using a token-name.</span>
+
+<span class="sd">        If the information is directly available, we return it. If it isn&#39;t</span>
+<span class="sd">        though, it is searched for, using whatever information that we do have.</span>
+
+<span class="sd">        If the token name is a child of another token that is defined, we</span>
+<span class="sd">        use the parent token to &quot;build&quot; a value for the token that was requested.</span>
+
+<span class="sd">        If the token name is a parent of some other tokens that all have values,</span>
+<span class="sd">        we try to &quot;build&quot; it again, by combining all of the child tokens.</span>
+
+<span class="sd">        In both cases, the return value is created but not defined.</span>
+<span class="sd">        But it lets you do this:</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; shot_info = {</span>
+<span class="sd">            ...     &#39;JOB&#39;: &#39;someJob&#39;,</span>
+<span class="sd">            ...     &#39;SCENE&#39;: &#39;SOMETHING&#39;,</span>
+<span class="sd">            ...     &#39;SHOT&#39;: &#39;sh0010&#39;  # Pretend SHOT_NUMBER is a child of SHOT</span>
+<span class="sd">            ... }</span>
+<span class="sd">            &gt;&gt;&gt; shot_asset = resource.Asset(shot_info, context=&#39;job/scene/shot&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; shot_asset.get_value(&#39;SHOT_NUMBER&#39;)</span>
+<span class="sd">            ... # Result: &#39;0010&#39;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The token to get the value of.</span>
+<span class="sd">            real (:obj:`bool`, optional):</span>
+<span class="sd">                If True, the original parsed value is returned. If False and</span>
+<span class="sd">                the given token has functions defined in &quot;before_return&quot; then</span>
+<span class="sd">                those functions will process the output and then return it.</span>
+<span class="sd">                Default is False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The value at the given token.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Create a parser and fill it up with all of the info we can</span>
+        <span class="c1"># so that we can use it using Parent-Search and Child-Search</span>
+        <span class="c1">#</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">):</span>
+            <span class="n">parser</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">details</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">real</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+        <span class="c1"># Modify the value before it is returned to the user, if they say to</span>
+        <span class="n">before_return</span> <span class="o">=</span> <span class="n">check</span><span class="o">.</span><span class="n">force_itertype</span><span class="p">(</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;before_return&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">before_return</span><span class="p">:</span>
+            <span class="c1"># TODO : change with something better</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">function</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">import_object</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{function}</span><span class="s1">(</span><span class="si">{value}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">))</span>
+                <span class="c1"># literal_eval will raise ValueError if the string has syntax errors</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">NameError</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># TODO : Remove this eval</span>
+                    <span class="c1"># pylint: disable=eval-used</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{function}</span><span class="s1">(</span><span class="si">{value}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+                    <span class="c1"># NameError will happen if the function is not importable</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Function: &quot;</span><span class="si">{func}</span><span class="s1">&quot; could not be run&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">function</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">value</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get some information about this asset, using a token-name.</span>
+
+<span class="sd">        If the information is directly available, we return it. If it isn&#39;t</span>
+<span class="sd">        though, it is searched for, using whatever information that we do have.</span>
+
+<span class="sd">        If the token name is a child of another token that is defined, we</span>
+<span class="sd">        use the parent token to &quot;build&quot; a value for the token that was requested.</span>
+
+<span class="sd">        If the token name is a parent of some other tokens that all have values,</span>
+<span class="sd">        we try to &quot;build&quot; it again, by combining all of the child tokens.</span>
+
+<span class="sd">        In both cases, the return value is created but not defined.</span>
+<span class="sd">        But it lets you do this:</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; shot_info = {</span>
+<span class="sd">            ...     &#39;JOB&#39;: &#39;someJob&#39;,</span>
+<span class="sd">            ...     &#39;SCENE&#39;: &#39;SOMETHING&#39;,</span>
+<span class="sd">            ...     &#39;SHOT&#39;: &#39;sh0010&#39;  # Pretend SHOT_NUMBER is a child of SHOT</span>
+<span class="sd">            ... }</span>
+<span class="sd">            &gt;&gt;&gt; shot_asset = resource.Asset(shot_info, context=&#39;job/scene/shot&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; shot_asset.get_value(&#39;SHOT_NUMBER&#39;)</span>
+<span class="sd">            ... # Result: &#39;0010&#39;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The token to get the value of.</span>
+<span class="sd">            parser (:class:`ways.api.ContextParser`, optional):</span>
+<span class="sd">                The parse that contains the information about our Context</span>
+<span class="sd">                and Asset.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The value at the given token.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">_get_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Asset.set_value"><a class="viewcode-back" href="../../../resource.html#ways.api.Asset.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Store the given value to some key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The token that our value will be stored into.</span>
+<span class="sd">            value (str): The value to store.</span>
+<span class="sd">            force (:obj:`bool`, optional):</span>
+<span class="sd">                If False, values are checked against their tokens</span>
+<span class="sd">                before being set. If True, values are set for each token, even</span>
+<span class="sd">                if they are not valid input for that token. Default is False.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">parser</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;bool: If the two Asset objects have the same data stored.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">info</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;str: A printout of the current class and its properties.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{cls_}</span><span class="s1">(info=</span><span class="si">{info}</span><span class="s1">, context=</span><span class="si">{context}</span><span class="s1">, parse_type=</span><span class="si">{parse!r}</span><span class="s1">)&#39;</span> \
+               <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                         <span class="n">info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
+                         <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+                         <span class="n">parse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_type</span><span class="p">)</span></div>
+
+
+<span class="c1"># TODO : Could I possibly do this without a class?</span>
+<span class="c1"># TODO : The name of this class doesn&#39;t match find.Find. FIXME</span>
+<span class="c1">#</span>
+<span class="c1"># pylint: disable=too-few-public-methods</span>
+<div class="viewcode-block" id="AssetFinder"><a class="viewcode-back" href="../../../resource.html#ways.api.AssetFinder">[docs]</a><span class="k">class</span> <span class="nc">AssetFinder</span><span class="p">(</span><span class="n">compat</span><span class="o">.</span><span class="n">DirMixIn</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;A class that wraps a Find class with the current asset.</span>
+
+<span class="sd">    Ways Action objects don&#39;t assume anything about their input. This</span>
+<span class="sd">    is normally a good thing because it keeps Actions flexible.</span>
+<span class="sd">    But if we&#39;re working with an Action that expects an Asset object, we&#39;d</span>
+<span class="sd">    have to do this all the time:</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; asset = resource.get_asset({&#39;info&#39;: &#39;here&#39;}, context=&#39;some/context&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; output = asset.context.actions.get_foo(action, some=&#39;other&#39;, args=4)</span>
+
+<span class="sd">    Gross, right?</span>
+
+<span class="sd">    So instead what we do is add AssetFinder as an &#39;actions&#39; property and</span>
+<span class="sd">    then forcefully pass the Asset as the first argument to Actions.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; asset = resource.get_asset({&#39;info&#39;: &#39;here&#39;}, context=&#39;some/context&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; output = asset.actions.get_foo(some=&#39;other&#39;, args=4)</span>
+
+<span class="sd">    That&#39;s much better.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">finder</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create the instance and store a Find and an Asset object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            finder (:class:`ways.api.Find`): The object to get actions from.</span>
+<span class="sd">            asset (:class:`ways.api.Asset`): The object to pass to every function.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AssetFinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finder</span> <span class="o">=</span> <span class="n">finder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asset</span> <span class="o">=</span> <span class="n">asset</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Try to pass missing calls to the stored Context&#39;s actions.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            callable: The function for the given name.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">add_asset_info_to_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Pass the given asset to our original function.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                func (callable):</span>
+<span class="sd">                    The function to call. It must take at least one arg and</span>
+<span class="sd">                    the first arg must take an Asset object.</span>
+
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="sd">&#39;&#39;&#39;Run the original function but with an Asset added to it.&#39;&#39;&#39;</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">function</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span>
+
+            <span class="k">return</span> <span class="n">function</span>
+
+        <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finder</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Finder returns a functools.partial. So we&#39;ll unpack it by getting</span>
+        <span class="c1"># &quot;.func&quot; and then insert our own Asset object into it, instead</span>
+        <span class="c1">#</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">func</span>
+
+        <span class="k">return</span> <span class="n">add_asset_info_to_function</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="n">asset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_asset</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;list[str]: Add Action names to the list of return items.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                <span class="n">trace</span><span class="o">.</span><span class="n">trace_action_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">finder</span><span class="o">.</span><span class="n">context</span><span class="p">),</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">AssetFinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">())))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_expand_using_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">__DEFAULT_OBJECT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Expand some text into a dictionary of information, using a Context.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context (:class:`ways.api.Context`):</span>
+<span class="sd">            The Context to get parse text for and then use.</span>
+<span class="sd">        text (str):</span>
+<span class="sd">            The text to expand.</span>
+<span class="sd">        choices (:obj:`dict[str: callable]`, optional):</span>
+<span class="sd">            The parse type and associated function for that parse type that</span>
+<span class="sd">            should be used to convert a Context into a pattern which we can</span>
+<span class="sd">            apply to our text. If no choices are given, some default choices</span>
+<span class="sd">            are given for you.</span>
+<span class="sd">        default:</span>
+<span class="sd">            The object to return if nothing is found.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or default:</span>
+<span class="sd">            The expanded items, if any option in order was successful.</span>
+<span class="sd">            If no function was successful,</span>
+<span class="sd">            it returns whatever the default value was.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">_get_expand_order</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">choices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">choices</span> <span class="o">=</span> <span class="n">_get_expand_choices</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">default</span> <span class="o">==</span> <span class="n">__DEFAULT_OBJECT</span><span class="p">:</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="c1"># TODO : register these keys/values as plugins or something?</span>
+    <span class="n">pattern_getter</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">pattern_getter</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">get_str</span><span class="p">,</span> <span class="n">display_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pattern_getter</span><span class="p">[</span><span class="s1">&#39;regex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">get_str</span><span class="p">,</span> <span class="n">resolve_with</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;regex&#39;</span><span class="p">,</span> <span class="p">),</span> <span class="n">display_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+        <span class="n">getter</span> <span class="o">=</span> <span class="n">pattern_getter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">getter</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">pattern</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_expand_using_parse_types</span><span class="p">(</span>
+                <span class="n">parse</span><span class="o">=</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">default</span>
+
+
+<span class="k">def</span> <span class="nf">_expand_using_parse_types</span><span class="p">(</span><span class="n">parse</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">__DEFAULT_OBJECT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Expand some text, using a parse string of some kind.</span>
+
+<span class="sd">    We say &quot;some kind&quot; because the parse string could be a Python format string</span>
+<span class="sd">    or a regex pattern, for example.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context (:class:`ways.api.Context`):</span>
+<span class="sd">            The Context to get parse text for and then use.</span>
+<span class="sd">        text (str):</span>
+<span class="sd">            The text to expand.</span>
+<span class="sd">        choices (:obj:`dict[str: callable]`, optional):</span>
+<span class="sd">            The parse type and associated function for that parse type that</span>
+<span class="sd">            should be used to convert text into a string. If no choices</span>
+<span class="sd">            are given, some default choices are given for you.</span>
+<span class="sd">        default:</span>
+<span class="sd">            The object to return if nothing is found.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict or default:</span>
+<span class="sd">            The expanded items, if any option in order was successful.</span>
+<span class="sd">            If no function was successful,</span>
+<span class="sd">            it returns whatever the default value was.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">_get_expand_order</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">choices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">choices</span> <span class="o">=</span> <span class="n">_get_expand_choices</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">default</span> <span class="o">==</span> <span class="n">__DEFAULT_OBJECT</span><span class="p">:</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">choices</span><span class="p">[</span><span class="n">choice</span><span class="p">](</span><span class="n">parse</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span> <span class="nf">_get_expand_choices</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Get a description of each registered parse type and how it creates a dict.</span>
+
+<span class="sd">    An example implmentation for regex would be</span>
+<span class="sd">    {&#39;regex&#39;: lambda pat, text: re.match(pat, text).groupdict()}.</span>
+
+<span class="sd">    As long as the parse type can return a dict, given some text, it&#39;s valid.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        :class:`collections.OrderedDict` [str: callable]:</span>
+<span class="sd">            The parse type and expansion function.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># TODO : Make an abstract registry for &quot;expansion&quot; parse_types ?</span>
+    <span class="n">choices</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">regex_groupdict</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a dictionary of named keys for each text match, in pattern.&#39;&#39;&#39;</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="n">choices</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">expand_string</span>
+    <span class="n">choices</span><span class="p">[</span><span class="s1">&#39;regex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">regex_groupdict</span>
+
+    <span class="k">return</span> <span class="n">choices</span>
+
+
+<span class="k">def</span> <span class="nf">_get_expand_order</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the parse-order that Ways will use to expand a str into a dict.</span>
+
+<span class="sd">    This order is defined by the WAYS_EXPAND_CHOICE_ORDER</span>
+<span class="sd">    environment variable or, if that variable doesn&#39;t contain anything,</span>
+<span class="sd">    the order that parsers were registered will be used, instead.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        order (:obj:`list[str]`, optional):</span>
+<span class="sd">            If this argument has a value, then it is simply returned.</span>
+<span class="sd">            If it doesn&#39;t have a value, we try to get the value from</span>
+<span class="sd">            the current environment settings. If we can&#39;t, we use</span>
+<span class="sd">            the order of parse-type registration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[str]:</span>
+<span class="sd">            The order for Ways to use to expand strings.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># TODO : It&#39;s a bit presumptuous to assume that we know what order people</span>
+    <span class="c1">#        would like to parse a string. Maybe make a better system than</span>
+    <span class="c1">#        just forcing the user to use the keys from _get_expand_choices ...</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">order</span>
+
+    <span class="n">environment</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;WAYS_EXPAND_CHOICE_ORDER&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">environment</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">_get_expand_choices</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">order</span>
+
+
+<span class="k">def</span> <span class="nf">_get_recursive_parents</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get every known parent token for some token and those parent&#39;s parents.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        token (str):</span>
+<span class="sd">            The token to start retrieving parent tokens from.</span>
+<span class="sd">        parser (:class:`ways.api.ContextParser`):</span>
+<span class="sd">            The parser to use to get parent tokens.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[str]: The found parent tokens.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">_yield_parent_details</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Yield parent tokens for a given token, by looking at a token&#39;s details.</span>
+
+<span class="sd">        This function exists just so that we don&#39;t have to call</span>
+<span class="sd">        parser.get_all_mapping_details() for each iteration. This makes the</span>
+<span class="sd">        call slightly more efficient.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">(</span><span class="n">details</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">parent</span> <span class="o">==</span> <span class="n">token</span><span class="p">:</span>
+                <span class="c1"># A token shouldn&#39;t ever be a child of itself so we can skip it</span>
+                <span class="k">continue</span>
+
+            <span class="n">children</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_child_tokens</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">parent</span>
+
+                <span class="k">for</span> <span class="n">parent_</span> <span class="ow">in</span> <span class="n">_yield_parent_details</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">parent_</span>
+
+    <span class="n">details</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_yield_parent_details</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">details</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="get_asset"><a class="viewcode-back" href="../../../resource.html#ways.api.get_asset">[docs]</a><span class="k">def</span> <span class="nf">get_asset</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get some class object that matches the given Context and wraps some info.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        info (dict[str] or str):</span>
+<span class="sd">            The info to expand. If the input is a dict, it is passed through</span>
+<span class="sd">            and returned. If it is a string, the string is parsed against the</span>
+<span class="sd">            given context. Generally speaking, it&#39;s better to give a string that</span>
+<span class="sd">            is an exact or partial match to a Context&#39;s mapping than it is to</span>
+<span class="sd">            give a dict. This is doubly true if no context is given.</span>
+<span class="sd">        context (:class:`ways.api.Context` or str or tuple[str]`, optional):</span>
+<span class="sd">            The Context to use for the asset. If a string is given, it is</span>
+<span class="sd">            assumed to be the Context&#39;s hierarchy and a Context object</span>
+<span class="sd">            is constructed. If nothing is given, the best possible Context</span>
+<span class="sd">            is &quot;found&quot; and tried. This auto-find process will try to find the</span>
+<span class="sd">            &quot;best&quot; match by looking at every known Context&#39;s mapping.</span>
+<span class="sd">            A match is not guaranteed. Default is None.</span>
+<span class="sd">        *args (list): Optional position variables to pass to our found</span>
+<span class="sd">                      class&#39;s constructor.</span>
+<span class="sd">        **kwargs (dict): Optional keyword variables to pass to our found</span>
+<span class="sd">                         class&#39;s constructor.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError:</span>
+<span class="sd">            If context is None. There&#39;s no auto-find-context option yet.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The found class object or NoneType. If no class definition was found</span>
+<span class="sd">        for the given Context, return a generic Asset object.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="p">:</span>
+        <span class="n">context_</span> <span class="o">=</span> <span class="n">_find_context_using_info</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">context_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Context could not be found for info, &quot;</span><span class="si">{info}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">context_</span> <span class="o">=</span> <span class="n">sit</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">context_</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">context_</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Context: &quot;</span><span class="si">{context}</span><span class="s1">&quot; could not be found. &#39;</span>
+                         <span class="s1">&#39;Cannot continue.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">))</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">expand_info</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+    <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_hierarchy</span><span class="p">()</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">init</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_asset_info</span><span class="p">(</span><span class="n">hierarchy</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">init</span><span class="p">:</span>
+        <span class="n">init</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">make_default_init</span><span class="p">(</span><span class="n">Asset</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">init</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_missing_required_tokens</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Find any token that still needs to be filled for our parser.</span>
+
+<span class="sd">    If a token is missing but it has child tokens and all of those tokens</span>
+<span class="sd">    are defined, it is excluded from the final output. If the missing token</span>
+<span class="sd">    is a child of some parent token that is defined, then the value of</span>
+<span class="sd">    the token is parsed. If the parse is successful, the token is excluded</span>
+<span class="sd">    from the final output.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        context (:class:`ways.api.Context`):</span>
+<span class="sd">            The Context to use to get missing tokens.</span>
+<span class="sd">        info (dict[str: str]):</span>
+<span class="sd">            Token-value pairs that should match 1-to-1 with Context.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[str]:</span>
+<span class="sd">            Any tokens that have no value.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+    <span class="n">required_tokens</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_required_tokens</span><span class="p">()</span>
+
+    <span class="c1"># Start filling the parser</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="n">parser</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># Get missing tokens</span>
+    <span class="n">missing_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">required_tokens</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parser</span><span class="p">:</span>
+            <span class="n">missing_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="c1"># Try to resolve the tokens</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">missing_tokens</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">_get_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">parser</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">missing_tokens</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">missing_tokens</span>
+
+
+<span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get some information about this asset, using a token-name.</span>
+
+<span class="sd">    If the information is directly available, we return it. If it isn&#39;t</span>
+<span class="sd">    though, it is searched for, using whatever information that we do have.</span>
+
+<span class="sd">    If the token name is a child of another token that is defined, we</span>
+<span class="sd">    use the parent token to &quot;build&quot; a value for the token that was requested.</span>
+
+<span class="sd">    If the token name is a parent of some other tokens that all have values,</span>
+<span class="sd">    we try to &quot;build&quot; it again, by combining all of the child tokens.</span>
+
+<span class="sd">    In both cases, the return value is created but not defined.</span>
+<span class="sd">    But it lets you do this:</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; shot_info = {</span>
+<span class="sd">        ...     &#39;JOB&#39;: &#39;someJob&#39;,</span>
+<span class="sd">        ...     &#39;SCENE&#39;: &#39;SOMETHING&#39;,</span>
+<span class="sd">        ...     &#39;SHOT&#39;: &#39;sh0010&#39;  # Pretend SHOT_NUMBER is a child of SHOT</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; shot_asset = resource.Asset(shot_info, context=&#39;job/scene/shot&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; shot_asset.get_value(&#39;SHOT_NUMBER&#39;)</span>
+<span class="sd">        ... # Result: &#39;0010&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): The token to get the value of.</span>
+<span class="sd">        parser (:class:`ways.api.ContextParser`, optional):</span>
+<span class="sd">            The parse that contains the information about our Context</span>
+<span class="sd">            and Asset.</span>
+<span class="sd">        info (dict[str: str]):</span>
+<span class="sd">            All of the token-value pairs to use to find a value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The value at the given token.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">get_value_from_parent</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the value of a token by looking up at its parent, recursively.</span>
+
+<span class="sd">        In order for this function to return anything, the parent of token</span>
+<span class="sd">        must be filled out. Or the parent of that parent etc etc.</span>
+
+<span class="sd">        This function is very special because it is able to use a mixture</span>
+<span class="sd">        of different text parsing engines to get the desired result.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (str):</span>
+<span class="sd">                The token to get the value of, by looking at its parent(s).</span>
+<span class="sd">            parser (:class:`ways.api.ContextParser`):</span>
+<span class="sd">                The parser associated with the Context associated</span>
+<span class="sd">                with this Asset.</span>
+<span class="sd">            info (dict[str: str]):</span>
+<span class="sd">                All of the token-value pairs to use to find a value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The found value. Returns nothing if no value was found.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">get_value_from_parent_regex</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Use regex to get a value, using known parent tokens.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                parent (str):</span>
+<span class="sd">                    The name of the parent token to try to get a</span>
+<span class="sd">                    parse-value for.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                dict[str]: The values that were found for each token</span>
+<span class="sd">                            and each parent token.</span>
+
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># We must have a mapping to proceed</span>
+                <span class="n">details</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="s1">&#39;mapping&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_child_tokens</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_value_from_parent</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;regex&#39;</span><span class="p">)</span>
+                <span class="n">info</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="k">return</span> <span class="n">info</span>
+
+        <span class="k">def</span> <span class="nf">get_value_from_parent_format</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Try to expand the parent token, using its mapping.</span>
+
+<span class="sd">            Note:</span>
+<span class="sd">                This function will basically always pass as long as</span>
+<span class="sd">                two things are true.</span>
+<span class="sd">                1. The mapping cannot have items side-by-side</span>
+<span class="sd">                    Example:</span>
+<span class="sd">                        valid - {FOO}_{BAR}</span>
+<span class="sd">                        invalid - {FOO}{BAR}</span>
+
+<span class="sd">                    If two items are back to back, we can&#39;t know where</span>
+<span class="sd">                    one item starts and one item ends. We&#39;d need regex</span>
+<span class="sd">                    or glob or something else to determin that.</span>
+<span class="sd">                2. The value doesn&#39;t match the mapping.</span>
+<span class="sd">                    Example:</span>
+<span class="sd">                        valid -</span>
+<span class="sd">                            mapping - {FOO}_{BAR}</span>
+<span class="sd">                            value - SOME_THING</span>
+<span class="sd">                        invalid -</span>
+<span class="sd">                            mapping - {FOO}_{BAR}</span>
+<span class="sd">                            value - SOME-THING</span>
+
+<span class="sd">            Examples:</span>
+<span class="sd">                &gt;&gt;&gt; parent = &#39;SHOT_NAME&#39;</span>
+<span class="sd">                &gt;&gt;&gt; value = &#39;SH_0020&#39;</span>
+<span class="sd">                &gt;&gt;&gt; details = {&#39;SHOT_NAME&#39;: {&#39;mapping&#39;: &#39;{SHOT_PREFIX}_{SHOT_NUMBER}&#39;}}</span>
+<span class="sd">                &gt;&gt;&gt; get_value_from_parent_format(parent, value, details)</span>
+<span class="sd">                ... {&#39;SHOT_PREFIX&#39;: &#39;SH&#39;, &#39;SHOT_NUMBER&#39;: &#39;0020&#39;}</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                parent (str):</span>
+<span class="sd">                    The parent token to expand and get the value of.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                dict[str: str]:</span>
+<span class="sd">                    The pieces of a string, broken into its various pieces.</span>
+
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">parser</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">expand_string</span><span class="p">(</span><span class="n">details</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mapping&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># Try once to get the value if the parser already has it</span>
+        <span class="c1"># If not, we&#39;ll try to search for it</span>
+        <span class="c1">#</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">parser</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">parents</span> <span class="o">=</span> <span class="n">_get_recursive_parents</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">build_value_from_parents</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Get the value by checking every parent of a token recursively.</span>
+
+<span class="sd">            Warning:</span>
+<span class="sd">                This function will modify any parser that is passed into it.</span>
+<span class="sd">                The parser is changed intentionally so that the value</span>
+<span class="sd">                can be referenced during recursion (It&#39;s treated as</span>
+<span class="sd">                persistent data that gets reused).</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                token (str):</span>
+<span class="sd">                    The token to get the value of by looking at its parents.</span>
+<span class="sd">                parents (list[str]):</span>
+<span class="sd">                    The parents of token and any parents of those parents.</span>
+<span class="sd">                    This list should always start with the immediate parent</span>
+<span class="sd">                    of token, followed by other parents-of-parents.</span>
+<span class="sd">                info (dict[str: str]):</span>
+<span class="sd">                    All of the token-value pairs to use to find a value.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                str: The output value.</span>
+
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">get_value_from_parent_format</span><span class="p">,</span>
+                <span class="n">get_value_from_parent_regex</span><span class="p">,</span>
+            <span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">info</span> <span class="o">=</span> <span class="n">option</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">value</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+                <span class="c1"># If we&#39;ve reached this point, it means that we tried to get</span>
+                <span class="c1"># the value of the parent be couldn&#39;t. But there&#39;s another</span>
+                <span class="c1"># parent above this parent token so lets keep searching</span>
+                <span class="c1"># until there&#39;s no more parents to search</span>
+                <span class="c1">#</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">build_value_from_parents</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">info</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="c1"># NOTE: We intentionally add the found value to a parser</span>
+                    <span class="c1">#       before retrying to hopefully find the next value</span>
+                    <span class="c1">#       faster / more efficiently</span>
+                    <span class="c1">#</span>
+                    <span class="n">parser</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="k">return</span> <span class="n">_get_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="n">build_value_from_parents</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_value_from_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a value from a parent token by getting its child values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (str):</span>
+<span class="sd">                The token to get the value of by looking at its children.</span>
+<span class="sd">            parser (:class:`ways.api.ContextParser`):</span>
+<span class="sd">                The parser associated with the Context associated</span>
+<span class="sd">            info (dict[str: str]):</span>
+<span class="sd">                All of the token-value pairs to use to find a value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str: str]: The found tokens and their values.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mapping&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">children</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_child_tokens</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">children</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">info_</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="n">child</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">get_value_from_children</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+            <span class="n">info_</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">mapping</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">info_</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># If we have a direct value for the given name, return it</span>
+        <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">details</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">get_value_from_parent</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># TODO : swap Parent-Search and Child-Search. More often than not,</span>
+    <span class="c1">#        it will make systems faster (I think)</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="n">get_value_from_children</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_find_context_using_info</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Use some Asset&#39;s info, get the best-possible Context.</span>
+
+<span class="sd">    This function is meant to assist &quot;get_asset&quot; whenever a Context is not given.</span>
+
+<span class="sd">    It works first by getting every Context that could work with the given object.</span>
+<span class="sd">    Then, if more than one Context matches the given object, we attempt to</span>
+<span class="sd">    &quot;break the tie&quot; between all of the Contexts to get a clear winner. This is</span>
+<span class="sd">    done by looking at every Token defined in &quot;mapping_details&quot;, to try to</span>
+<span class="sd">    find if the user&#39;s input matches each of the Tokens on the Context.</span>
+
+<span class="sd">    If obj is a string and the match Contexts have mappings, this function runs</span>
+<span class="sd">    much more quickly because Ways will sort the valid Contexts by how close</span>
+<span class="sd">    obj resembles the mapping. So the more &quot;relevant&quot; Contexts are tried before</span>
+<span class="sd">    lesser Contexts.</span>
+
+<span class="sd">    It&#39;s best to give a string whenever possible.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj (dict[str: str] or str):</span>
+<span class="sd">            The information used to get the Context.</span>
+<span class="sd">            It&#39;s best to give a string whenever possible but a dict can be</span>
+<span class="sd">            used instead, if not.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        :class:`ways.api.Context`: The &quot;best-guess&quot; Context for some information.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">contains_all_tokens</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check that every token in a Context has a vaild value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context (:class:`ways.api.Context`):</span>
+<span class="sd">                The Context to check for valid token values.</span>
+<span class="sd">            obj (dict[str: str]):</span>
+<span class="sd">                The token-value pairs for our Context to check if they&#39;re valid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: If every token for our Context has a valid value.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">details</span><span class="p">:</span>
+                <span class="c1"># If this section of code runs, it means the user passed in</span>
+                <span class="c1"># more information that necessary. Just skip it</span>
+                <span class="c1">#</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check to make sure our value is OK</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">parser</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">_get_missing_required_tokens</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_ranking</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Find how similar a given string is to a Context&#39;s mapping.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context (:class:`ways.api.Context`):</span>
+<span class="sd">                The context to get the mapping of and use for ranking.</span>
+<span class="sd">            obj (str):</span>
+<span class="sd">                The string to compare to the given Context and rank.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float:</span>
+<span class="sd">                A value from 0 to N - 0 being having no correlation and N</span>
+<span class="sd">                being some increasing correlation.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">()</span>
+        <span class="c1"># This algorithm gets thrown off by any contents inside {}s</span>
+        <span class="c1"># so we&#39;re going to make the mapping from strings like</span>
+        <span class="c1"># &#39;/jobs/{JOBS}/here&#39; into &#39;/jobs//here&#39; to make the sort more fair</span>
+        <span class="c1">#</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;({[^</span><span class="si">{}</span><span class="s1">]*})&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pylev</span><span class="o">.</span><span class="n">levenshtein</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_best_context_by_rankings</span><span class="p">(</span><span class="n">contexts</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Find the Context that best matches a mapping.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            contexts (list[:class:`ways.api.Context`]):</span>
+<span class="sd">                The Context objects to consider.</span>
+<span class="sd">            mapping (str):</span>
+<span class="sd">                The asset string that will be used to find the best Context.</span>
+<span class="sd">                The &quot;best&quot; Context is determined by how closely a Context&#39;s</span>
+<span class="sd">                mapping is, compared to this given mapping.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If two values tie for the &quot;best&quot; Context and Ways cannot choose</span>
+<span class="sd">                one of them.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`ways.api.Context`: The best match.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">rankings</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_ranking</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">contexts</span><span class="p">]</span>
+        <span class="n">high_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rankings</span><span class="p">)</span>
+
+        <span class="c1"># If the high score is listed twice then we can&#39;t know which Context</span>
+        <span class="c1"># to use so raise an error</span>
+        <span class="c1">#</span>
+        <span class="n">high_scorers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">context</span><span class="p">,</span> <span class="n">ranking</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">moves</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">contexts</span><span class="p">,</span> <span class="n">rankings</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ranking</span> <span class="o">==</span> <span class="n">high_score</span><span class="p">:</span>
+                <span class="n">high_scorers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="n">there_was_a_tie_for_first_place</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">high_scorers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">there_was_a_tie_for_first_place</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Two or more Context objects were selected. Cannot continue.&#39;</span><span class="p">,</span>
+                <span class="n">high_scorers</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">contexts</span><span class="p">[</span><span class="n">rankings</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">high_score</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">get_context_info_from_pool</span><span class="p">(</span><span class="n">contexts</span><span class="p">,</span> <span class="n">pool</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Assign information to given Contexts using a pool of Context info.</span>
+
+<span class="sd">        To keep computations light, we filter out the best possible Context</span>
+<span class="sd">        candidates and then get their information from the total Contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            contexts (list[:class:`ways.api.Context`]):</span>
+<span class="sd">                The Context objects to get token information for.</span>
+<span class="sd">            pool (list[tuple[:class:`ways.api.Context`, dict[str, str]]]):</span>
+<span class="sd">                All of the known Contexts and their token info that Ways knows of.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pool (list[tuple[:class:`ways.api.Context`, dict[str, str]]]):</span>
+<span class="sd">                The original Context objects and its pool information.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">context</span><span class="p">:</span> <span class="n">pool</span><span class="p">[</span><span class="n">context</span><span class="p">]</span> <span class="k">for</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">contexts</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_valid_contexts</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Filter out Contexts that expect different info that what is given.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (list[tuple[:class:`ways.api.Context`, dict[str, str]]]):</span>
+<span class="sd">                All of the known Contexts and their token info that Ways knows of.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[:class:`ways.api.Context`]:</span>
+<span class="sd">                The Context objects that are all compatible with their given info.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">valid_contexts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">context</span><span class="p">,</span> <span class="n">details</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+
+            <span class="c1"># We&#39;re going to try to invalidate every token of a Context using</span>
+            <span class="c1"># every parser that Ways knows about. If the Context doesn&#39;t</span>
+            <span class="c1"># ever return False then that means it is &#39;valid&#39;</span>
+            <span class="c1">#</span>
+            <span class="n">tokens_and_parsers</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">details</span><span class="p">),</span> <span class="n">ways</span><span class="o">.</span><span class="n">get_parse_order</span><span class="p">())</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="n">parse_type</span> <span class="ow">in</span> <span class="n">tokens_and_parsers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">parser</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">parse_type</span><span class="p">):</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">valid_contexts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">valid_contexts</span>
+
+    <span class="k">def</span> <span class="nf">tiebreak</span><span class="p">(</span><span class="n">contexts</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>  <span class="c1"># pylint: disable=inconsistent-return-statements</span>
+        <span class="sd">&#39;&#39;&#39;Attempt to find the &quot;best&quot; Context from a group of tied Contexts.</span>
+
+<span class="sd">        Ways does this by looking at the parse groups defined for each Context.</span>
+<span class="sd">        If the Context objects&#39;s found information doesn&#39;t match what the</span>
+<span class="sd">        Context expects, it&#39;s &quot;excluded&quot;. The Context that survives validation</span>
+<span class="sd">        is declared the &quot;winner&quot; because there was nothing wrong with it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            contexts (list[:class:`ways.api.Context`]):</span>
+<span class="sd">                The tied Context objects to get a &quot;best&quot; Context of.</span>
+<span class="sd">            info (list[dict[:class:`ways.api.Context`: dict[str, str]]]):</span>
+<span class="sd">                All of the known Contexts and their token info that Ways knows of.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If the tie could not be broken. i.e. Two or more Contexts</span>
+<span class="sd">                with are both valid, given the user&#39;s information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`ways.api.Context` or NoneType: The &quot;winner&quot; Context.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">tied_info</span> <span class="o">=</span> <span class="n">get_context_info_from_pool</span><span class="p">(</span><span class="n">contexts</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="n">valid_contexts</span> <span class="o">=</span> <span class="n">get_valid_contexts</span><span class="p">(</span><span class="n">tied_info</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_contexts</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_contexts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Tie-break succeeded</span>
+            <span class="k">return</span> <span class="n">valid_contexts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Ways got two or more Contexts and cannot decide which to use, &#39;</span>
+            <span class="s1">&#39;&quot;</span><span class="si">{contexts!s}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">contexts</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="k">for</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">contexts</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">find_context_by_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">contexts</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the correct Context by matching the user&#39;s mapping.</span>
+
+<span class="sd">        As the function implies, at least one Context given must have a mapping</span>
+<span class="sd">        and that mapping should match the Context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mapping (str): The mapping that is expected to match the Contexts.</span>
+<span class="sd">            contexts (list[:class:`ways.api.Context`]): The Contexts to match with.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`ways.api.Context`: The &quot;winner&quot; Context.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_best_context_by_rankings</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">contexts</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">mapping</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="c1"># Try to break the tie, if we can</span>
+            <span class="n">tied_contexts</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tiebreak</span><span class="p">(</span><span class="n">tied_contexts</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">filter_valid_contexts</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">contexts</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Use the given information to find the correct Context.</span>
+
+<span class="sd">        This function is very basic. All it does it tries to build an Asset,</span>
+<span class="sd">        using the given Context information. If the Asset successfully</span>
+<span class="sd">        instantiates, it&#39;s assumed that the info was correct.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (dict[str, str]): The information to try to get a Context of.</span>
+<span class="sd">            contexts (list[:class:`ways.api.Context`]): The Contexts to match.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[:class:`ways.api.Context`]: The Contexts that make valid Assets,</span>
+<span class="sd">                                             when given some info.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">(</span><span class="n">contexts</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">Asset</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># The object was not valid input for the Asset. Just ignore it and move on</span>
+                <span class="k">continue</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="n">mapping</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">contexts_</span> <span class="o">=</span> <span class="n">sit</span><span class="o">.</span><span class="n">get_all_contexts</span><span class="p">()</span>
+    <span class="n">contexts</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">obj</span>
+
+        <span class="c1"># The user gave a string - so let&#39;s make it into a dict</span>
+        <span class="c1"># whatever string -&gt; dict conversions are successful *might* be the</span>
+        <span class="c1"># context that we&#39;re looking to find - so add them</span>
+        <span class="c1">#</span>
+        <span class="k">for</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">contexts_</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">expanded_info</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">expand_string</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">(),</span> <span class="n">obj</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">expanded_info</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+                <span class="c1"># expand_string raises an error if context.get_mapping is invalid</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contexts</span><span class="p">[</span><span class="n">context</span><span class="p">]</span> <span class="o">=</span> <span class="n">expanded_info</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">contexts</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No plugins found had mappings. Cannot continue.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Otherwise, if it is a mapping (i.e. a dict), we use all contexts</span>
+        <span class="k">for</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">contexts_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">contains_all_tokens</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+                <span class="n">contexts</span><span class="p">[</span><span class="n">context</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="c1"># We&#39;ll find the Context we&#39;re searching for faster if we sort the more</span>
+    <span class="c1"># likely candidates to the front. But we can only do that if obj is a string</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">mapping</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">find_context_by_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+
+    <span class="c1"># Otherwise, lets just try to find the best-guess</span>
+    <span class="n">valid_contexts</span> <span class="o">=</span> <span class="n">filter_valid_contexts</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_contexts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">valid_contexts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># More than one Context was valid. Try to find one clear winner, if we can</span>
+    <span class="k">return</span> <span class="n">tiebreak</span><span class="p">(</span><span class="n">valid_contexts</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="expand_info"><a class="viewcode-back" href="../../../resource.html#ways.api.expand_info">[docs]</a><span class="k">def</span> <span class="nf">expand_info</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get parsed information, using the given Context.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function requires regex in order to parse.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        Maybe I can abstract the parser to use different parse options, like I</span>
+<span class="sd">        did in get_value_from_parent. And then if that doesn&#39;t work, I can</span>
+<span class="sd">        add the option to &quot;register&quot; a particular parser.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        info (dict[str] or str):</span>
+<span class="sd">            The info to expand. If the input is a dict, it is passed through</span>
+<span class="sd">            and returned. If it is a string, the string is parsed against the</span>
+<span class="sd">            given context.</span>
+<span class="sd">        context (:class:`&lt;ways.api.Context`, optional):</span>
+<span class="sd">            The Context that will be used to parse info.</span>
+<span class="sd">            If no Context is given, the Context is automatically found.</span>
+<span class="sd">            Default is None.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError:</span>
+<span class="sd">            If context is None. There&#39;s no auto-find-context option yet.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str]: The asset info.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Is already a dict</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">info</span>
+
+    <span class="c1"># Context is probably a string like &#39;/jobs/jobName/here&#39;. If that&#39;s the case</span>
+    <span class="c1"># then we&#39;ll expand it into a dict by using a Context&#39;s mapping.</span>
+    <span class="c1">#</span>
+    <span class="c1"># i.e. path is &#39;/jobs/jobName/here&#39;</span>
+    <span class="c1">#      context mapping is &#39;/jobs/{JOB}/here&#39;</span>
+    <span class="c1">#      Result: {&#39;JOB&#39;: &#39;jobName&#39;}</span>
+    <span class="c1">#</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_expand_using_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">dict</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Is it an iterable-pair object that we can make into a dict?</span>
+    <span class="c1"># i.e. ((&#39;some&#39;: &#39;thing&#39;), ) -&gt; {&#39;some&#39;: &#39;thing&#39;}</span>
+    <span class="c1">#</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Colin Kennedy
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

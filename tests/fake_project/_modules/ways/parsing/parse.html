@@ -1,0 +1,708 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ways.parsing.parse &mdash; Ways 1.0.0b1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.0.0b1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ways
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../why.html">Why</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../descriptors.html">Descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_basics.html">Plugin Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_advanced.html">Advanced Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parsing.html">Parsing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_details.html">API Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../common_patterns.html">Common Patterns And Best Practices</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../summary.html">API Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ways.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ways</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../ways.html">ways</a> &raquo;</li>
+        
+      <li>ways.parsing.parse</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ways.parsing.parse</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&#39;&#39;&#39;A module that holds ContextParser - A class fills in Context&#39;s mapping.&#39;&#39;&#39;</span>
+
+<span class="c1"># IMPORT STANDARD LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="c1"># IMPORT LOCAL LIBRARIES</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="k">import</span> <span class="n">check</span>
+<span class="kn">from</span> <span class="nn">..parsing</span> <span class="k">import</span> <span class="n">engine</span>
+
+<span class="n">ENCLOSURE_TOKEN_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(\{[^\{\}]+\})&#39;</span>
+<span class="n">RESERVED_ENV_VAR_PARSE_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;env&#39;</span><span class="p">,</span> <span class="s1">&#39;environment&#39;</span><span class="p">,</span> <span class="s1">&#39;env_vars&#39;</span><span class="p">)</span>
+<span class="n">TOKEN_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\{([^\{\}]+)\}&#39;</span>
+
+
+<div class="viewcode-block" id="ContextParser"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser">[docs]</a><span class="k">class</span> <span class="nc">ContextParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;A class that&#39;s used to fill out missing values in a Context&#39;s mapping.</span>
+
+<span class="sd">    Some quick terms: If you see the word &#39;token&#39;, it means a</span>
+<span class="sd">    piece of a string that needs to be filled out, such as &#39;some_{TOKEN}_here&#39;.</span>
+
+<span class="sd">    A field is the token + its information. For example, if the token being</span>
+<span class="sd">    filled out is optional or if input to a token is valid.</span>
+
+<span class="sd">    This class is meant to expand and resolve the tokens inside the mapping</span>
+<span class="sd">    of a Context object.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create the parser and store our Context object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context (:class:`ways.api.Context`): The Context to resolve and parse.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ContextParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ContextParser.is_valid"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.is_valid">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">resolve_with</span><span class="o">=</span><span class="s1">&#39;regex&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check if a given value will work for some Ways token.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (str):</span>
+<span class="sd">                The token to use to check for the given value.</span>
+<span class="sd">            value:</span>
+<span class="sd">                The object to check for validity.</span>
+<span class="sd">            resolve_with (:obj:`str`, optional):</span>
+<span class="sd">                The parse type to use to check if value is valid for token.</span>
+<span class="sd">                Only &#39;regex&#39; is supported right now. Default: &#39;regex&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:</span>
+<span class="sd">                If the given value was valid.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># TODO : factor out using engine.py</span>
+        <span class="k">if</span> <span class="n">resolve_with</span> <span class="o">!=</span> <span class="s1">&#39;regex&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This is not supported yet&#39;</span><span class="p">)</span>
+
+        <span class="n">mapping_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">mapping_details</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">expression</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;parse&#39;</span><span class="p">][</span><span class="n">resolve_with</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">expression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_token_parse</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">resolve_with</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># If we have no expression then just assume True</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+    <span class="c1"># pylint: disable=too-many-arguments</span>
+<div class="viewcode-block" id="ContextParser.resolve_with_tokens"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.resolve_with_tokens">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">resolve_with_tokens</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="n">details</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">display_tokens</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Substitute tokens in our mapping for anything that we can find.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mapping (str): The path that will be resolved and substituted.</span>
+<span class="sd">            tokens (list[str]): The pieces inside of the mapping to resolve.</span>
+<span class="sd">            details (dict[str]): All of the token/subtoken information available</span>
+<span class="sd">                                 to resolve the tokens in this mapping.</span>
+<span class="sd">            options (list[str]): The different ways to resolve the tokens.</span>
+<span class="sd">            groups (:obj:`dict[str, str] or iterable[str, str]`, optional):</span>
+<span class="sd">                A mapping of token names and a preferred token value to</span>
+<span class="sd">                substitute it with. This variable takes priority over all</span>
+<span class="sd">                types of resolve_with types. Default is None.</span>
+<span class="sd">            display_tokens (:obj:`bool`, optional):</span>
+<span class="sd">                Whether or not to add regex (?P&lt;TOKEN_NAME&gt;) tags around all</span>
+<span class="sd">                of our resolved text.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The resolved mapping.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># TODO : Factor out display_tokens once this module is completely</span>
+        <span class="c1">#        refactored to not require/expect regex input</span>
+        <span class="c1">#</span>
+        <span class="k">def</span> <span class="nf">make_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Wrap the output value with a regex token group, if needed.&#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">display_tokens</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;(?P&lt;</span><span class="si">{token}</span><span class="s1">&gt;</span><span class="si">{value}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+        <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">resolve_type</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+            <span class="c1"># If the user has specific values to use for a token, use them now</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">parse_info</span> <span class="o">=</span> <span class="n">make_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">groups</span><span class="p">[</span><span class="n">token</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">token</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+                <span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">parse_info</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># env/environment are reserved keywords and resolve from the</span>
+            <span class="c1"># user&#39;s environment. All other resolve_types are processed normally</span>
+            <span class="c1">#</span>
+            <span class="k">if</span> <span class="n">resolve_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">RESERVED_ENV_VAR_PARSE_TYPES</span><span class="p">:</span>
+                <span class="n">token_key</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">token</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+                <span class="n">parse_info</span> <span class="o">=</span> <span class="n">make_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">token_key</span><span class="p">))</span>
+                <span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">token_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">parse_info</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># If we&#39;ve gotten to this point in the loop, it means that we must</span>
+            <span class="c1"># try to find parse info for the token. Carry on, my Wayward Son.</span>
+            <span class="c1">#</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">parse_info</span> <span class="o">=</span> <span class="n">make_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">details</span><span class="p">[</span><span class="n">token</span><span class="p">][</span><span class="s1">&#39;parse&#39;</span><span class="p">][</span><span class="n">resolve_type</span><span class="p">][</span><span class="n">token</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># If the user forgot to write the key twice, be forgiving</span>
+                <span class="c1"># and assume that they meant to do this:</span>
+                <span class="c1">#</span>
+                <span class="c1"># &gt;&gt;&gt; &#39;JOB&#39;: {</span>
+                <span class="c1"># &gt;&gt;&gt;     &#39;mapping&#39;: &#39;{JOB_NAME}_{JOB_ID}&#39;,</span>
+                <span class="c1"># &gt;&gt;&gt;     &#39;parse&#39;: {</span>
+                <span class="c1"># &gt;&gt;&gt;         &#39;glob&#39;: {</span>
+                <span class="c1"># &gt;&gt;&gt;             &#39;JOB&#39;: &#39;*&#39;,</span>
+                <span class="c1"># &gt;&gt;&gt;         },</span>
+                <span class="c1"># &gt;&gt;&gt;     },</span>
+                <span class="c1"># &gt;&gt;&gt; },</span>
+                <span class="c1">#</span>
+                <span class="c1"># When they actually wrote this:</span>
+                <span class="c1"># &gt;&gt;&gt; &#39;JOB&#39;: {</span>
+                <span class="c1"># &gt;&gt;&gt;     &#39;mapping&#39;: &#39;{JOB_NAME}_{JOB_ID}&#39;,</span>
+                <span class="c1"># &gt;&gt;&gt;     &#39;parse&#39;: {</span>
+                <span class="c1"># &gt;&gt;&gt;         &#39;glob&#39;: &#39;*&#39;,</span>
+                <span class="c1"># &gt;&gt;&gt;     },</span>
+                <span class="c1"># &gt;&gt;&gt; },</span>
+                <span class="c1">#</span>
+                <span class="n">parse_info</span> <span class="o">=</span> <span class="n">make_value</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">details</span><span class="p">[</span><span class="n">token</span><span class="p">][</span><span class="s1">&#39;parse&#39;</span><span class="p">][</span><span class="n">resolve_type</span><span class="p">])</span>
+
+            <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">token</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">parse_info</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">mapping</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_tokens"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the tokens in this instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            required_only (:obj:`bool`, optional):</span>
+<span class="sd">                If True, do not return optional tokens.</span>
+<span class="sd">                If False, return all tokens, required and optional.</span>
+<span class="sd">                Default is False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: The requested tokens.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">required_only</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_required_tokens</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_child_tokens"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_child_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_child_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Find the child tokens of a given token.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (str): The name of the token to get child tokens for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: The child tokens for the given token. If the given token</span>
+<span class="sd">                       is not a parent to any child tokens, return nothing.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">mapping_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping_details</span><span class="p">[</span><span class="n">token</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mapping&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">mapping</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">find_tokens</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_required_tokens"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_required_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_required_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;list[str]: Get the tokens for this Context that must be filled.&#39;&#39;&#39;</span>
+        <span class="n">full_mapping_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+        <span class="n">required_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">full_mapping_details</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">required_tokens</span><span class="p">:</span>
+                <span class="n">required_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">required_tokens</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_all_mapping_details"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_all_mapping_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_mapping_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the combined mapping details of this Context.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The &quot;true&quot; combined mapping details of our Context is actually</span>
+<span class="sd">            just Context.get_mapping_details(). This method can produce</span>
+<span class="sd">            different results because it is yielding/updating</span>
+<span class="sd">            Context.get_mapping_details() with all of its plugin&#39;s data.</span>
+<span class="sd">            Use with caution.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str]: The combined mapping_details of our Context and plugins.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">mapping_details</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mapping_details</span><span class="p">():</span>
+            <span class="n">contents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mapping_details</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">contents</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_mapping_details"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_mapping_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_mapping_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the parse-mapping details of our entire Context.</span>
+
+<span class="sd">        Basically, we take the collection of all of the mapping details of</span>
+<span class="sd">        the Context, as is, which we know is the &quot;sum&quot; of all of the Context&#39;s</span>
+<span class="sd">        plugin&#39;s mapping_details. But we also yield each plugin individually,</span>
+<span class="sd">        in case some information was lost, along the way.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            dict[str]: The mapping details of this Context.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">],</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">plugins</span><span class="p">)):</span>
+            <span class="k">yield</span> <span class="n">plugin</span><span class="o">.</span><span class="n">get_mapping_details</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_token_parse"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_token_parse">[docs]</a>    <span class="k">def</span> <span class="nf">get_token_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parse_type</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the parse expression for some token name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str):</span>
+<span class="sd">                The name of the token to get parse details from.</span>
+<span class="sd">            parse_type (str):</span>
+<span class="sd">                The engine type whose expression will be returned</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The parse expression used for the given token.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">details</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;parse&#39;</span><span class="p">][</span><span class="n">parse_type</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">details</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;mapping&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># If we don&#39;t have a mapping for this token, there&#39;s nothing</span>
+            <span class="c1"># more that we can do</span>
+            <span class="c1">#</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="n">engine</span><span class="o">.</span><span class="n">get_token_parse</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parse_type</span><span class="p">)</span></div>
+
+    <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+<div class="viewcode-block" id="ContextParser.get_str"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_str">[docs]</a>    <span class="k">def</span> <span class="nf">get_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolve_with</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">depth</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">holdout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">display_tokens</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Create a string of the Context&#39;s mapping.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            holdout and groups cannot have any common token names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resolve_with (:obj:`iterable[str] or str`, optional):</span>
+<span class="sd">                The types of ways that our parser is allowed to resolve a path.</span>
+<span class="sd">                These are typically some combination of (&#39;glob&#39;, &#39;regex&#39;, &#39;env&#39;)</span>
+<span class="sd">                are are defined with our Plugin objects that make up a Context.</span>
+<span class="sd">            depth (:obj:`int`, optional):</span>
+<span class="sd">                The number of times this method are allowed to expand</span>
+<span class="sd">                the mapping before it must return it. If depth=-1, this method</span>
+<span class="sd">                will expand mapping until there are no more tokens left to</span>
+<span class="sd">                expand or no more subtokens to expand with. Default: -1.</span>
+<span class="sd">            holdout (:obj:`set[str]`, optional):</span>
+<span class="sd">                If tokens (pre-existing or expanded) are in this list, they</span>
+<span class="sd">                will not be resolved. Default is None.</span>
+<span class="sd">            groups (:obj:`dict[str, str] or iterable[str, str]`, optional):</span>
+<span class="sd">                A mapping of token names and a preferred token value to</span>
+<span class="sd">                substitute it with. This variable takes priority over all</span>
+<span class="sd">                types of resolve_with types. Default is None.</span>
+<span class="sd">            display_tokens (:obj:`bool`, optional):</span>
+<span class="sd">                If True, the original name of the token will be included in</span>
+<span class="sd">                the output of the mapping, even it its contents are expanded.</span>
+<span class="sd">                Example: &#39;/some/{JOB}/here&#39; -&gt; r&#39;/some/(?P&lt;JOB&gt;\w+_\d+)/here&#39;.</span>
+<span class="sd">                It&#39;s recommended to keep this variable as False because</span>
+<span class="sd">                the syntax used is only regex-friendly. But if you really want</span>
+<span class="sd">                it, it&#39;s there. Default is False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If groups got a bad value.</span>
+<span class="sd">            ValueError: If groups and holdout have any common elements.</span>
+<span class="sd">                        It&#39;s impossible to know what to do in that case because</span>
+<span class="sd">                        both items have conflicting instructions.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The resolved string.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Conform holdout and groups to valid input</span>
+        <span class="k">if</span> <span class="n">holdout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">holdout</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">holdout</span> <span class="o">=</span> <span class="n">check</span><span class="o">.</span><span class="n">force_itertype</span><span class="p">(</span><span class="n">holdout</span><span class="p">)</span>
+            <span class="n">holdout</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">holdout</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">groups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">groups</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">}</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Groups: &quot;</span><span class="si">{grps}</span><span class="s1">&quot; was invalid. A dict or iterable object &#39;</span>
+                    <span class="s1">&#39;with (key, value) pairs was expected.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grps</span><span class="o">=</span><span class="n">groups</span><span class="p">))</span>
+
+        <span class="c1"># Add our given groups info onto the stored data on this instance</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="n">conflicting_keys</span> <span class="o">=</span> <span class="n">holdout</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">conflicting_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Keys: &quot;</span><span class="si">{keys}</span><span class="s1">&quot; are in holdout and groups. &#39;</span>
+                             <span class="s1">&#39;Choose one or the other. Cannot continue.&#39;</span>
+                             <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="n">conflicting_keys</span><span class="p">))</span>
+
+        <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">is_done</span><span class="p">(</span><span class="n">mapping</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">mapping</span>
+
+        <span class="n">resolve_with</span> <span class="o">=</span> <span class="n">check</span><span class="o">.</span><span class="n">force_itertype</span><span class="p">(</span><span class="n">resolve_with</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">depth</span> <span class="o">=</span> <span class="mi">9000</span>  <span class="c1"># A high number that will keep the loop going</span>
+
+        <span class="k">for</span> <span class="n">current_depth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+            <span class="c1"># Make a copy and then try to expand the mapping using every</span>
+            <span class="c1"># plugin that we can see</span>
+            <span class="c1">#</span>
+            <span class="n">mapping_copy</span> <span class="o">=</span> <span class="n">mapping</span>
+            <span class="n">mapping_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_mapping_details</span><span class="p">()</span>
+            <span class="n">tokens_left</span> <span class="o">=</span> <span class="n">find_tokens</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tokens_left</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Try to resolve the mapping and expand it, if there are any</span>
+            <span class="c1"># tokens left to expand</span>
+            <span class="c1">#</span>
+            <span class="n">tokens_that_are_not_in_holdout</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tokens_left</span><span class="p">)</span> <span class="o">-</span> <span class="n">holdout</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_with_tokens</span><span class="p">(</span>
+                <span class="n">details</span><span class="o">=</span><span class="n">mapping_details</span><span class="p">,</span>
+                <span class="n">display_tokens</span><span class="o">=</span><span class="n">display_tokens</span><span class="p">,</span>
+                <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+                <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="n">resolve_with</span><span class="p">,</span>
+                <span class="n">tokens</span><span class="o">=</span><span class="n">tokens_that_are_not_in_holdout</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="n">expand_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="n">mapping_details</span><span class="p">)</span>
+
+            <span class="c1"># If nothing changed, even after a mapping was expanded, it means</span>
+            <span class="c1"># there are no more child tokens left to expand.</span>
+            <span class="c1">#</span>
+            <span class="c1"># We might as well exit early, since there&#39;s nothing left to do.</span>
+            <span class="c1">#</span>
+            <span class="n">mapping_changed</span> <span class="o">=</span> <span class="n">mapping_copy</span> <span class="o">!=</span> <span class="n">mapping</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping_changed</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">current_depth</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">current_depth</span> <span class="o">&gt;=</span> <span class="n">depth</span><span class="p">:</span>
+                <span class="c1"># Try to resolve, one last time, before exiting</span>
+                <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_with_tokens</span><span class="p">(</span>
+                    <span class="n">details</span><span class="o">=</span><span class="n">mapping_details</span><span class="p">,</span>
+                    <span class="n">display_tokens</span><span class="o">=</span><span class="n">display_tokens</span><span class="p">,</span>
+                    <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+                    <span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">,</span>
+                    <span class="n">options</span><span class="o">=</span><span class="n">resolve_with</span><span class="p">,</span>
+                    <span class="n">tokens</span><span class="o">=</span><span class="n">find_tokens</span><span class="p">(</span><span class="n">mapping</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">mapping</span></div>
+
+<div class="viewcode-block" id="ContextParser.get_value_from_parent"><a class="viewcode-back" href="../../../parse.html#ways.api.ContextParser.get_value_from_parent">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">parse_type</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the value of a token using another parent token.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The token to get the value of.</span>
+<span class="sd">            parent (str): The parent token that is believed to have a value.</span>
+<span class="sd">                          If it has a value, it is used to parse and return</span>
+<span class="sd">                          a value for the name token.</span>
+<span class="sd">            parse_type (str): The parse engine to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The value of the name token.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">engine</span><span class="o">.</span><span class="n">get_value_from_parent</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">parse_type</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the value of some key on this instance.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set the value of some key on this instance.&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check if a token is in this instance.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
+
+
+<div class="viewcode-block" id="is_done"><a class="viewcode-back" href="../../../parse.html#ways.api.is_done">[docs]</a><span class="k">def</span> <span class="nf">is_done</span><span class="p">(</span><span class="n">mapping</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;bool: If there are still tokens to fill in, inside the mapping.&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">TOKEN_REGEX</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_tokens"><a class="viewcode-back" href="../../../parse.html#ways.api.find_tokens">[docs]</a><span class="k">def</span> <span class="nf">find_tokens</span><span class="p">(</span><span class="n">mapping</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;list[str]: The tokens to fill in. inside of a mapping.&#39;&#39;&#39;</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">TOKEN_REGEX</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="expand_mapping"><a class="viewcode-back" href="../../../parse.html#ways.api.expand_mapping">[docs]</a><span class="k">def</span> <span class="nf">expand_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Split the tokens in a mapping into subtokens, if any are available.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mapping (str): The mapping to expand.</span>
+<span class="sd">        details (dict[str]): The information about the mapping that will be used</span>
+<span class="sd">                             to expand it.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The expanded mapping.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">keys_to_expand</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">find_tokens</span><span class="p">(</span><span class="n">mapping</span><span class="p">))</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">details</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_to_expand</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+
+        <span class="n">inner_mapping</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mapping&#39;</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">inner_mapping</span><span class="p">)</span>
+
+        <span class="c1"># If no mapping is defined for some mapping_detail,</span>
+        <span class="c1"># we assume that the key is as far-down as possible.</span>
+        <span class="c1">#</span>
+        <span class="c1"># We do not recurse in this case to avoid a cyclic-recursion</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="n">inner_mapping</span> <span class="o">!=</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">expand_mapping</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">details</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mapping</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Colin Kennedy
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

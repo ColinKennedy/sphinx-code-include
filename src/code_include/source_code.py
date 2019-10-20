@@ -56,9 +56,9 @@ def _get_module_tag(namespace, directive):
             The Python type that `namespace` is. Example: "py:method".
 
     Returns:
-        str:
+        tuple[str, str]:
             The exact path, relative to a Sphinx project's root directory,
-            where this module is tagged.
+            where this module is tagged, followed by
 
     """
     tokens = namespace.split(".")
@@ -143,6 +143,23 @@ def _get_source_code(uri, tag):
     return node.getText()
 
 
+def _get_source_module_data(uri, directive):
+    url, tag = uri.split("#")  # `url` might be a file path or web URL
+    available_roots = _get_all_intersphinx_roots()
+    root = _get_project_url_root(url, available_roots)
+
+    if not root:
+        raise EnvironmentError(
+            'URL "{url}" isn\'t in any of the available projects, "{roots}".'.format(
+                url=url, roots=sorted(available_roots)
+            )
+        )
+
+    module_path, tag = _get_module_tag(tag, directive)
+
+    return (root + "/" + module_path, tag)
+
+
 def get_source_code(directive, namespace):
     """Get the raw code of some class, method, attribute, or function.
 
@@ -198,18 +215,6 @@ def get_source_code(directive, namespace):
             )
         )
 
-    url, tag = uri.split("#")  # `url` might be a file path or web URL
-    available_roots = _get_all_intersphinx_roots()
-    root = _get_project_url_root(url, available_roots)
-
-    if not root:
-        raise EnvironmentError(
-            'URL "{url}" isn\'t in any of the available projects, "{roots}".'.format(
-                url=url, roots=sorted(available_roots)
-            )
-        )
-
-    module_path, tag = _get_module_tag(tag, directive)
-    module_url = root + "/" + module_path
+    module_url, tag = _get_source_module_data(uri, directive)
 
     return _get_source_code(module_url, tag)

@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ways.base.commander &mdash; Ways 1.0.0b1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'1.0.0b1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ways
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../why.html">Why</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../descriptors.html">Descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_basics.html">Plugin Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugin_advanced.html">Advanced Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parsing.html">Parsing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_details.html">API Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../common_patterns.html">Common Patterns And Best Practices</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../summary.html">API Summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ways.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ways</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../ways.html">ways</a> &raquo;</li>
+        
+      <li>ways.base.commander</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ways.base.commander</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&#39;&#39;&#39;A set of classes and functions used to extend a Context&#39;s interface.</span>
+
+<span class="sd">Action objects attach to Contexts and let you change data on the Context or</span>
+<span class="sd">to run any kind of function.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c1"># IMPORT THIRD-PARTY LIBRARIES</span>
+<span class="c1"># scspell-id: 3c62e4aa-c280-11e7-be2b-382c4ac59cfd</span>
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="c1"># IMPORT LOCAL LIBRARIES</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">cache</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">situation</span> <span class="k">as</span> <span class="n">sit</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="k">import</span> <span class="n">common</span>
+
+
+<div class="viewcode-block" id="ActionRegistry"><a class="viewcode-back" href="../../../commander.html#ways.api.ActionRegistry">[docs]</a><span class="k">class</span> <span class="nc">ActionRegistry</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;A metaclass that adds new Action objects to a registry-cache.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Add the created class to the Action object cache.&#39;&#39;&#39;</span>
+        <span class="n">new_class</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ActionRegistry</span><span class="p">,</span> <span class="n">mcs</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span>
+            <span class="n">mcs</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="c1"># If we state not to register a plugin, don&#39;t register it</span>
+        <span class="c1">#</span>
+        <span class="c1"># If add_to_registry isn&#39;t defined for this Plugin,</span>
+        <span class="c1"># assume that we should register it</span>
+        <span class="c1">#</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">new_class</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;_Aktion&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">new_class</span><span class="o">.</span><span class="n">add_to_registry</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">new_class</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">new_class</span>
+
+        <span class="c1"># Register the Plugin into our registry</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">assignment</span> <span class="o">=</span> <span class="n">new_class</span><span class="o">.</span><span class="n">get_assignment</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">assignment</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">DEFAULT_ASSIGNMENT</span>
+
+        <span class="n">cache</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">new_class</span><span class="p">,</span> <span class="n">assignment</span><span class="o">=</span><span class="n">assignment</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_class</span></div>
+
+
+<span class="c1"># TODO : See if I can combine the ActionRegistry with an abstract class</span>
+<span class="c1">#        that forces users to implement get_hierarchy and __call__</span>
+<span class="c1">#</span>
+<span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">ActionRegistry</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">_Aktion</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;A base Action object that is meant to attach Context objects.</span>
+
+<span class="sd">    To use this class, you must implement get_hierarchy as a classmethod</span>
+<span class="sd">    and the __call__ method.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">add_to_registry</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a reference to the Context that this instance is attached to.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is done in a wrapped property for 3 reasons.</span>
+<span class="sd">            1. So that the returned Context can be changed at runtime.</span>
+<span class="sd">            2. To make the property read-only</span>
+<span class="sd">            3. If the Context isn&#39;t defined by the time this object</span>
+<span class="sd">               is instantiated, self.context would return None. By adding it as</span>
+<span class="sd">               a wrapped property, we try to avoid loading the context for as</span>
+<span class="sd">               long as possible. The Context is only needed when the Action</span>
+<span class="sd">               is called. Ghetto? Yes. Works well? You bet it does!</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`ways.api.Context`:</span>
+<span class="sd">                The object that this instance will attach itself to.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">sit</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_hierarchy</span><span class="p">(),</span> <span class="n">assignment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_assignment</span><span class="p">())</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_assignment</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;str: The group where the Context for this instance lives.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">DEFAULT_ASSIGNMENT</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_hierarchy</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;tuple[str]: The location of the Context/Asset this object affects.&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">()</span>
+
+
+<span class="n">Action</span> <span class="o">=</span> <span class="n">_Aktion</span>
+
+
+<div class="viewcode-block" id="add_action"><a class="viewcode-back" href="../../../commander.html#ways.api.add_action">[docs]</a><span class="k">def</span> <span class="nf">add_action</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">assignment</span><span class="o">=</span><span class="n">common</span><span class="o">.</span><span class="n">DEFAULT_ASSIGNMENT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Add a created action to this cache.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        action (:class:`ways.api.Action`):</span>
+<span class="sd">            The action to add. Action objects are objects that get passed</span>
+<span class="sd">            a Context object and run a function.</span>
+<span class="sd">        name (:obj:`str`, optional):</span>
+<span class="sd">            A name to use with this action. The name must be unique</span>
+<span class="sd">            to this hierarchy/assignment or it risks overriding another</span>
+<span class="sd">            Action that might already exist at the same location.</span>
+<span class="sd">            If no name is given, the name on the action is tried, instead.</span>
+<span class="sd">        context (:class:`ways.api.Context` or str):</span>
+<span class="sd">            The Context or hierarchy of a Context to add this Action to.</span>
+<span class="sd">        assignment (:obj:`str`, optional):</span>
+<span class="sd">            The group to add this action to, Default: &#39;master&#39;.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If no hierarchy is given and no hierarchy could be</span>
+<span class="sd">                        found on the given action.</span>
+<span class="sd">        RuntimeError: If no name is given and no name could be found</span>
+<span class="sd">                        on the given action.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">cache</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">assignment</span><span class="o">=</span><span class="n">assignment</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Colin Kennedy
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
