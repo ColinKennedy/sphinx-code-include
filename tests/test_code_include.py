@@ -162,10 +162,6 @@ def _load_cache(*paths):
         MockApplication(), "", os.path.join(_CURRENT_DIRECTORY, *paths)
     )
 
-    # TODO : Remove this
-    # with open(os.path.join(_CURRENT_DIRECTORY, *paths), "r") as handler:
-    #     return json.load(handler)
-
 
 def _make_mock_directive(content):
     name = "code-include"
