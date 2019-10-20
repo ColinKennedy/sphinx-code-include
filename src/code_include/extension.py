@@ -12,7 +12,6 @@ from . import error_classes
 from . import formatter
 from . import source_code
 
-
 _SETTINGS = frontend.OptionParser().get_default_values()
 _REPORTER = utils.Reporter(
     "sphinx-code-include",
