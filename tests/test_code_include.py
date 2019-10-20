@@ -53,11 +53,23 @@ class Inputs(unittest.TestCase):
 class RenderText(unittest.TestCase):
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_get_from_html(self, _get_app_inventory, _get_source_module_data):
+    def _test(
+        self, path, content, expected, _get_app_inventory, _get_source_module_data
+    ):
         data = _load_cache("fake_project", "objects.inv")
 
         _get_app_inventory.return_value = data
-        _get_source_module_data.return_value = (
+        _get_source_module_data.return_value = path
+
+        directive = _make_mock_directive(content)
+        nodes = directive.run()
+
+        self.assertNotEqual([], nodes)
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(expected, nodes[0].astext())
+
+    def test_get_from_html(self):
+        path = (
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
@@ -67,11 +79,8 @@ class RenderText(unittest.TestCase):
             ),
             "MyKlass.get_method",
         )
-
         content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
-        directive = _make_mock_directive(content)
 
-        nodes = directive.run()
         expected = textwrap.dedent(
             '''\
             def get_method(self):
@@ -79,43 +88,7 @@ class RenderText(unittest.TestCase):
                 return 8'''
         )
 
-        self.assertNotEqual([], nodes)
-        self.assertEqual(1, len(nodes))
-        self.assertEqual(expected, nodes[0].astext())
-
-    @mock.patch("code_include.extension.Directive._needs_unindent")
-    @mock.patch("code_include.source_code._get_source_module_data")
-    @mock.patch("code_include.source_code._get_app_inventory")
-    def test_no_unindent(
-        self, _get_app_inventory, _get_source_module_data, _needs_unindent
-    ):
-        _needs_unindent.return_value = False
-        data = _load_cache("fake_project", "objects.inv")
-
-        _get_app_inventory.return_value = data
-        _get_source_module_data.return_value = (
-            os.path.join(
-                _CURRENT_DIRECTORY,
-                "fake_project",
-                "_modules",
-                "fake_project",
-                "basic.html",
-            ),
-            "MyKlass.get_method",
-        )
-
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
-        directive = _make_mock_directive(content)
-
-        nodes = directive.run()
-        expected = '''\
-    def get_method(self):
-        """int: Get some value."""
-        return 8'''
-
-        self.assertNotEqual([], nodes)
-        self.assertEqual(1, len(nodes))
-        self.assertEqual(expected, nodes[0].astext())
+        self._test(path, content, expected)
 
     def test_attribute(self):
         pass
@@ -128,6 +101,30 @@ class RenderText(unittest.TestCase):
 
     def test_function(self):
         pass
+
+
+class Options(RenderText):
+    @mock.patch("code_include.extension.Directive._needs_unindent")
+    def test_no_unindent(self, _needs_unindent):
+        _needs_unindent.return_value = False
+
+        path = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "MyKlass.get_method",
+        )
+        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        expected = '''\
+    def get_method(self):
+        """int: Get some value."""
+        return 8'''
+
+        self._test(path, content, expected)
 
 
 @helper.memoize
