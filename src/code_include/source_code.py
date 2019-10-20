@@ -55,10 +55,18 @@ def _get_module_tag(namespace, directive):
         directive (str):
             The Python type that `namespace` is. Example: "py:method".
 
+    Raises:
+        EnvironmentError:
+            If `directive` and `namespace` were both found properly but,
+            for some reason, the top-level website / file path for the
+            Sphinx project stored by intersphinx could not be found.
+
     Returns:
         tuple[str, str]:
-            The exact path, relative to a Sphinx project's root directory,
-            where this module is tagged, followed by
+            The exact path, relative to a Sphinx project's root
+            directory, where this module is tagged, followed by a tag
+            like "foo" which will be later used to get a permalink to
+            some header in the HTML file.
 
     """
     tokens = namespace.split(".")
@@ -144,6 +152,15 @@ def _get_source_code(uri, tag):
 
 
 def _get_source_module_data(uri, directive):
+    """Find the full path to a HTML file and the tagged content to retrieve.
+
+    Returns:
+        tuple[str, str]:
+            The absolute path to an HTML file and the "#foo" tag that
+            would normally be used as a permalink to some header in the
+            HTML file.
+
+    """
     url, tag = uri.split("#")  # `url` might be a file path or web URL
     available_roots = _get_all_intersphinx_roots()
     root = _get_project_url_root(url, available_roots)
@@ -180,10 +197,6 @@ def get_source_code(directive, namespace):
             If `directive` was in the intersphinx inventory cache but
             the no `namespace` could be found in any Sphinx project in
             the intersphinx inventory cache.
-        EnvironmentError:
-            If `directive` and `namespace` were both found properly but,
-            for some reason, the top-level website / file path for the
-            Sphinx project stored by intersphinx could not be found.
 
     Returns:
         str: The found source-code for `namespace`, with a type of `directive`.
