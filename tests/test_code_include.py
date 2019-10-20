@@ -211,7 +211,8 @@ def _load_cache(*paths):
         srcdir = ""
         config = MockConfiguration()
 
-        def warn(self, msg):
+        @staticmethod
+        def warn(msg):
             warnings.warn(msg)
 
     return intersphinx.fetch_inventory(
