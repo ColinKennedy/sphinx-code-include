@@ -19,12 +19,13 @@ _CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 class Inputs(unittest.TestCase):
     """Check that various input to the code-include directive works as-expected."""
 
-    def test_empty(self):
-        """Fail any empty code-include directive."""
-
     @mock.patch("code_include.extension.Directive._reraise_exception")
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_no_required_argument(self, _get_app_inventory, _reraise_exception):
+    def test_no_required_argument(
+        self,
+        _get_app_inventory,
+        _reraise_exception,
+    ):
         data = _load_cache("example_cache.inv")
 
         _get_app_inventory.return_value = data
@@ -33,7 +34,7 @@ class Inputs(unittest.TestCase):
         content = ['']
         directive = _make_mock_directive(content)
 
-        with self.assertRaises(error_classes.MissingNamespace):
+        with self.assertRaises(error_classes.MissingContent):
             directive.run()
 
     @mock.patch("code_include.extension.Directive._reraise_exception")
