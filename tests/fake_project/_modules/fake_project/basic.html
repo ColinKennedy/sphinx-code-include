@@ -1,0 +1,195 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fake_project.basic &#8212; fake_project  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for fake_project.basic</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;A module that shows every type of documentable class / method / function.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="MyKlass"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.MyKlass">[docs]</a><span class="k">class</span> <span class="nc">MyKlass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class that does something.</span>
+
+<span class="sd">    Multi-line information here.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create this instance.&quot;&quot;&quot;</span>
+        <span class="c1"># A comment that should show up in the unittest&#39;s results</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyKlass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MyKlass.get_staticmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.MyKlass.get_staticmethod">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_staticmethod</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">8</span></div>
+
+<div class="viewcode-block" id="MyKlass.get_classmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.MyKlass.get_classmethod">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_classmethod</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">8</span></div>
+
+<div class="viewcode-block" id="MyKlass.get_method"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.MyKlass.get_method">[docs]</a>    <span class="k">def</span> <span class="nf">get_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">8</span></div></div>
+
+
+<div class="viewcode-block" id="ParentClass"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass">[docs]</a><span class="k">class</span> <span class="nc">ParentClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The outter class.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ParentClass.NestedClass"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.NestedClass">[docs]</a>    <span class="k">class</span> <span class="nc">NestedClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A class within a class.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ParentClass.NestedClass.get_staticmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.NestedClass.get_staticmethod">[docs]</a>        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">get_staticmethod</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="mi">5</span></div>
+
+<div class="viewcode-block" id="ParentClass.NestedClass.get_classmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.NestedClass.get_classmethod">[docs]</a>        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">get_classmethod</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="mi">5</span></div>
+
+<div class="viewcode-block" id="ParentClass.NestedClass.get_method"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.NestedClass.get_method">[docs]</a>        <span class="k">def</span> <span class="nf">get_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="mi">5</span></div></div>
+
+<div class="viewcode-block" id="ParentClass.get_staticmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.get_staticmethod">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_staticmethod</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">6</span></div>
+
+<div class="viewcode-block" id="ParentClass.get_classmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.get_classmethod">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_classmethod</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">6</span></div>
+
+<div class="viewcode-block" id="ParentClass.get_method"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.get_method">[docs]</a>    <span class="k">def</span> <span class="nf">get_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Get some value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">6</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_set_private_function_thing</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">another</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Do something here.&quot;&quot;&quot;</span>
+    <span class="c1"># Do something with these values</span>
+    <span class="c1"># and more comment text, here.</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span>
+
+    <span class="c1"># Another comment</span>
+    <span class="k">return</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="set_function_thing"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.set_function_thing">[docs]</a><span class="k">def</span> <span class="nf">set_function_thing</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">another</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Do something here.&quot;&quot;&quot;</span>
+    <span class="c1"># Do something with these values</span>
+    <span class="c1"># and more comment text, here.</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span>
+
+    <span class="c1"># Another comment</span>
+    <span class="k">return</span> <span class="mi">1</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">fake_project</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_documentation.html">API Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Me.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
