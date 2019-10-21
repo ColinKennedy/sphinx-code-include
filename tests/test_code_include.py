@@ -710,6 +710,40 @@ class Options(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
+    @mock.patch("code_include.source_code._get_page_preprocessor")
+    def test_preprocessor(self, _get_page_preprocessor):
+        def _remove_comments_and_docstrings(node):
+            for tag in node.find_all("span", {"class": ["c1", "sd"]}):
+                tag.decompose()
+
+        _get_page_preprocessor.return_value = _remove_comments_and_docstrings
+
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "set_function_thing",
+        )
+        content = [u":func:`fake_project.basic.set_function_thing`"]
+
+        expected = '''\
+def set_function_thing(value, another):
+    
+    
+    
+    
+    if value:
+        return 2
+
+    
+    return 1'''
+
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
+
 
 @helper.memoize
 def _load_cache(*paths):

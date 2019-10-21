@@ -81,6 +81,38 @@ def _get_module_tag(namespace, directive):
     return "_modules/{base}.html".format(base=base), tokens[-1]
 
 
+def _get_page_preprocessor():
+    """Find an optional function that will be run on the found source-code tag.
+
+    This function is great way to filter out or add content to
+    the returned source-code. For example, if the user wants to
+    decompose extra tags from the HTML page, they can define their own
+    preprocessor function in conf.py.
+
+    Example:
+        Remove all hyper-linked text.
+
+        >>> def code_include_preprocessor(soup):
+        >>>     for tag in soup.find_all('a'):
+        >>>         tag.decompose()
+
+    Returns:
+        callable[:class:`bs4.element.Tag`]:
+            The node that will be shown to the user.
+
+    """
+    def do_nothing(application):
+        pass
+
+    if not APPLICATION:
+        return do_nothing
+
+    if "code_include_preprocessor" in APPLICATION.config:
+        return APPLICATION.config.code_include_preprocessor
+
+    return do_nothing
+
+
 def _get_project_url_root(uri, roots):
     """Find the top-level project for some URL / file-path.
 
@@ -146,16 +178,20 @@ def _get_source_code(uri, tag):
     for div in soup.find_all("a", {"class": "viewcode-back"}):
         div.decompose()
 
+    preprocessor = _get_page_preprocessor()
+
     if not tag:
         # The start of the source-code block is always marked using <span class="ch">
         child = soup.find("span", {"class": "ch"})
         node = child.parent
+        preprocessor(node)
 
         return node.getText().lstrip()
     else:
         node = soup.find("div", {"id": tag})
+        preprocessor(node)
 
-        return node.getText()
+        return node.get_text()
 
 
 def _get_source_module_data(uri, directive):
