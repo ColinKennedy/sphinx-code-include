@@ -169,7 +169,7 @@ def _get_source_code(uri, tag):
             contents = handler.read()
     else:
         try:
-            contents = urllib.urlopen(uri).read()  # pylint: disable=no-member
+            contents = urllib.request.urlopen(uri).read()  # pylint: disable=no-member
         except Exception:
             raise error_classes.NotFoundUrl(uri)
 
@@ -199,9 +199,9 @@ def _get_source_module_data(uri, directive):
 
     Returns:
         tuple[str, str]:
-            The absolute path to an HTML file and the "#foo" tag that
-            would normally be used as a permalink to some header in the
-            HTML file.
+            The absolute path to an HTML file and the "#foo" tag (this
+            function returns without the "#") that would normally be
+            used as a permalink to some header in the HTML file.
 
     """
     url, tag = uri.split("#")  # `url` might be a file path or web URL

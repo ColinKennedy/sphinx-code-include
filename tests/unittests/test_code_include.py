@@ -7,14 +7,13 @@
 import os
 import textwrap
 import unittest
-import warnings
 
 from six.moves import mock
-from sphinx.ext import intersphinx
 
 from code_include import error_classes
-from code_include import extension
-from code_include import helper
+
+from .. import common
+
 
 _CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
@@ -41,12 +40,12 @@ class Inputs(unittest.TestCase):
                 this test will forcibly raise the found exception.
 
         """
-        data = _load_cache("fake_project", "objects.inv")
+        data = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
 
-        directive = _make_mock_directive(content)
+        directive = common.make_mock_directive(content)
 
         with self.assertRaises(exception_class):
             directive.run()
@@ -100,12 +99,12 @@ class _Common(unittest.TestCase):
                 point of this function - testing generated source-code.
 
         """
-        cache = _load_cache("fake_project", "objects.inv")
+        cache = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
 
         _get_app_inventory.return_value = cache
         _get_source_module_data.return_value = data
 
-        directive = _make_mock_directive(content)
+        directive = common.make_mock_directive(content)
         nodes = directive.run()
 
         self.assertNotEqual([], nodes)
@@ -743,86 +742,3 @@ def set_function_thing(value, another):
     return 1'''
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
-
-
-@helper.memoize
-def _load_cache(*paths):
-    """Load some inventory file as raw data.
-
-    Args:
-        *paths (iter[str]):
-            The paths, relative to this test file's directory, where an
-            inventory file can be found.
-
-    Returns:
-        dict[str, dict[str, tuple[str, str, str, str]]]:
-            Each directive target type, its namespace, and it's file-path/URL information.
-            e.g. {
-                "py:method": {
-                    "fake_project.basic.MyKlass.get_method": (
-                        "fake_project",
-                        "",
-                        "api/fake_project.html#fake_project.basic.MyKlass.get_method",
-                        "-",
-                    )
-                }
-            }
-
-    """
-
-    class MockConfiguration(object):  # pylint: disable=too-few-public-methods
-        """A fake set of settings for intersphinx to pass-through."""
-
-        intersphinx_timeout = None  # type: int
-        tls_verify = False
-
-    class MockApplication(object):  # pylint: disable=too-few-public-methods
-        """A fake state machine for intersphinx to consume and pass-through."""
-
-        srcdir = ""
-        config = MockConfiguration()
-
-        @staticmethod
-        def warn(message):
-            """Send a warning if bad-formatted text is encountered."""
-            warnings.warn(message)
-
-    return intersphinx.fetch_inventory(
-        MockApplication(), "", os.path.join(_CURRENT_DIRECTORY, *paths)
-    )
-
-
-def _make_mock_directive(content):
-    """Create the main class which is translated and rendered as text.
-
-    Args:
-        content (list[str]):
-            The lines that the user provides in a standard code-include block.
-
-    Returns:
-        :class:`code_include.extension`:
-            The class that is later translated by Sphinx into HTML tags.
-
-    """
-    name = "code-include"
-    arguments = []
-    options = {}
-    line_number = 11
-    content_offset = 10
-    block_text = (
-        u".. code-include:: :meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`\n"
-    )
-    state = mock.MagicMock()
-    state_machine = mock.MagicMock()
-
-    return extension.Directive(
-        name,
-        arguments,
-        options,
-        content,
-        line_number,
-        content_offset,
-        block_text,
-        state,
-        state_machine,
-    )
