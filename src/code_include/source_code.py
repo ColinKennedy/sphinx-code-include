@@ -311,9 +311,7 @@ def _get_source_code_from_object(namespace):
         try:
             return __import__(".".join(namespaces))
         except ImportError:
-            pass
-
-        return _recursively_find_first_importable_object(namespaces[:-1])
+            return _recursively_find_first_importable_object(namespaces[:-1])
 
     def _resolve_object(object_, namespace):
         """Get a Python object located at `namespace`, using a root `object_`.
@@ -344,7 +342,10 @@ def _get_source_code_from_object(namespace):
         parent = object_
 
         for item in objects:
-            parent = getattr(parent, item)
+            try:
+                parent = getattr(parent, item)
+            except AttributeError:
+                return None
 
         return parent
 
@@ -355,6 +356,10 @@ def _get_source_code_from_object(namespace):
         return ""
 
     resolved_object = _resolve_object(object_, namespace)
+
+    if not resolved_object:
+        return ""
+
     lines, _ = inspect.getsourcelines(resolved_object)
 
     return "".join(lines)
