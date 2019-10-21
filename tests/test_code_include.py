@@ -142,11 +142,30 @@ class RenderText(unittest.TestCase):
     # def test_class(self):
     #     """Check that a class is read properly."""
     #     pass
-    #
-    # def test_class_attribute(self):
-    #     """Check that a class's attribute is read properly."""
-    #     pass
-    #
+
+    def test_class_attribute(self):
+        """Check that a class's attribute is read properly."""
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "MyKlass.get_method",
+        )
+        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+
+        expected = textwrap.dedent(
+            '''\
+            def get_method(self):
+                """int: Get some value."""
+                return 8'''
+        )
+
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
+
     # def test_function(self):
     #     """Check that a module's function is read properly."""
     #     pass
