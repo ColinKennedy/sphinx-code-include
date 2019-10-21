@@ -190,10 +190,66 @@ class RenderText(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    # def test_function(self):
-    #     """Check that a module's function is read properly."""
-    #     pass
-    #
+    def test_function(self):
+        """Check that a module's function is read properly."""
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "set_function_thing",
+        )
+        content = [u":func:`fake_project.basic.set_function_thing`"]
+
+        expected = textwrap.dedent(
+            '''\
+            def set_function_thing(value, another):
+                """Do something here."""
+                # Do something with these values
+                # and more comment text, here.
+                #
+                if value:
+                    return 2
+
+                # Another comment
+                return 1'''
+        )
+
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
+
+    def test_private_function(self):
+        """Check that a module's function is read properly."""
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "_set_private_function_thing",
+        )
+        content = [u":func:`fake_project.basic._set_private_function_thing`"]
+
+        expected = textwrap.dedent(
+            '''\
+            def _set_private_function_thing(value, another):
+                """Do something here."""
+                # Do something with these values
+                # and more comment text, here.
+                #
+                if value:
+                    return 2
+
+                # Another comment
+                return 1'''
+        )
+
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
+
     # def test_module(self):
     #     """Check that a module is read properly."""
     #     pass
