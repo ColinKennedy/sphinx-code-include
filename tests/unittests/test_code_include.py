@@ -22,8 +22,16 @@ class Inputs(unittest.TestCase):
     """Check that different input to the code-include directive works as-expected."""
 
     @mock.patch("code_include.extension.Directive._reraise_exception")
+    @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
-    def _test(self, content, exception_class, _get_app_inventory, _reraise_exception):
+    def _test(
+        self,
+        content,
+        exception_class,
+        _get_app_inventory,
+        _get_source_code_from_object,
+        _reraise_exception,
+    ):
         """A generic function that checks a code-include directive for issues.
 
         Args:
@@ -44,6 +52,7 @@ class Inputs(unittest.TestCase):
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
+        _get_source_code_from_object.return_value = ""
 
         directive = common.make_mock_directive(content)
 
@@ -74,9 +83,10 @@ class _Common(unittest.TestCase):
     """A base class which is used by sub-classes to make tests more concise."""
 
     @mock.patch("code_include.source_code._get_source_module_data")
+    @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test(
-        self, data, content, expected, _get_app_inventory, _get_source_module_data
+        self, data, content, expected, _get_app_inventory, _get_source_code_from_object, _get_source_module_data
     ):
         """A generic function that tests a code-include directive for some text.
 
@@ -103,6 +113,7 @@ class _Common(unittest.TestCase):
 
         _get_app_inventory.return_value = cache
         _get_source_module_data.return_value = data
+        _get_source_code_from_object.return_value = ""
 
         directive = common.make_mock_directive(content)
         nodes = directive.run()
@@ -680,8 +691,9 @@ class RenderTextNested(_Common):
 class Options(_Common):
     """A generic class that tests options that users can add to a code-include directive."""
 
+    @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.extension.Directive._needs_unindent")
-    def test_no_unindent(self, _needs_unindent):
+    def test_no_unindent(self, _needs_unindent, _get_source_code_from_object):
         """Check that code-include doesn't remove leading whitespace, when selected.
 
         Args:
@@ -690,6 +702,7 @@ class Options(_Common):
 
         """
         _needs_unindent.return_value = False
+        _get_source_code_from_object.return_value = ""
 
         data = (
             os.path.join(
@@ -709,13 +722,15 @@ class Options(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
+    @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_page_preprocessor")
-    def test_preprocessor(self, _get_page_preprocessor):
+    def test_preprocessor(self, _get_page_preprocessor, _get_source_code_from_object):
         def _remove_comments_and_docstrings(node):
             for tag in node.find_all("span", {"class": ["c1", "sd"]}):
                 tag.decompose()
 
         _get_page_preprocessor.return_value = _remove_comments_and_docstrings
+        _get_source_code_from_object.return_value = ""
 
         data = (
             os.path.join(

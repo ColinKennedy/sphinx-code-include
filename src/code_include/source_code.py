@@ -221,35 +221,7 @@ def _get_source_module_data(uri, directive):
     return (root + "/" + module_path, tag)
 
 
-def get_source_code(directive, namespace):
-    """Find the raw source code of some class, method, attribute, or function.
-
-    This function first tries to import the path given by `namespace`
-    directly, because that's the most sure-fire way of getting the
-    source code. But if it can't be imported, this function will fall
-    back to intersphinx's inventory to see if it was loaded as part of
-    this Sphinx project.
-
-    Args:
-        directive (str):
-            The Python type that `namespace` is. Example: "py:method".
-        namespace (str):
-            The importable Python location of some class, method, or function.
-            Example: "foo.bar.ClassName.get_method_data".
-
-    Returns:
-        str: The found source code.
-
-    """
-    code = get_source_code_from_object(namespace)
-
-    if code:
-        return code
-
-    return get_source_code_from_inventory(directive, namespace)
-
-
-def get_source_code_from_inventory(directive, namespace):
+def _get_source_code_from_inventory(directive, namespace):
     """Get the raw code of some class, method, attribute, or function.
 
     Args:
@@ -305,7 +277,7 @@ def get_source_code_from_inventory(directive, namespace):
     return _get_source_code(module_url, tag)
 
 
-def get_source_code_from_object(namespace):
+def _get_source_code_from_object(namespace):
     """Import a Python namespace path and get source code directly from it.
 
     Args:
@@ -386,3 +358,31 @@ def get_source_code_from_object(namespace):
     lines, _ = inspect.getsourcelines(resolved_object)
 
     return "".join(lines)
+
+
+def get_source_code(directive, namespace):
+    """Find the raw source code of some class, method, attribute, or function.
+
+    This function first tries to import the path given by `namespace`
+    directly, because that's the most sure-fire way of getting the
+    source code. But if it can't be imported, this function will fall
+    back to intersphinx's inventory to see if it was loaded as part of
+    this Sphinx project.
+
+    Args:
+        directive (str):
+            The Python type that `namespace` is. Example: "py:method".
+        namespace (str):
+            The importable Python location of some class, method, or function.
+            Example: "foo.bar.ClassName.get_method_data".
+
+    Returns:
+        str: The found source code.
+
+    """
+    code = _get_source_code_from_object(namespace)
+
+    if code:
+        return code
+
+    return _get_source_code_from_inventory(directive, namespace)

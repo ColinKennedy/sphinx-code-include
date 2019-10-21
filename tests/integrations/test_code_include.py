@@ -15,8 +15,9 @@ class Reader(unittest.TestCase):
     """Check that external queries work."""
 
     @mock.patch("code_include.source_code._get_source_module_data")
+    @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_url(self, _get_app_inventory, _get_source_module_data):
+    def test_url(self, _get_app_inventory, _get_source_code_from_object, _get_source_module_data):
         """Get the source-code of some project from a URL."""
         path = "https://ways.readthedocs.io/en/latest/objects.inv"
         _get_app_inventory.return_value = common.load_cache_from_url(path)
@@ -24,6 +25,7 @@ class Reader(unittest.TestCase):
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
             "DataPlugin",
         )
+        _get_source_code_from_object.return_value = ""
 
         expected = textwrap.dedent(
             """\
