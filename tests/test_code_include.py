@@ -71,8 +71,8 @@ class Inputs(unittest.TestCase):
         )
 
 
-class RenderText(unittest.TestCase):
-    """A class that checks to make sure projects get and return the right code."""
+class _Common(unittest.TestCase):
+    """A base class which is used by sub-classes to make tests more concise."""
 
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_app_inventory")
@@ -112,6 +112,10 @@ class RenderText(unittest.TestCase):
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
 
+
+class RenderText(_Common):
+    """A class that checks to make sure projects get and return the right code."""
+
     def test_get_from_html(self):
         """Check that a basic HTML file can be read."""
         data = (
@@ -145,15 +149,43 @@ class RenderText(unittest.TestCase):
                 "fake_project",
                 "basic.html",
             ),
-            "MyKlass.get_method",
+            "MyKlass",
         )
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        content = [u":class:`fake_project.basic.MyKlass`"]
 
         expected = textwrap.dedent(
             '''\
-            def get_method(self):
-                """int: Get some value."""
-                return 8'''
+            class MyKlass(object):
+                """A class that does something.
+
+                Multi-line information here.
+
+                Attributes:
+                    attribute_value (str):
+                        Some string.
+
+                """
+
+                attribute_value = "asdfasdf"
+
+                def __init__(self, value):
+                    """Create this instance."""
+                    # A comment that should show up in the unittest's results
+                    super(MyKlass, self).__init__()
+
+                @staticmethod
+                def get_staticmethod():
+                    """int: Get some value."""
+                    return 8
+
+                @classmethod
+                def get_classmethod(cls):
+                    """int: Get some value."""
+                    return 8
+
+                def get_method(self):
+                    """int: Get some value."""
+                    return 8'''
         )
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
@@ -167,7 +199,7 @@ class RenderText(unittest.TestCase):
     #     pass
 
 
-class Options(RenderText):
+class Options(_Common):
     """A generic class that tests options that users can add to a code-include directive."""
 
     @mock.patch("code_include.extension.Directive._needs_unindent")
