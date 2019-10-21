@@ -36,7 +36,16 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;A module that shows every type of documentable class / method / function.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;A module that shows every type of documentable class / method / function.</span>
+
+<span class="sd">Attributes:</span>
+<span class="sd">    ATTRIBUTE_VALUE (float):</span>
+<span class="sd">        Some number.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">ATTRIBUTE_VALUE</span> <span class="o">=</span> <span class="mf">14.3</span>
 
 
 <div class="viewcode-block" id="MyKlass"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.MyKlass">[docs]</a><span class="k">class</span> <span class="nc">MyKlass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -44,12 +53,18 @@
 
 <span class="sd">    Multi-line information here.</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        attribute_value (str):</span>
+<span class="sd">            Some string.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">attribute_value</span> <span class="o">=</span> <span class="s2">&quot;asdfasdf&quot;</span>
+
+<div class="viewcode-block" id="MyKlass.__init__"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.MyKlass.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create this instance.&quot;&quot;&quot;</span>
         <span class="c1"># A comment that should show up in the unittest&#39;s results</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MyKlass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyKlass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="MyKlass.get_staticmethod"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.MyKlass.get_staticmethod">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_staticmethod</span><span class="p">():</span>
@@ -67,10 +82,26 @@
 
 
 <div class="viewcode-block" id="ParentClass"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.ParentClass">[docs]</a><span class="k">class</span> <span class="nc">ParentClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The outter class.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The outter class.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        attribute_value (str):</span>
+<span class="sd">            Some string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">attribute_value</span> <span class="o">=</span> <span class="s2">&quot;tttt&quot;</span>
 
 <div class="viewcode-block" id="ParentClass.NestedClass"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.ParentClass.NestedClass">[docs]</a>    <span class="k">class</span> <span class="nc">NestedClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A class within a class.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A class within a class.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            attribute_value (str):</span>
+<span class="sd">                Some string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">attribute_value</span> <span class="o">=</span> <span class="s2">&quot;zzzzzzzzzzzzz&quot;</span>
 
 <div class="viewcode-block" id="ParentClass.NestedClass.get_staticmethod"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.ParentClass.NestedClass.get_staticmethod">[docs]</a>        <span class="nd">@staticmethod</span>
         <span class="k">def</span> <span class="nf">get_staticmethod</span><span class="p">():</span>
@@ -101,7 +132,7 @@
         <span class="k">return</span> <span class="mi">6</span></div></div>
 
 
-<span class="k">def</span> <span class="nf">_set_private_function_thing</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">another</span><span class="p">):</span>
+<div class="viewcode-block" id="_set_private_function_thing"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another._set_private_function_thing">[docs]</a><span class="k">def</span> <span class="nf">_set_private_function_thing</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">another</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Do something here.&quot;&quot;&quot;</span>
     <span class="c1"># Do something with these values</span>
     <span class="c1"># and more comment text, here.</span>
@@ -110,7 +141,7 @@
         <span class="k">return</span> <span class="mi">2</span>
 
     <span class="c1"># Another comment</span>
-    <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">1</span></div>
 
 
 <div class="viewcode-block" id="set_function_thing"><a class="viewcode-back" href="../../../api/fake_project.nested_folder.html#fake_project.nested_folder.another.set_function_thing">[docs]</a><span class="k">def</span> <span class="nf">set_function_thing</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">another</span><span class="p">):</span>
