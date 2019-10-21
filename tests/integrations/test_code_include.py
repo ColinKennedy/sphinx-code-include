@@ -181,3 +181,34 @@ class Reader(unittest.TestCase):
         self.assertNotEqual([], nodes)
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
+
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def test_import(self, _get_app_inventory):
+        """Get the source-code of an importable object."""
+        _get_app_inventory.return_value = {"non-empty": {"information": tuple()}}
+
+        expected = textwrap.dedent(
+            '''\
+            def join(a, *p):
+                """Join two or more pathname components, inserting '/' as needed.
+                If any component is an absolute path, all previous path components
+                will be discarded.  An empty last part will result in a path that
+                ends with a separator."""
+                path = a
+                for b in p:
+                    if b.startswith('/'):
+                        path = b
+                    elif path == '' or path.endswith('/'):
+                        path +=  b
+                    else:
+                        path += '/' + b
+                return path'''
+        )
+
+        content = [":func:`os.path.join`"]
+        directive = common.make_mock_directive(content)
+        nodes = directive.run()
+
+        self.assertNotEqual([], nodes)
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(expected, nodes[0].astext())

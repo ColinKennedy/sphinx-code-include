@@ -3,6 +3,7 @@
 
 """The module responsible for getting the code that this extension displays."""
 
+import inspect
 import os
 
 import bs4
@@ -221,6 +222,34 @@ def _get_source_module_data(uri, directive):
 
 
 def get_source_code(directive, namespace):
+    """Find the raw source code of some class, method, attribute, or function.
+
+    This function first tries to import the path given by `namespace`
+    directly, because that's the most sure-fire way of getting the
+    source code. But if it can't be imported, this function will fall
+    back to intersphinx's inventory to see if it was loaded as part of
+    this Sphinx project.
+
+    Args:
+        directive (str):
+            The Python type that `namespace` is. Example: "py:method".
+        namespace (str):
+            The importable Python location of some class, method, or function.
+            Example: "foo.bar.ClassName.get_method_data".
+
+    Returns:
+        str: The found source code.
+
+    """
+    code = get_source_code_from_object(namespace)
+
+    if code:
+        return code
+
+    return get_source_code_from_inventory(directive, namespace)
+
+
+def get_source_code_from_inventory(directive, namespace):
     """Get the raw code of some class, method, attribute, or function.
 
     Args:
@@ -274,3 +303,86 @@ def get_source_code(directive, namespace):
     module_url, tag = _get_source_module_data(uri, directive)
 
     return _get_source_code(module_url, tag)
+
+
+def get_source_code_from_object(namespace):
+    """Import a Python namespace path and get source code directly from it.
+
+    Args:
+        namespace (str):
+            The importable Python location of some class, method, or function.
+            Example: "foo.bar.ClassName.get_method_data".
+
+    Returns:
+        str: The found source code, assuming `namespace` describes an importable location.
+
+    """
+    def _recursively_find_first_importable_object(namespaces):
+        """Find the closest Python module to import from.
+
+        If `namespaces` isn't importable, this function will re-try
+        using the parent namespace of `namespaces`.
+
+        Args:
+            namespaces (list[str]):
+                The Python namespace, split into parts.
+                e.g. ["foo", "bar", "ClassName", "get_method_data"].
+
+        Returns:
+            object or NoneType:
+                The found importable object or nothing if `namespaces` isn't importable.
+
+        """
+        if not namespaces:
+            return None
+
+        try:
+            return __import__(".".join(namespaces))
+        except ImportError:
+            pass
+
+        return _recursively_find_first_importable_object(namespaces[:-1])
+
+    def _resolve_object(object_, namespace):
+        """Get a Python object located at `namespace`, using a root `object_`.
+
+        Args:
+            object_ (object):
+                A Python module that contains `namespace`.
+                e.g. The `os` module.
+            namespace (str):
+                A dot-separated string of some attribute, class, or
+                function that is located within `object_`.
+                e.g. "path.join".
+
+        Returns:
+            object: The resolved class, function, attribute, or module.
+
+        """
+        if object_.__name__ == namespace:
+            return object_
+
+        if not namespace:
+            return object_
+
+        root_namespace = object_.__name__ + "."  # Example: `os.`
+        tail = namespace[len(root_namespace):]  # Example: `path.join`
+
+        objects = tail.split(".")  # Example: ["path", "join"]
+        parent = object_
+
+        for item in objects:
+            parent = getattr(parent, item)
+
+        return parent
+
+    namespaces = namespace.split(".")
+    object_ = _recursively_find_first_importable_object(namespaces)
+
+    if not object_:
+        return ""
+
+    resolved_object = _resolve_object(object_, namespace)
+    lines, _ = inspect.getsourcelines(resolved_object)
+
+    return "".join(lines)
