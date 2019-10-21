@@ -250,9 +250,146 @@ class RenderText(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    # def test_module(self):
-    #     """Check that a module is read properly."""
-    #     pass
+    def test_module(self):
+        """Check that a module is read properly."""
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "",
+        )
+        content = [u":mod:`fake_project.basic`"]
+
+        expected = textwrap.dedent(
+            '''\
+            #!/usr/bin/env python
+            # -*- coding: utf-8 -*-
+
+            """A module that shows every type of documentable class / method / function.
+
+            Attributes:
+                ATTRIBUTE_VALUE (float):
+                    Some number.
+
+            """
+
+
+            ATTRIBUTE_VALUE = 14.3
+
+
+            class MyKlass(object):
+                """A class that does something.
+
+                Multi-line information here.
+
+                Attributes:
+                    attribute_value (str):
+                        Some string.
+
+                """
+
+                attribute_value = "asdfasdf"
+
+                def __init__(self, value):
+                    """Create this instance."""
+                    # A comment that should show up in the unittest's results
+                    super(MyKlass, self).__init__()
+
+                @staticmethod
+                def get_staticmethod():
+                    """int: Get some value."""
+                    return 8
+
+                @classmethod
+                def get_classmethod(cls):
+                    """int: Get some value."""
+                    return 8
+
+                def get_method(self):
+                    """int: Get some value."""
+                    return 8
+
+
+            class ParentClass(object):
+                """The outter class.
+
+                Attributes:
+                    attribute_value (str):
+                        Some string.
+
+                """
+
+                attribute_value = "tttt"
+
+                class NestedClass(object):
+                    """A class within a class.
+
+                    Attributes:
+                        attribute_value (str):
+                            Some string.
+
+                    """
+
+                    attribute_value = "zzzzzzzzzzzzz"
+
+                    @staticmethod
+                    def get_staticmethod():
+                        """int: Get some value."""
+                        return 5
+
+                    @classmethod
+                    def get_classmethod(cls):
+                        """int: Get some value."""
+                        return 5
+
+                    def get_method(self):
+                        """int: Get some value."""
+                        return 5
+
+                @staticmethod
+                def get_staticmethod():
+                    """int: Get some value."""
+                    return 6
+
+                @classmethod
+                def get_classmethod(cls):
+                    """int: Get some value."""
+                    return 6
+
+                def get_method(self):
+                    """int: Get some value."""
+                    return 6
+
+
+            def _set_private_function_thing(value, another):
+                """Do something here."""
+                # Do something with these values
+                # and more comment text, here.
+                #
+                if value:
+                    return 2
+
+                # Another comment
+                return 1
+
+
+            def set_function_thing(value, another):
+                """Do something here."""
+                # Do something with these values
+                # and more comment text, here.
+                #
+                if value:
+                    return 2
+
+                # Another comment
+                return 1'''
+        )
+
+        self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
 
 class Options(_Common):

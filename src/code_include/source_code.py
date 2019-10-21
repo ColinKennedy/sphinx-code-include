@@ -146,9 +146,16 @@ def _get_source_code(uri, tag):
     for div in soup.find_all("a", {"class": "viewcode-back"}):
         div.decompose()
 
-    node = soup.find("div", {"id": tag})
+    if not tag:
+        # The start of the source-code block is always marked using <span class="ch">
+        child = soup.find("span", {"class": "ch"})
+        node = child.parent
 
-    return node.getText()
+        return node.getText().lstrip()
+    else:
+        node = soup.find("div", {"id": tag})
+
+        return node.getText()
 
 
 def _get_source_module_data(uri, directive):
