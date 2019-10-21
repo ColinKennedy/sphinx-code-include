@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""A module that shows every type of documentable class / method / function."""
+"""A module that shows every type of documentable class / method / function.
+
+Attributes:
+    ATTRIBUTE_VALUE (float):
+        Some number.
+
+"""
+
+
+ATTRIBUTE_VALUE = 14.3
 
 
 class MyKlass(object):
@@ -9,7 +18,13 @@ class MyKlass(object):
 
     Multi-line information here.
 
+    Attributes:
+        attribute_value (str):
+            Some string.
+
     """
+
+    attribute_value = "asdfasdf"
 
     def __init__(self, value):
         """Create this instance."""
@@ -32,10 +47,26 @@ class MyKlass(object):
 
 
 class ParentClass(object):
-    """The outter class."""
+    """The outter class.
+
+    Attributes:
+        attribute_value (str):
+            Some string.
+
+    """
+
+    attribute_value = "tttt"
 
     class NestedClass(object):
-        """A class within a class."""
+        """A class within a class.
+
+        Attributes:
+            attribute_value (str):
+                Some string.
+
+        """
+
+        attribute_value = "zzzzzzzzzzzzz"
 
         @staticmethod
         def get_staticmethod():
