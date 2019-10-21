@@ -32,10 +32,12 @@ class Directive(rst.Directive):
     }
 
     def _needs_unindent(self):
+        """bool: Check if the user doesn't want to unindent the discovered code."""
         return "no-unindent" not in self.options
 
     @staticmethod
     def _reraise_exception():
+        """bool: Check if the user wants to force-raise any found exceptions."""
         if not source_code.APPLICATION:
             return False
 
@@ -45,6 +47,21 @@ class Directive(rst.Directive):
         )
 
     def _get_code(self, directive, namespace):
+        """Get the source code that the user requested.
+
+        Args:
+            directive (str):
+                The tag / target that the user expects the namespace to be.
+                e.g. "func", "py:class", "class", etc.
+            namespace (str):
+                The identifier string that can be used to locate this code.
+                e.g. "some_package_name.module_name.KlassName.get_foo".
+
+        Returns:
+            str:
+                The found source code.
+
+        """
         try:
             return source_code.get_source_code(directive, namespace)
         except error_classes.NotFoundFile as error:
@@ -78,6 +95,10 @@ class Directive(rst.Directive):
 
     def run(self):
         """Create the code block, if it can.
+
+        Raises:
+            :class:`error_classes.MissingContent`:
+                If the user forgot to write a target for the code-include directive.
 
         Returns:
             list[:class:`docutils.nodes.literal_block`]:
