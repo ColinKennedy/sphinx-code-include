@@ -3,6 +3,7 @@
 
 """A series of tests that access content outside of this repository."""
 
+import sys
 import textwrap
 import unittest
 
@@ -189,23 +190,52 @@ class Reader(unittest.TestCase):
         """Get the source-code of an importable object."""
         _get_app_inventory.return_value = {"non-empty": {"information": tuple()}}
 
-        expected = textwrap.dedent(
-            '''\
-            def join(a, *p):
-                """Join two or more pathname components, inserting '/' as needed.
-                If any component is an absolute path, all previous path components
-                will be discarded.  An empty last part will result in a path that
-                ends with a separator."""
-                path = a
-                for b in p:
-                    if b.startswith('/'):
-                        path = b
-                    elif path == '' or path.endswith('/'):
-                        path +=  b
-                    else:
-                        path += '/' + b
-                return path'''
-        )
+        version = sys.version_info
+
+        if version.major < 3:
+            expected = textwrap.dedent(
+                '''\
+                def join(a, *p):
+                    """Join two or more pathname components, inserting '/' as needed.
+                    If any component is an absolute path, all previous path components
+                    will be discarded.  An empty last part will result in a path that
+                    ends with a separator."""
+                    path = a
+                    for b in p:
+                        if b.startswith('/'):
+                            path = b
+                        elif path == '' or path.endswith('/'):
+                            path +=  b
+                        else:
+                            path += '/' + b
+                    return path'''
+            )
+        elif version.major >= 3 and version.minor >= 6:
+            expected = textwrap.dedent(
+                '''\
+                def join(a, *p):
+                    """Join two or more pathname components, inserting '/' as needed.
+                    If any component is an absolute path, all previous path components
+                    will be discarded.  An empty last part will result in a path that
+                    ends with a separator."""
+                    a = os.fspath(a)
+                    sep = _get_sep(a)
+                    path = a
+                    try:
+                        if not p:
+                            path[:0] + sep  #23780: Ensure compatible data type even if p is null.
+                        for b in map(os.fspath, p):
+                            if b.startswith(sep):
+                                path = b
+                            elif not path or path.endswith(sep):
+                                path += b
+                            else:
+                                path += sep + b
+                    except (TypeError, AttributeError, BytesWarning):
+                        genericpath._check_arg_types('join', a, *p)
+                        raise
+                    return path'''
+            )
 
         content = [":func:`os.path.join`"]
         directive = common.make_mock_directive(content)
