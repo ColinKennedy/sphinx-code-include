@@ -36,7 +36,16 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;A module that shows every type of documentable class / method / function.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;A module that shows every type of documentable class / method / function.</span>
+
+<span class="sd">Attributes:</span>
+<span class="sd">    ATTRIBUTE_VALUE (float):</span>
+<span class="sd">        Some number.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">ATTRIBUTE_VALUE</span> <span class="o">=</span> <span class="mf">14.3</span>
 
 
 <div class="viewcode-block" id="MyKlass"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.MyKlass">[docs]</a><span class="k">class</span> <span class="nc">MyKlass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -44,7 +53,13 @@
 
 <span class="sd">    Multi-line information here.</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        attribute_value (str):</span>
+<span class="sd">            Some string.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">attribute_value</span> <span class="o">=</span> <span class="s2">&quot;asdfasdf&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create this instance.&quot;&quot;&quot;</span>
@@ -67,10 +82,26 @@
 
 
 <div class="viewcode-block" id="ParentClass"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass">[docs]</a><span class="k">class</span> <span class="nc">ParentClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The outter class.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The outter class.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        attribute_value (str):</span>
+<span class="sd">            Some string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">attribute_value</span> <span class="o">=</span> <span class="s2">&quot;tttt&quot;</span>
 
 <div class="viewcode-block" id="ParentClass.NestedClass"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.NestedClass">[docs]</a>    <span class="k">class</span> <span class="nc">NestedClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A class within a class.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A class within a class.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            attribute_value (str):</span>
+<span class="sd">                Some string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">attribute_value</span> <span class="o">=</span> <span class="s2">&quot;zzzzzzzzzzzzz&quot;</span>
 
 <div class="viewcode-block" id="ParentClass.NestedClass.get_staticmethod"><a class="viewcode-back" href="../../api/fake_project.html#fake_project.basic.ParentClass.NestedClass.get_staticmethod">[docs]</a>        <span class="nd">@staticmethod</span>
         <span class="k">def</span> <span class="nf">get_staticmethod</span><span class="p">():</span>
