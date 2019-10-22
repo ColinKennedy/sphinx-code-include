@@ -64,9 +64,28 @@ Overview
 
 .. end-badges
 
-Include source code from any Sphinx project using only its import path
+sphinx-code-include is an extension for Sphinx that lets you render
+source-code of any class or function directly into your Sphinx
+documentation using only as string.
 
 * Free software: BSD 2-Clause License
+
+Example
+
+::
+
+    .. code-include :: :func:`os.path.join`
+
+This code-include block renders as: (theme is sphinx_rtd_theme)
+
+.. image :: https://user-images.githubusercontent.com/10103049/67256848-f7422380-f43d-11e9-857a-434ba7bf579f.jpg
+
+As long as the string you've chosen is either
+
+- is importable
+- is coming from a project that has "sphinx.ext.viewcode" enabled
+
+then code-include can find it and render it in your documentation.
 
 Installation
 ============
@@ -93,20 +112,3 @@ Development
 To run the all tests run::
 
     tox
-
-Note, to combine the coverage data from all the tox environments run:
-
-.. list-table::
-    :widths: 10 90
-    :stub-columns: 1
-
-    - - Windows
-      - ::
-
-            set PYTEST_ADDOPTS=--cov-append
-            tox
-
-    - - Other
-      - ::
-
-            PYTEST_ADDOPTS=--cov-append tox
