@@ -2,6 +2,9 @@
 Usage
 =====
 
+Configuration
+=============
+
 To use Sphinx Code Include in a project
 
 - Create a Sphinx project if you haven't already (using ``sphinx-quickstart`` or otherwise)
@@ -15,7 +18,6 @@ To use Sphinx Code Include in a project
     ]
 
 
-=======
 Options
 =======
 
@@ -36,6 +38,7 @@ Here's a description of what each option does.
   language      The syntax highlight that will be used. Examples of valid input in `pygment's documentation`_. The default value is "python"
  ============= ==============================================================================================================================
 
+.. TODO talk about the preprocessor function
 .. TODO Add "link-to-source"
 ..
 .. Option|Description
@@ -44,7 +47,6 @@ Here's a description of what each option does.
 .. language|The syntax highlight that will be used. Examples of valid input in `pygment's documentation`_. The default value is "python"
 
 
-==============
 Advanced Usage
 ==============
 
@@ -55,7 +57,6 @@ If you have to use ``link-to-source``, 2 things are required.
   ``sphinx.ext.viewcode`` included in their extensions.
 
 
-===============
 Example Project
 ===============
 

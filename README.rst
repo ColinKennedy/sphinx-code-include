@@ -83,7 +83,7 @@ This code-include block renders as: (theme is sphinx_rtd_theme)
 As long as the string you've chosen is either
 
 - is importable
-- is coming from a project that has "sphinx.ext.viewcode" enabled
+- is coming from a project that has `sphinx.ext.viewcode`_ enabled
 
 then code-include can find it and render it in your documentation.
 
@@ -112,3 +112,5 @@ Development
 To run the all tests run::
 
     tox
+
+.. _sphinx.ext.viewcode: https://www.sphinx-doc.org/en/master/usage/extensions/viewcode.html
