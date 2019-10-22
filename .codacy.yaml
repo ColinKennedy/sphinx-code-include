@@ -1,0 +1,4 @@
+---
+exclude_paths:
+    - 'tests/unittests/fake_project/**'
+    - 'fake_project/**'
