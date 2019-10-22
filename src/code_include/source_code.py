@@ -102,7 +102,7 @@ def _get_page_preprocessor():
             The node that will be shown to the user.
 
     """
-    def do_nothing(application):
+    def do_nothing(application):  # pylint: disable=missing-docstring,unused-argument
         pass
 
     if not APPLICATION:
@@ -188,11 +188,11 @@ def _get_source_code(uri, tag):
         preprocessor(node)
 
         return node.getText().lstrip()
-    else:
-        node = soup.find("div", {"id": tag})
-        preprocessor(node)
 
-        return node.get_text()
+    node = soup.find("div", {"id": tag})
+    preprocessor(node)
+
+    return node.get_text()
 
 
 def _get_source_module_data(uri, directive):

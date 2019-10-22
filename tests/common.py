@@ -3,14 +3,13 @@
 
 """Useful functions that other testing modules use."""
 
-import os
 import warnings
-
-from code_include import extension
-from code_include import helper
 
 from six.moves import mock
 from sphinx.ext import intersphinx
+
+from code_include import extension
+from code_include import helper
 
 
 def make_mock_directive(content):

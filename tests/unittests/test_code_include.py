@@ -86,7 +86,7 @@ class _Common(unittest.TestCase):
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test(
-        self, data, content, expected, _get_app_inventory, _get_source_code_from_object, _get_source_module_data
+        self, data, content, expected, _inventory, _get_from_object, _get_source_module_data
     ):
         """A generic function that tests a code-include directive for some text.
 
@@ -99,7 +99,7 @@ class _Common(unittest.TestCase):
                 The lines that the user provides in a standard code-include block.
             expected (str):
                 The converted source-code text that will be tested for.
-            _get_app_inventory (:class:`mock.mock.MagicMock`):
+            _inventory (:class:`mock.mock.MagicMock`):
                 The function that's normally used to query a Sphinx
                 project's inventory to find every HTML file-path and
                 tag-able header.
@@ -111,9 +111,9 @@ class _Common(unittest.TestCase):
         """
         cache = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
 
-        _get_app_inventory.return_value = cache
+        _inventory.return_value = cache
         _get_source_module_data.return_value = data
-        _get_source_code_from_object.return_value = ""
+        _get_from_object.return_value = ""
 
         directive = common.make_mock_directive(content)
         nodes = directive.run()
@@ -725,6 +725,7 @@ class Options(_Common):
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_page_preprocessor")
     def test_preprocessor(self, _get_page_preprocessor, _get_source_code_from_object):
+        """Check that the optional user-configuration function works correctly."""
         def _remove_comments_and_docstrings(node):
             for tag in node.find_all("span", {"class": ["c1", "sd"]}):
                 tag.decompose()
