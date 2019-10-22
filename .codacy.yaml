@@ -1,4 +1,5 @@
 ---
 exclude_paths:
-    - 'tests/unittests/fake_project/**'
-    - 'fake_project/**'
+    - ci/**/*
+    - tests/unittests/fake_project/**
+    - fake_project/**
