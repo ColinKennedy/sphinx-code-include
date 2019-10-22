@@ -91,6 +91,15 @@ Notice that `requests.get`_ is actually using a different theme than
 this documentation's theme but it still renders with the correct color
 scheme.
 
+And of course, you can refer to objects in your current project using
+``code-include``, too.
+
+::
+
+    .. code-include :: :func:`code_include.helper.memoize`
+
+.. code-include :: :func:`code_include.helper.memoize`
+
 
 .. _must be set up for intersphinx: http://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 
