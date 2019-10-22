@@ -38,7 +38,6 @@ Here's a description of what each option does.
   language      The syntax highlight that will be used. Examples of valid input in `pygment's documentation`_. The default value is "python"
  ============= ==============================================================================================================================
 
-.. TODO talk about the preprocessor function
 .. TODO Add "link-to-source"
 ..
 .. Option|Description
@@ -99,6 +98,34 @@ And of course, you can refer to objects in your current project using
     .. code-include :: :func:`code_include.helper.memoize`
 
 .. code-include :: :func:`code_include.helper.memoize`
+
+
+Advanced Customization - Pre-Processor Function
+===============================================
+
+You have total control over how source-code is rendered in your Sphinx
+project. Say, for example, you want to get source-code of a function but
+you want to remove the function's docstring, or delete its comments.
+
+.. note ::
+
+    code_include_preprocessor is only run if your code comes from
+    another Sphinx project. If the source-code that you're targetting
+    comes from imported content then the pre-processor is ignored.
+
+
+Add a function called ``code_include_preprocessor`` to your conf.py
+
+.. code-block :: python
+
+    def code_include_preprocessor(soup):
+        """`soup` is a :class:`bs4.element.Tag` object."""
+        pass
+
+``code-include`` brings in the source-code from projects as HTML tags.
+This function lets you directly access and modify those tags before it
+gets converted into raw text. So you're free to change whatever you
+want and it will be applied to every code-include directive.
 
 
 .. _must be set up for intersphinx: http://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
