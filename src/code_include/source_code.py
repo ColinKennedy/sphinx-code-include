@@ -38,7 +38,7 @@ def _get_all_intersphinx_roots():
 def _get_app_inventory():
     """dict[str, dict[str, tuple[str, str, str, str]]]: Get all cached targets + namespaces."""
     if not APPLICATION:
-        return dict()
+        raise EnvironmentError("code_include did not initialize properly.")
 
     try:
         return APPLICATION.builder.env.intersphinx_inventory

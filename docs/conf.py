@@ -45,3 +45,28 @@ html_short_title = '%s-%s' % (project, version)
 napoleon_use_ivar = True
 napoleon_use_rtype = False
 napoleon_use_param = False
+
+
+# Add this folder to `sys.path` so that Python can import conf.py.
+# Normally we'd never do this. But this is done to show that the
+# code-include directive can get the source-code anything that's
+# importable.
+#
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+# Add `code-include` so that the code-include directives used in this documentation work
+extensions += [
+    "code_include.extension",
+]
+
+# These next settings are required if you want to link to other Sphinx projects
+extensions += [
+    "sphinx.ext.intersphinx",
+]
+
+intersphinx_mapping = {
+    "https://requests.kennethreitz.org/en/latest": None,
+}

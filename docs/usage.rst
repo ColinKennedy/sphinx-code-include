@@ -76,14 +76,24 @@ And this is the conf.py that generates this documentation.
 
 
 Notice ``intersphinx_mapping`` towards the bottom. This attribute must
-be set up to point to your other project. In our case, we'll point it to
-some external Sphinx project.
+be set up to point to your other project. ``intersphinx_mapping`` cannot
+be empty. In our case, we'll point it to some external Sphinx project.
 
-.. TODO finish this code-include
+::
 
-.. code-include :: :func:`foo.bar`
+    .. code-include :: :func:`requests.get`
+
+And this is what the block above renders as:
+
+.. code-include :: :func:`requests.get`
+
+Notice that `requests.get`_ is actually using a different theme than
+this documentation's theme but it still renders with the correct color
+scheme.
 
 
 .. _must be set up for intersphinx: http://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 
 .. _pygment's documentation: http://pygments.org/docs/lexers
+
+.. _requests.get: https://requests.kennethreitz.org/en/latest/_modules/requests/api/#get
