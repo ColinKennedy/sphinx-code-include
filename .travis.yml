@@ -26,7 +26,7 @@ matrix:
         - TOXENV=pypy,report,codecov
       python: 'pypy'
     - env:
-        - TOXENV=pypy3,report,codecov
+        - TOXENV=pypy3
         - TOXPYTHON=pypy3
       python: 'pypy3'
 before_install:
