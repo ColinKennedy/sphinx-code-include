@@ -8,8 +8,23 @@ import textwrap
 import unittest
 
 from six.moves import mock
+from six.moves import urllib
 
 from .. import common
+
+
+def _skip_from_ssl_error(url):
+    """bool: Check if the given URL can be reached."""
+    # This function is mostly meant for pypy3
+    try:
+        from _cffi_ssl._stdssl import error
+    except ImportError:
+        return False
+
+    try:
+        return urllib.request.urlopen(url).getcode() == 200  # 200 means "URL not found"
+    except (error.SSLError, urllib.error.URLError):
+        return True
 
 
 class Reader(unittest.TestCase):
@@ -42,6 +57,10 @@ class Reader(unittest.TestCase):
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
+    @unittest.skipIf(
+        _skip_from_ssl_error("https://ways.readthedocs.io/en/latest/objects.inv"),
+        "URL could not be reached",
+    )
     def test_url(
         self, _get_app_inventory, _get_source_code_from_object, _get_source_module_data
     ):
@@ -247,6 +266,31 @@ class Reader(unittest.TestCase):
                             path += '/' + b
                     return path'''
             )
+        elif version.major >= 3 and version.minor <= 5:
+            expected = textwrap.dedent(
+                '''\
+                def join(a, *p):
+                    """Join two or more pathname components, inserting '/' as needed.
+                    If any component is an absolute path, all previous path components
+                    will be discarded.  An empty last part will result in a path that
+                    ends with a separator."""
+                    sep = _get_sep(a)
+                    path = a
+                    try:
+                        if not p:
+                            path[:0] + sep  #23780: Ensure compatible data type even if p is null.
+                        for b in p:
+                            if b.startswith(sep):
+                                path = b
+                            elif not path or path.endswith(sep):
+                                path += b
+                            else:
+                                path += sep + b
+                    except (TypeError, AttributeError, BytesWarning):
+                        genericpath._check_arg_types('join', a, *p)
+                        raise
+                    return path'''
+            )
         elif version.major >= 3 and version.minor >= 6:
             expected = textwrap.dedent(
                 '''\
@@ -272,6 +316,10 @@ class Reader(unittest.TestCase):
                         genericpath._check_arg_types('join', a, *p)
                         raise
                     return path'''
+            )
+        else:
+            raise NotImplementedError(
+                'Version "{version}" is not supported.'.format(version=version)
             )
 
         content = [":func:`os.path.join`"]
