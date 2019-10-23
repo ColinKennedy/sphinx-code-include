@@ -118,6 +118,8 @@ class Directive(rst.Directive):
             if self._reraise_exception():
                 raise error_classes.MissingContent(message)
 
+            return []
+
         directive, namespace = formatter.get_raw_content(target)
         directive = formatter.get_converted_directive(directive) or directive
 
