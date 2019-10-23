@@ -23,7 +23,7 @@ matrix:
         - TOXENV=py37,report,codecov
       python: '3.7'
     - env:
-        - TOXENV=pypy,report,codecov
+        - TOXENV=pypy
       python: 'pypy'
     - env:
         - TOXENV=pypy3
