@@ -3,6 +3,8 @@
 
 """The main module that adds the code-include directive to Sphinx."""
 
+import textwrap
+
 from docutils import frontend
 from docutils import nodes
 from docutils.parsers import rst
@@ -12,6 +14,9 @@ from . import formatter
 from . import source_code
 
 _SETTINGS = frontend.OptionParser().get_default_values()
+
+
+class Node(nodes.General, nodes.Element): pass
 
 
 class Directive(rst.Directive):
@@ -27,8 +32,9 @@ class Directive(rst.Directive):
 
     has_content = True
     option_spec = {
-        "no-unindent": rst.directives.flag,
         "language": rst.directives.unchanged,
+        "link-to-source": rst.directives.flag,
+        "no-unindent": rst.directives.flag,
     }
 
     def _needs_unindent(self):
@@ -46,7 +52,7 @@ class Directive(rst.Directive):
             and source_code.APPLICATION.config.code_include_reraise
         )
 
-    def _get_code(self, directive, namespace):
+    def _get_code(self, directive, namespace, prefer_import=True):
         """Get the source code that the user requested.
 
         Args:
@@ -63,7 +69,7 @@ class Directive(rst.Directive):
 
         """
         try:
-            return source_code.get_source_code(directive, namespace)
+            return source_code.get_source_code(directive, namespace, prefer_import=prefer_import)
         except error_classes.NotFoundFile as error:
             self.warning('File "{error}" does not exist.'.format(error=error))
 
@@ -129,9 +135,14 @@ class Directive(rst.Directive):
             error_classes.NotFoundFile,
             error_classes.NotFoundUrl,
         )
+        needs_source_link = "link-to-source" in self.options
 
         try:
-            code = self._get_code(directive, namespace)
+            result = self._get_code(
+                directive,
+                namespace,
+                prefer_import=not needs_source_link,
+            )
         except known_exceptions:
             if self._reraise_exception():
                 raise
@@ -139,14 +150,26 @@ class Directive(rst.Directive):
             return []
 
         if self._needs_unindent():
-            code = formatter.unindent_outer_whitespace(code)
+            result = result.__class__(
+                formatter.unindent_outer_whitespace(result.code),
+                result.namespace,
+                result.href,
+            )
 
-        node = nodes.literal_block(code, code)
+        node = nodes.literal_block(result.code, result.code)
         node["language"] = self.options.get("language", "python")
 
         self.add_name(node)
 
-        return [node]
+        results = [node]
+
+        if result.href:
+            hyperlink = Node()
+            hyperlink["namespace"] = result.namespace
+            hyperlink["href"] = result.href
+            results.append(hyperlink)
+
+        return results
 
 
 def setup(application):
@@ -165,8 +188,23 @@ def setup(application):
         dict[str, bool]: Configuration settings about this extension.
 
     """
+    def before(self, node):
+        self.body.append(
+            '<div style="text-align: right">Source code: <a href="{node[href]}">{node[namespace]}</a></div>'.format(node=node))
+
+    def after(self, node):  # pylint: disable=unused-argument
+        pass
+
     source_code.APPLICATION = application
 
-    application.add_directive("code-include", Directive)
+    application.add_node(
+        Node,
+        html=(before, after),
+    )
+
+    application.add_directive(
+        "code-include",
+        Directive,
+    )
 
     return {"parallel_read_safe": True, "parallel_write_safe": True}

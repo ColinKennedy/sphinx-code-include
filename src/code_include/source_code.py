@@ -3,6 +3,8 @@
 
 """The module responsible for getting the code that this extension displays."""
 
+import collections
+import functools
 import inspect
 import os
 
@@ -14,6 +16,7 @@ from . import error_classes
 from . import helper
 
 APPLICATION = None
+SourceResult = collections.namedtuple('SourceResult', "code namespace href")
 
 
 @helper.memoize
@@ -273,8 +276,9 @@ def _get_source_code_from_inventory(directive, namespace):
         )
 
     module_url, tag = _get_source_module_data(uri, directive)
+    code = _get_source_code(module_url, tag)
 
-    return _get_source_code(module_url, tag)
+    return SourceResult(code, namespace, module_url)
 
 
 def _get_source_code_from_object(namespace):
@@ -353,19 +357,19 @@ def _get_source_code_from_object(namespace):
     object_ = _recursively_find_first_importable_object(namespaces)
 
     if not object_:
-        return ""
+        return None
 
     resolved_object = _resolve_object(object_, namespace)
 
     if not resolved_object:
-        return ""
+        return None
 
     lines, _ = inspect.getsourcelines(resolved_object)
 
-    return "".join(lines)
+    return SourceResult("".join(lines), resolved_object, "")
 
 
-def get_source_code(directive, namespace):
+def get_source_code(directive, namespace, prefer_import=False):
     """Find the raw source code of some class, method, attribute, or function.
 
     This function first tries to import the path given by `namespace`
@@ -385,9 +389,21 @@ def get_source_code(directive, namespace):
         str: The found source code.
 
     """
-    code = _get_source_code_from_object(namespace)
+    if prefer_import:
+        strategy = [
+            _get_source_code_from_object,
+            functools.partial(_get_source_code_from_inventory, directive),
+        ]
+    else:
+        strategy = [
+            functools.partial(_get_source_code_from_inventory, directive),
+            _get_source_code_from_object,
+        ]
 
-    if code:
-        return code
+    for getter in strategy:
+        code = getter(namespace)
 
-    return _get_source_code_from_inventory(directive, namespace)
+        if code:
+            return code
+
+    return None
