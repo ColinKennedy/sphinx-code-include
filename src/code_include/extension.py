@@ -16,7 +16,8 @@ from . import source_code
 _SETTINGS = frontend.OptionParser().get_default_values()
 
 
-class Node(nodes.General, nodes.Element): pass
+class Node(nodes.General, nodes.Element):
+    pass
 
 
 class Directive(rst.Directive):
