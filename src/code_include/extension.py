@@ -34,6 +34,7 @@ class Directive(rst.Directive):
     has_content = True
     option_spec = {
         "language": rst.directives.unchanged,
+        "link-at-bottom": rst.directives.flag,
         "link-to-source": rst.directives.flag,
         "no-unindent": rst.directives.flag,
     }
@@ -168,7 +169,11 @@ class Directive(rst.Directive):
             hyperlink = Node()
             hyperlink["namespace"] = result.namespace
             hyperlink["href"] = result.href
-            results.append(hyperlink)
+
+            if "link-at-bottom" not in self.options:
+                results.insert(0, hyperlink)
+            else:
+                results.append(hyperlink)
 
         return results
 
