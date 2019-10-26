@@ -325,6 +325,10 @@ class SourceReader(unittest.TestCase):
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
 
+@unittest.skipIf(
+    _skip_from_ssl_error("https://ways.readthedocs.io/en/latest/objects.inv"),
+    "URL could not be reached",
+)
 class InventoryReader(unittest.TestCase):
     """Check that external queries to Sphinx intersphinx inventtory files work."""
 
