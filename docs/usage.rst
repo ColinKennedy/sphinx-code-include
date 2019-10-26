@@ -26,24 +26,23 @@ This block shows every option that you can add into a ``code-include`` block.
 ::
 
     .. code-include :: :func:`module_name.foo`
-        :no-unindent:
         :language: python
+        :link-at-bottom:
+        :link-to-documentation:
+        :link-to-source:
+        :no-unindent:
 
 Here's a description of what each option does.
 
- ============= ==============================================================================================================================
-    Option                                                              Description
- ============= ==============================================================================================================================
-  no-unindent   If the found source-code is nested in another Python object, keep the initial indentation.
-  language      The syntax highlight that will be used. Examples of valid input in `pygment's documentation`_. The default value is "python"
- ============= ==============================================================================================================================
-
-.. TODO Add "link-to-source"
-..
-.. Option|Description
-.. link-to-source|If the found source-code comes from another Sphinx project, link to that project's source-code.
-.. no-unindent|If the found source-code is nested in another Python object, keep the initial indentation.
-.. language|The syntax highlight that will be used. Examples of valid input in `pygment's documentation`_. The default value is "python"
+ ======================= ==============================================================================================================================
+         Option                                                                   Description
+ ======================= ==============================================================================================================================
+  language                The syntax highlight that will be used. Examples of valid input in `pygment's documentation`_. The default value is "python"
+  link-at-bottom          Add source code and/or documentation links at the bottom of the block.
+  link-to-documentation   Add a clickable link to where the source code's API documentation is.
+  link-to-source          Add a clickable link to where the source code is from.
+  no-unindent             If the found source-code has indentation, don't remove any of it.
+ ======================= ==============================================================================================================================
 
 
 Advanced Usage
