@@ -173,7 +173,8 @@ class Directive(rst.Directive):
             result = result.__class__(
                 formatter.unindent_outer_whitespace(result.code),
                 result.namespace,
-                result.href,
+                result.source_code_link,
+                result.documentation_link,
             )
 
         node = nodes.literal_block(result.code, result.code)
@@ -183,10 +184,20 @@ class Directive(rst.Directive):
 
         results = [node]
 
-        if result.href and is_link_requested:
+        if result.documentation_link and is_link_requested:
+            hyperlink = _DocumentationHyperlink()
+            hyperlink["namespace"] = result.namespace
+            hyperlink["href"] = result.documentation_link
+
+            if "link-at-bottom" not in self.options:
+                results.insert(0, hyperlink)
+            else:
+                results.append(hyperlink)
+
+        if result.source_code_link and is_link_requested:
             hyperlink = _SourceCodeHyperlink()
             hyperlink["namespace"] = result.namespace
-            hyperlink["href"] = result.href
+            hyperlink["href"] = result.source_code_link
 
             if "link-at-bottom" not in self.options:
                 results.insert(0, hyperlink)

@@ -16,7 +16,7 @@ from . import error_classes
 from . import helper
 
 APPLICATION = None
-SourceResult = collections.namedtuple('SourceResult', "code namespace href")
+SourceResult = collections.namedtuple('SourceResult', "code namespace source_code_link documentation_link")
 
 
 @helper.memoize
@@ -225,7 +225,7 @@ def _get_source_module_data(uri, directive):
 
     module_path, tag = _get_module_tag(tag, directive)
 
-    return (root + "/" + module_path, tag)
+    return (root, root + "/" + module_path, tag)
 
 
 def _get_source_code_from_inventory(directive, namespace):
@@ -279,10 +279,10 @@ def _get_source_code_from_inventory(directive, namespace):
             )
         )
 
-    module_url, tag = _get_source_module_data(uri, directive)
+    root, module_url, tag = _get_source_module_data(uri, directive)
     code = _get_source_code(module_url, tag)
 
-    return SourceResult(code, namespace, module_url)
+    return SourceResult(code, namespace, module_url, root + uri)
 
 
 def _get_source_code_from_object(namespace):
@@ -370,7 +370,7 @@ def _get_source_code_from_object(namespace):
 
     lines, _ = inspect.getsourcelines(resolved_object)
 
-    return SourceResult("".join(lines), resolved_object, "")
+    return SourceResult("".join(lines), resolved_object, "", "")
 
 
 def get_source_code(directive, namespace, prefer_import=False):

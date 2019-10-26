@@ -129,6 +129,12 @@ class Linking(unittest.TestCase):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "basic.html",
@@ -197,6 +203,12 @@ class RenderText(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "basic.html",
@@ -217,6 +229,12 @@ class RenderText(_Common):
     def test_class(self):
         """Check that a class is read properly."""
         data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "api",
+                "fake_project.html",
+            ),
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
@@ -271,6 +289,12 @@ class RenderText(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "basic.html",
@@ -301,6 +325,12 @@ class RenderText(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "basic.html",
@@ -328,6 +358,12 @@ class RenderText(_Common):
     def test_module(self):
         """Check that a module is read properly."""
         data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "api",
+                "fake_project.html",
+            ),
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
@@ -478,6 +514,12 @@ class RenderTextNested(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.nested_folder.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "nested_folder",
@@ -499,6 +541,12 @@ class RenderTextNested(_Common):
     def test_class(self):
         """Check that a class is read properly."""
         data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "api",
+                "fake_project.nested_folder.html",
+            ),
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
@@ -554,6 +602,12 @@ class RenderTextNested(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.nested_folder.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "nested_folder",
@@ -585,6 +639,12 @@ class RenderTextNested(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.nested_folder.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "nested_folder",
@@ -613,6 +673,12 @@ class RenderTextNested(_Common):
     def test_module(self):
         """Check that a module is read properly."""
         data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "api",
+                "fake_project.nested_folder.html",
+            ),
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
@@ -773,6 +839,12 @@ class Options(_Common):
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
+                "api",
+                "fake_project.html",
+            ),
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
                 "_modules",
                 "fake_project",
                 "basic.html",
@@ -799,6 +871,12 @@ class Options(_Common):
         _get_source_code_from_object.return_value = ""
 
         data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "api",
+                "fake_project.html",
+            ),
             os.path.join(
                 _CURRENT_DIRECTORY,
                 "fake_project",
