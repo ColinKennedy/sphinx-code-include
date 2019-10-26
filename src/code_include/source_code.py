@@ -225,7 +225,7 @@ def _get_source_module_data(uri, directive):
 
     module_path, tag = _get_module_tag(tag, directive)
 
-    return (root, root + "/" + module_path, tag)
+    return (root + "/" + module_path, tag)
 
 
 def _get_source_code_from_inventory(directive, namespace):
@@ -279,10 +279,11 @@ def _get_source_code_from_inventory(directive, namespace):
             )
         )
 
-    root, module_url, tag = _get_source_module_data(uri, directive)
+    module_url, tag = _get_source_module_data(uri, directive)
     code = _get_source_code(module_url, tag)
+    full_source_code_url = module_url + "#" + tag
 
-    return SourceResult(code, namespace, module_url, root + uri)
+    return SourceResult(code, namespace, full_source_code_url, uri)
 
 
 def _get_source_code_from_object(namespace):
