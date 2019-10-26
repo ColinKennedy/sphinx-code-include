@@ -358,9 +358,6 @@ class InventoryReader(unittest.TestCase):
         directive = common.make_mock_directive(content)
         nodes = directive.run()
 
-        with open("/tmp/test.py", "w") as handler:
-            handler.write(nodes[0].astext())
-
         self.assertNotEqual([], nodes)
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
