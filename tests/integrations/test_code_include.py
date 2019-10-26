@@ -53,7 +53,6 @@ class Reader(unittest.TestCase):
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
 
-    # TODO : Add skip if the URL isn't readable
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")

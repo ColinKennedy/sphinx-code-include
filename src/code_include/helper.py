@@ -12,12 +12,12 @@ def memoize(function):
 
     Args:
         function (callable):
-            Some Python callable that will be memoized by this function.
+            Some Python callable will become cache-able by this function.
 
     Returns:
         :class:`MemoDict`:
-            A per-function instance that will only ever be called for a
-            set of arguments once.
+            A per-function instance gets called only once for a set of
+            arguments once.
 
     """
 

@@ -29,13 +29,13 @@ def get_converted_directive(directive):
 
     Args:
         directive (str):
-            Some user-provided target. Usually whatever the user writes in documentation,
-            like ":attr:", ":func:", etc.
+            Some user-provided target that the user writes in
+            documentation, like ":attr:", ":func:", etc.
 
     Returns:
         str:
-            The converted directive. If no directive could be found,
-            then return an empty string.
+            The converted directive. If no directive is found, then
+            return an empty string.
 
     """
     directive = directive.strip(":")
@@ -70,7 +70,7 @@ def get_raw_content(text):
 
     Returns:
         tuple[str, str]:
-            The type of target + the Python namespace for where the object lives.
+            The target's type + the Python namespace for where the object lives.
 
     """
     match = _DIRECTIVE_EXPRESSION.match(text) or _NAMED_DIRECTIVE_EXPRESSION.match(text)
@@ -87,7 +87,7 @@ def get_raw_content(text):
 
 
 def unindent_outer_whitespace(text):
-    """Unindent some text until the outter-most line has no leading whitespace.
+    r"""Unindent some text until the outter-most line has no leading whitespace.
 
     Example:
         >>> code = \

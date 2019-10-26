@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""A collection of classes which are used for error/warning reporting."""
+"""A collection of classes made for error/warning reporting."""
 
 
 class MissingContent(Exception):
@@ -11,11 +11,11 @@ class MissingContent(Exception):
 
 
 class MissingDirective(Exception):
-    """If the user specifies a directive that couldn't be found.
+    """If the user specifies a missing directive.
 
-    For example, the user might write a target like :mod:`foo`.
-    If ":mod:" is missing across all Sphinx projects found in the
-    interspinx inventory then this exception is raised.
+    For example, the user might write a target like :mod:`foo`. If
+    ":mod:" is missing across all Sphinx projects in the interspinx
+    inventory, this exception raises.
 
     """
 
@@ -23,11 +23,11 @@ class MissingDirective(Exception):
 
 
 class MissingNamespace(Exception):
-    """If the user specifies a target that couldn't be found.
+    """If the user specifies a missing target.
 
     For example, the user might write a target like :mod:`foo`. If "foo"
     is missing across ":mod:" locations for all Sphinx projects found in
-    the interspinx inventory then this exception is raised.
+    the interspinx inventory, this exception raises.
 
     """
 
