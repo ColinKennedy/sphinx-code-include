@@ -337,19 +337,22 @@ class InventoryReader(unittest.TestCase):
         _get_app_inventory,
         _get_source_code_from_object,
     ):
-        # """A generic test function. It tests for some source code from an inventory.
-        #
-        # Args:
-        #     content (list[str]):
-        #         The lines that the user provides in a standard code-include block.
-        #     expected (str):
-        #         The converted source-code text that will be tested for.
-        #     _get_source_code_from_object (:class:`mock.mock.MagicMock`):
-        #         The function that's used to import a Python object to
-        #         get its source-code to find every HTML file-path and
-        #         tag-able header.
-        #
-        # """
+        """A generic test function. It tests for some source code from an inventory.
+
+        Args:
+            content (list[str]):
+                The lines that the user provides in a standard code-include block.
+            expected (str):
+                The converted source-code text that will be tested for.
+            _get_app_inventory (:class:`mock.mock.MagicMock`):
+                The function that gets dictionary information (which
+                later finds the Sphinx Python source-code).
+            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+                The function that's used to import a Python object to
+                get its source-code to find every HTML file-path and
+                tag-able header.
+
+        """
         _get_source_code_from_object.return_value = ""
         path = "https://ways.readthedocs.io/en/latest/objects.inv"
         _get_app_inventory.return_value = common.load_cache_from_url(path)
@@ -362,21 +365,24 @@ class InventoryReader(unittest.TestCase):
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
 
-    def test_class(self):
+    @mock.patch("code_include.source_code._get_source_module_data")
+    def test_class(self, _get_source_module_data):
         """Get the source-code of an importable class."""
-        content = [":class:`ways.plugin.Plugin`"]
+        _get_source_module_data.return_value = (
+            "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
+            "Plugin",
+        )
+
+        content = [":class:`ways.base.plugin.Plugin`"]
         expected = textwrap.dedent(
             """\
+            @six.add_metaclass(PluginRegistry)
             class Plugin(object):
 
                 '''An add-on that is later retrieved by Context to gather its data.'''
 
                 add_to_registry = True
                 _data = dict()
-
-                def __init__(self):
-                    '''Create the object and keep a reference to the cache.'''
-                    super(Plugin, self).__init__()
 
                 @property
                 def data(self):
@@ -385,17 +391,30 @@ class InventoryReader(unittest.TestCase):
 
                 @data.setter
                 def data(self, value):
+                    '''Set the data on this instance with whatever value is.
+
+                    Args:
+                        value (dict[str]): The new values for this instance.
+
+                    '''
                     self._data = value"""
         )
 
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_function(self):
+    @mock.patch("code_include.source_code._get_source_module_data")
+    def test_function(self, _get_source_module_data):
         """Get the source-code of an importable function."""
-        content = [":func:`ways.plugin.get_assignment`"]
+        _get_source_module_data.return_value = (
+            "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
+            "get_assignment",
+        )
+
+        content = [":func:`ways.base.plugin.get_assignment`"]
         expected = textwrap.dedent(
             """\
             def get_assignment(obj):
+                '''str: Get an object's assignment or fallback to ways.DEFAULT_ASSIGNMENT.'''
                 try:
                     return obj.get_assignment()
                 except AttributeError:
@@ -404,14 +423,33 @@ class InventoryReader(unittest.TestCase):
 
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_method(self):
+    @mock.patch("code_include.source_code._get_source_module_data")
+    def test_method(self, _get_source_module_data):
         """Get the source-code of an importable method."""
-        content = [":meth:`ways.plugin.Plugin.__init__`"]
+        _get_source_module_data.return_value = (
+            "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
+            "DataPlugin.get_groups",
+        )
+
+        content = [":meth:`ways.base.plugin.DataPlugin.get_groups`"]
         expected = textwrap.dedent(
             """\
-            def __init__(self):
-                '''Create the object and keep a reference to the cache.'''
-                super(Plugin, self).__init__()"""
+            def get_groups(self):
+                '''Get the groups that this Plugin evaluates onto.
+
+                Note:
+                    The term 'groups' is not the same as the assignment of a Plugin.
+                    They are two different things.
+
+                Returns:
+                    tuple[str]: The groups.
+
+                '''
+                value = check.force_itertype(self._info.get('groups', ('*', )), itertype=tuple)
+                is_empty = not [val for val in value if val.strip()]
+                if is_empty:
+                    value = ('*', )
+                return value"""
         )
 
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter

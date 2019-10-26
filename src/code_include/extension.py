@@ -39,6 +39,14 @@ class Directive(rst.Directive):
         "no-unindent": rst.directives.flag,
     }
 
+    def _is_link_requested(self):
+        # TODO : Finish this
+        return False
+
+    def _is_source_requested(self):
+        """bool: Check if the user wants hyperlinks added to the block output."""
+        return "link-to-source" in self.options
+
     def _needs_unindent(self):
         """bool: Check if the user doesn't want to unindent the discovered code."""
         return "no-unindent" not in self.options
@@ -137,13 +145,15 @@ class Directive(rst.Directive):
             error_classes.NotFoundFile,
             error_classes.NotFoundUrl,
         )
-        needs_source_link = "link-to-source" in self.options
+
+        is_source_requested = self._is_source_requested()
+        is_link_requested = self._is_link_requested()
 
         try:
             result = self._get_code(
                 directive,
                 namespace,
-                prefer_import=not needs_source_link,
+                prefer_import=not is_source_requested or not is_link_requested,
             )
         except known_exceptions:
             if self._reraise_exception():
@@ -165,8 +175,8 @@ class Directive(rst.Directive):
 
         results = [node]
 
-        if result.href:
-            hyperlink = Node()
+        if result.href and is_link_requested:
+            hyperlink = _SourceCodeHyperlink()
             hyperlink["namespace"] = result.namespace
             hyperlink["href"] = result.href
 
@@ -183,29 +193,51 @@ def setup(application):
 
     Important:
         This function assumes that :func:`sphinx.ext.viewcode.setup` and
-        :func:`sphinx.ext.interspinx.setup` have both been run before
-        this function is called.
+        :func:`sphinx.ext.interspinx.setup` both ran before calling this
+        function.
 
     Args:
         application (:class:`sphinx.application.Sphinx`):
-            The main class which code-include is registered into.
+            The main class that code-include will register into.
 
     Returns:
         dict[str, bool]: Configuration settings about this extension.
 
     """
-    def before(self, node):
-        self.body.append(
-            '<div style="text-align: right">Source code: <a href="{node[href]}">{node[namespace]}</a></div>'.format(node=node))
+    def before_documentation(self, node):
+        """Create a hyperlink with the given node."""
+        self.body.append(textwrap.dedent(
+            '''\
+            <div style="text-align: right">
+                Documentation:
+                <a href="{node[href]}">{node[namespace]}</a>
+            </div>
+            '''.format(node=node)))
+
+    def before_source_code(self, node):
+        """Create a hyperlink with the given node."""
+        self.body.append(textwrap.dedent(
+            '''\
+            <div style="text-align: right">
+                Source code:
+                <a href="{node[href]}">{node[namespace]}</a>
+            </div>
+            '''.format(node=node)))
 
     def after(self, node):  # pylint: disable=unused-argument
+        """Do nothing on-exit."""
         pass
 
     source_code.APPLICATION = application
 
     application.add_node(
-        Node,
-        html=(before, after),
+        _DocumentationHyperlink,
+        html=(before_documentation, after),
+    )
+
+    application.add_node(
+        _SourceCodeHyperlink,
+        html=(before_source_code, after),
     )
 
     application.add_directive(

@@ -11,6 +11,7 @@ import unittest
 from six.moves import mock
 
 from code_include import error_classes
+from code_include import extension
 
 from .. import common
 
@@ -77,6 +78,77 @@ class Inputs(unittest.TestCase):
             [u":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace
         )
 
+
+class Linking(unittest.TestCase):
+    @mock.patch("code_include.source_code._get_source_module_data")
+    @mock.patch("code_include.source_code._get_source_code_from_object")
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def _get_nodes(
+        self, data, content, _inventory, _get_from_object, _get_source_module_data
+    ):
+        cache = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
+
+        _inventory.return_value = cache
+        _get_source_module_data.return_value = data
+        _get_from_object.return_value = ""
+
+        directive = common.make_mock_directive(content)
+
+        return directive.run()
+
+    @mock.patch("code_include.source_code._get_source_code_from_object")
+    @mock.patch("code_include.extension.Directive._is_link_requested")
+    @mock.patch("code_include.extension.Directive._needs_unindent")
+    def test_link_to_source(self, _needs_unindent, _is_link_requested, _get_source_code_from_object):
+        _needs_unindent.return_value = False
+        _is_link_requested.return_value = True
+        _get_source_code_from_object.return_value = ""
+
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "MyKlass.get_method",
+        )
+        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        nodes = self._get_nodes(data, content)
+
+        self.assertEqual(2, len(nodes))
+        self.assertTrue(any(node for node in nodes if isinstance(
+            node,
+            extension._SourceCodeHyperlink,  # pylint: disable=protected-access
+        )))
+
+    @mock.patch("code_include.source_code._get_source_code_from_object")
+    @mock.patch("code_include.extension.Directive._is_link_requested")
+    @mock.patch("code_include.extension.Directive._needs_unindent")
+    def test_link_to_source(self, _needs_unindent, _is_link_requested, _get_source_code_from_object):
+        _needs_unindent.return_value = False
+        _is_link_requested.return_value = True
+        _get_source_code_from_object.return_value = ""
+
+        data = (
+            os.path.join(
+                _CURRENT_DIRECTORY,
+                "fake_project",
+                "_modules",
+                "fake_project",
+                "basic.html",
+            ),
+            "MyKlass.get_method",
+        )
+        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        nodes = self._get_nodes(data, content)
+
+        self.assertEqual(2, len(nodes))
+        self.assertTrue(any(node for node in nodes if isinstance(
+            node,
+            extension._SourceCodeHyperlink,  # pylint: disable=protected-access
+        )))
 
 class _Common(unittest.TestCase):
     """A base class which is used by sub-classes to make tests more concise."""

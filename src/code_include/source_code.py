@@ -185,7 +185,11 @@ def _get_source_code(uri, tag):
     preprocessor = _get_page_preprocessor()
 
     if not tag:
+        # If the user didn't provide a tag, it means that they are
+        # trying to get the full module's source code.
+        #
         # The start of the source-code block is always marked using <span class="ch">
+        #
         child = soup.find("span", {"class": "ch"})
         node = child.parent
         preprocessor(node)
