@@ -10,6 +10,8 @@ import unittest
 from six.moves import mock
 from six.moves import urllib
 
+from code_include import source_code
+
 from .. import common
 
 
@@ -27,7 +29,7 @@ def _skip_from_ssl_error(url):
         return True
 
 
-class Reader(unittest.TestCase):
+class SourceReader(unittest.TestCase):
     """Check that external queries work."""
 
     @mock.patch("code_include.source_code._get_app_inventory")
@@ -324,6 +326,45 @@ class Reader(unittest.TestCase):
         content = [":func:`os.path.join`"]
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
+
+class InventoryReader(unittest.TestCase):
+    @mock.patch("code_include.source_code._get_source_code_from_object")
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def _test_import(
+        self,
+        content,
+        expected,
+        _get_app_inventory,
+        _get_source_code_from_object,
+    ):
+        # """A generic test function. It tests for some source code from an inventory.
+        #
+        # Args:
+        #     content (list[str]):
+        #         The lines that the user provides in a standard code-include block.
+        #     expected (str):
+        #         The converted source-code text that will be tested for.
+        #     _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+        #         The function that's used to import a Python object to
+        #         get its source-code to find every HTML file-path and
+        #         tag-able header.
+        #
+        # """
+        _get_source_code_from_object.return_value = ""
+        path = "https://ways.readthedocs.io/en/latest/objects.inv"
+        _get_app_inventory.return_value = common.load_cache_from_url(path)
+        _get_source_code_from_object.return_value = ""
+
+        directive = common.make_mock_directive(content)
+        nodes = directive.run()
+
+        with open("/tmp/test.py", "w") as handler:
+            handler.write(nodes[0].astext())
+
+        self.assertNotEqual([], nodes)
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(expected, nodes[0].astext())
+
     def test_class(self):
         """Get the source-code of an importable class."""
         content = [":class:`ways.plugin.Plugin`"]
@@ -378,32 +419,40 @@ class Reader(unittest.TestCase):
 
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_module(self):
+    @mock.patch("code_include.source_code._get_source_module_data")
+    def test_module(self, _get_source_module_data):
         """Get the source-code of an importable module."""
-        content = [":meth:`ways.plugin`"]
+        _get_source_module_data.return_value = (
+            "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
+            "",
+        )
+
+        content = [":mod:`ways.base.plugin`"]
+
         expected = textwrap.dedent(
             """\
             #!/usr/bin/env python
             # -*- coding: utf-8 -*-
 
-            '''A module that holds Plugin classes - objects that combine into a Context.'''
+            '''A module that holds Plugin classes and objects that combine into a Context.'''
 
             # IMPORT STANDARD LIBRARIES
             import uuid
 
             # IMPORT THIRD-PARTY LIBRARIES
-            import ways
             import six
 
+            # IMPORT WAYS LIBRARIES
+            import ways
+
             # IMPORT LOCAL LIBRARIES
-            from .core import check
-            from . import common
-            from . import cache
+            from ..core import check
+            from ..helper import common
 
 
             class PluginRegistry(type):
 
-                '''A metaclass that adds newly-created Plugin objects to a cache.'''
+                '''A metaclass that adds new Plugin objects to a cache.'''
 
                 def __new__(mcs, clsname, bases, attrs):
                     '''Add the created object to the HistoryCache.'''
@@ -428,6 +477,7 @@ class Reader(unittest.TestCase):
                     return new_class
 
 
+            # pylint: disable=too-few-public-methods
             @six.add_metaclass(PluginRegistry)
             class Plugin(object):
 
@@ -436,10 +486,6 @@ class Reader(unittest.TestCase):
                 add_to_registry = True
                 _data = dict()
 
-                def __init__(self):
-                    '''Create the object and keep a reference to the cache.'''
-                    super(Plugin, self).__init__()
-
                 @property
                 def data(self):
                     '''dict[str]: The display properties (like {'color': 'red'}).'''
@@ -447,6 +493,12 @@ class Reader(unittest.TestCase):
 
                 @data.setter
                 def data(self, value):
+                    '''Set the data on this instance with whatever value is.
+
+                    Args:
+                        value (dict[str]): The new values for this instance.
+
+                    '''
                     self._data = value
 
 
@@ -467,7 +519,7 @@ class Reader(unittest.TestCase):
 
                 add_to_registry = False
 
-                def __init__(self, sources, info, assignment):
+                def __init__(self, name, sources, info, assignment):
                     '''Create the object and set its sources.
 
                     Args:
@@ -504,6 +556,7 @@ class Reader(unittest.TestCase):
                     except AttributeError:
                         pass
 
+                    self.name = name
                     self._info = info
                     self.sources = tuple(sources)
                     self._data = self._info.get('data', dict())
@@ -511,45 +564,29 @@ class Reader(unittest.TestCase):
 
                     super(DataPlugin, self).__init__()
 
-                def _toggle_read_only(self):
-                    '''Change the stored data to be overridable or not.'''
-                    try:
-                        self._info.settable = not self._info.settable
-                    except AttributeError:
-                        pass
-
                 @classmethod
                 def _required_keys(cls):
                     '''tuple[str]: Keys that must be set in our Plugin.'''
                     return ('hierarchy', )
 
-                def is_findable(self):
-                    '''If this Plugin is okay to query directly.
+                def is_path(self):
+                    '''If the mapping is a filepath or None if unsure.
 
-                    Some plugins are meant to be combined with other plugins and aren't
-                    actually meant to be queried by themselves. This kind of behavior is
-                    allowed by our system using the 'findable' key.
+                    Returns:
+                        bool or NoneType: If the mapping is a path to a file/folder on disk.
 
                     '''
-                    return self._info.get('findable', True)
-
-                def is_hidden(self):
-                    '''bool: If this Plugin would be hidden (from view or from code).'''
-                    return self._info.get('hidden', False)
-
-                def is_navigatable(self):
-                    '''bool: If we're allowed to move into the mapping in this instance.'''
-                    return self._info.get('navigatable', True)
-
-                def is_selectable(self):
-                    '''bool: If this mapping were displayed - whether it is selectable.'''
-                    return self._info.get('selectable', True)
+                    try:
+                        return self._info['path']
+                    except KeyError:
+                        return None
 
                 def get_assignment(self):
+                    '''str: Where this Plugin lives in Ways, along with its hierarchy.'''
                     return self.assignment
 
                 def get_groups(self):
-                    '''The groups that this Plugin evaluates onto.
+                    '''Get the groups that this Plugin evaluates onto.
 
                     Note:
                         The term 'groups' is not the same as the assignment of a Plugin.
@@ -569,10 +606,6 @@ class Reader(unittest.TestCase):
                     '''tuple[str] or str: The location that this Plugin exists within.'''
                     return self._info['hierarchy']
 
-                def get_id(self):
-                    '''str: The name associated with this Plugin.'''
-                    return self._info['id']
-
                 def get_mapping(self):
                     '''str: The physical location of this Plugin (on the filesystem).'''
                     try:
@@ -586,11 +619,12 @@ class Reader(unittest.TestCase):
 
                 def get_max_folder(self):
                     '''str: The furthest location up that this plugin can navigate to.'''
-                    return self._info.get('max_folder', self.get_mapping())
+                    return self._info.get('max_folder', '')
 
                 def get_platforms(self):
-                    '''tuple[str]: The platforms that this Plugin is allowed to run on.'''
-                    return self._info.get('platforms', ('*', ))
+                    '''set[str]: The platforms that this Plugin is allowed to run on.'''
+                    platforms = ways.get_known_platfoms()
+                    return set(self._info.get('platforms', platforms))
 
                 def get_uses(self):
                     '''tuple[str]: The Context hierarchies this instance depends on.'''
@@ -598,7 +632,7 @@ class Reader(unittest.TestCase):
 
                 def get_uuid(self):
                     '''str: A unique ID for this plugin.'''
-                    return self._info['uuid']
+                    return self._info.get('uuid', '')
 
                 def __repr__(self):
                     '''str: The information needed to reproduce this instance.'''
@@ -607,28 +641,20 @@ class Reader(unittest.TestCase):
                         sources=self.sources,
                         data=dict(self._info))
 
-                    # return '{cls_}(sources={sources!r}, uuid={uid})'.format(
-                    #     cls_=self.__class__.__name__,
-                    #     sources=self.sources,
-                    #     uid=self.get_uuid())
-
-                # def __str__(self):
-                #     '''str: A pretty-print of the plugin.'''
-                #     return '{cls_}(sources={sources!r}, uuid={uid})'.format(
-                #         cls_=self.__class__.__name__,
-                #         sources=self.sources,
-                #         uid=self.get_uuid())
+                def __str__(self):
+                    '''str: A more concise print-out of this instance.'''
+                    return '{cls_}(hierarchy={hierarchy}, sources={sources!r})'.format(
+                        cls_=self.__class__.__name__,
+                        hierarchy=self.get_hierarchy(),
+                        sources=self.sources)
 
 
             def get_assignment(obj):
+                '''str: Get an object's assignment or fallback to ways.DEFAULT_ASSIGNMENT.'''
                 try:
                     return obj.get_assignment()
                 except AttributeError:
-                    return common.DEFAULT_ASSIGNMENT
-
-
-            if __name__ == '__main__':
-                print(__doc__)"""
+                    return common.DEFAULT_ASSIGNMENT"""
         )
 
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
