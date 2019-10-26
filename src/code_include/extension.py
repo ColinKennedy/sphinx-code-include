@@ -48,11 +48,11 @@ class Directive(rst.Directive):
     }
 
     def _is_link_requested(self):
-        # TODO : Finish this
-        return False
+        """bool: Check if the user wants to link to the Python documentation."""
+        return "link-to-documentation" in self.options
 
     def _is_source_requested(self):
-        """bool: Check if the user wants hyperlinks added to the block output."""
+        """bool: Check if the user wants to link to the original Python source-code."""
         return "link-to-source" in self.options
 
     def _needs_unindent(self):

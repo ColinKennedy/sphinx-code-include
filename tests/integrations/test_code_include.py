@@ -10,8 +10,6 @@ import unittest
 from six.moves import mock
 from six.moves import urllib
 
-from code_include import source_code
-
 from .. import common
 
 
@@ -328,6 +326,8 @@ class SourceReader(unittest.TestCase):
 
 
 class InventoryReader(unittest.TestCase):
+    """Check that external queries to Sphinx intersphinx inventtory files work."""
+
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test_import(

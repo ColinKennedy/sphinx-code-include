@@ -80,6 +80,8 @@ class Inputs(unittest.TestCase):
 
 
 class Linking(unittest.TestCase):
+    """A class that checks if linking to source code and documentation works."""
+
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
@@ -99,7 +101,25 @@ class Linking(unittest.TestCase):
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.extension.Directive._is_link_requested")
     @mock.patch("code_include.extension.Directive._needs_unindent")
-    def test_link_to_source(self, _needs_unindent, _is_link_requested, _get_source_code_from_object):
+    def test_link_to_source(
+        self,
+        _needs_unindent,
+        _is_link_requested,
+        _get_source_code_from_object,
+    ):
+        """Link to the original page where Python source-code was found.
+
+        Args:
+            _needs_unindent (:class:`mock.mock.MagicMock`):
+                The patched function that controls indentation of code-include.
+            _is_link_requested (:class:`mock.mock.MagicMock`):
+                This adds a hyperlink to the original Python source-code.
+            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+                Disable reading from source-code. This forces
+                sphinx-code-include to read from a Sphinx inventory
+                file.
+
+        """
         _needs_unindent.return_value = False
         _is_link_requested.return_value = True
         _get_source_code_from_object.return_value = ""
@@ -115,34 +135,7 @@ class Linking(unittest.TestCase):
             "MyKlass.get_method",
         )
         content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
-        nodes = self._get_nodes(data, content)
-
-        self.assertEqual(2, len(nodes))
-        self.assertTrue(any(node for node in nodes if isinstance(
-            node,
-            extension._SourceCodeHyperlink,  # pylint: disable=protected-access
-        )))
-
-    @mock.patch("code_include.source_code._get_source_code_from_object")
-    @mock.patch("code_include.extension.Directive._is_link_requested")
-    @mock.patch("code_include.extension.Directive._needs_unindent")
-    def test_link_to_source(self, _needs_unindent, _is_link_requested, _get_source_code_from_object):
-        _needs_unindent.return_value = False
-        _is_link_requested.return_value = True
-        _get_source_code_from_object.return_value = ""
-
-        data = (
-            os.path.join(
-                _CURRENT_DIRECTORY,
-                "fake_project",
-                "_modules",
-                "fake_project",
-                "basic.html",
-            ),
-            "MyKlass.get_method",
-        )
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
-        nodes = self._get_nodes(data, content)
+        nodes = self._get_nodes(data, content)  # pylint: disable=no-value-for-parameter
 
         self.assertEqual(2, len(nodes))
         self.assertTrue(any(node for node in nodes if isinstance(
