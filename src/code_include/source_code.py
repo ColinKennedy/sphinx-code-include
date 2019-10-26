@@ -16,7 +16,10 @@ from . import error_classes
 from . import helper
 
 APPLICATION = None
-SourceResult = collections.namedtuple('SourceResult', "code namespace source_code_link documentation_link")
+SourceResult = collections.namedtuple(
+    'SourceResult',
+    "code namespace source_code_link documentation_link",
+)
 
 
 @helper.memoize
