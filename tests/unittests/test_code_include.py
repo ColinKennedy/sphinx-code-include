@@ -100,12 +100,12 @@ class Linking(unittest.TestCase):
         return directive.run()
 
     @mock.patch("code_include.source_code._get_source_code_from_object")
-    @mock.patch("code_include.extension.Directive._is_link_requested")
+    @mock.patch("code_include.extension.Directive._is_source_requested")
     @mock.patch("code_include.extension.Directive._needs_unindent")
     def test_link_to_source(
         self,
         _needs_unindent,
-        _is_link_requested,
+        _is_source_requested,
         _get_source_code_from_object,
     ):
         """Link to the original page where Python source-code was found.
@@ -113,7 +113,7 @@ class Linking(unittest.TestCase):
         Args:
             _needs_unindent (:class:`mock.mock.MagicMock`):
                 The patched function that controls indentation of code-include.
-            _is_link_requested (:class:`mock.mock.MagicMock`):
+            _is_source_requested (:class:`mock.mock.MagicMock`):
                 This adds a hyperlink to the original Python source-code.
             _get_source_code_from_object (:class:`mock.mock.MagicMock`):
                 Disable reading from source-code. This forces
@@ -122,7 +122,7 @@ class Linking(unittest.TestCase):
 
         """
         _needs_unindent.return_value = False
-        _is_link_requested.return_value = True
+        _is_source_requested.return_value = True
         _get_source_code_from_object.return_value = ""
 
         data = (

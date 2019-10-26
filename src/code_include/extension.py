@@ -43,6 +43,7 @@ class Directive(rst.Directive):
     option_spec = {
         "language": rst.directives.unchanged,
         "link-at-bottom": rst.directives.flag,
+        "link-to-documentation": rst.directives.flag,
         "link-to-source": rst.directives.flag,
         "no-unindent": rst.directives.flag,
     }
@@ -194,7 +195,7 @@ class Directive(rst.Directive):
             else:
                 results.append(hyperlink)
 
-        if result.source_code_link and is_link_requested:
+        if result.source_code_link and is_source_requested:
             hyperlink = _SourceCodeHyperlink()
             hyperlink["namespace"] = result.namespace
             hyperlink["href"] = result.source_code_link
