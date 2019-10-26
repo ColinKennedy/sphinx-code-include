@@ -150,6 +150,7 @@ class Linking(unittest.TestCase):
             extension._SourceCodeHyperlink,  # pylint: disable=protected-access
         )))
 
+
 class _Common(unittest.TestCase):
     """A base class which is used by sub-classes to make tests more concise."""
 
