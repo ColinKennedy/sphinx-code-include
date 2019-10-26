@@ -82,11 +82,12 @@ class Inputs(unittest.TestCase):
 class Linking(unittest.TestCase):
     """A class that checks if linking to source code and documentation works."""
 
+    @staticmethod
     @mock.patch("code_include.source_code._get_source_module_data")
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
     def _get_nodes(
-        self, data, content, _inventory, _get_from_object, _get_source_module_data
+        data, content, _inventory, _get_from_object, _get_source_module_data
     ):
         cache = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
 
