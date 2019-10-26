@@ -108,19 +108,19 @@ class Linking(unittest.TestCase):
         _is_link_requested,
         _get_source_code_from_object,
     ):
-        # """Link to the original page where Python source-code was found.
-        #
-        # Args:
-        #     _needs_unindent (:class:`mock.mock.MagicMock`):
-        #         The patched function that controls indentation of code-include.
-        #     _is_source_requested (:class:`mock.mock.MagicMock`):
-        #         This adds a hyperlink to the original Python source-code.
-        #     _get_source_code_from_object (:class:`mock.mock.MagicMock`):
-        #         Disable reading from source-code. This forces
-        #         sphinx-code-include to read from a Sphinx inventory
-        #         file.
-        #
-        # """
+        """Link to the original page where Python source-code was found.
+
+        Args:
+            _needs_unindent (:class:`mock.mock.MagicMock`):
+                The patched function that controls indentation of code-include.
+            _is_link_requested (:class:`mock.mock.MagicMock`):
+                This adds a hyperlink to the original Python documentation.
+            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+                Disable reading from source-code. This forces
+                sphinx-code-include to read from a Sphinx inventory
+                file.
+
+        """
         _needs_unindent.return_value = False
         _is_link_requested.return_value = True
         _get_source_code_from_object.return_value = ""
