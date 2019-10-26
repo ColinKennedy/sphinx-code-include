@@ -81,7 +81,6 @@ class SourceReader(unittest.TestCase):
         path = "https://ways.readthedocs.io/en/latest/objects.inv"
         _get_app_inventory.return_value = common.load_cache_from_url(path)
         _get_source_module_data.return_value = (
-            "https://ways.readthedocs.io/en/latest",
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
             "DataPlugin",
         )
@@ -370,7 +369,6 @@ class InventoryReader(unittest.TestCase):
     def test_class(self, _get_source_module_data):
         """Get the source-code of an importable class."""
         _get_source_module_data.return_value = (
-            "https://ways.readthedocs.io/en/latest",
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
             "Plugin",
         )
@@ -408,7 +406,6 @@ class InventoryReader(unittest.TestCase):
     def test_function(self, _get_source_module_data):
         """Get the source-code of an importable function."""
         _get_source_module_data.return_value = (
-            "https://ways.readthedocs.io/en/latest",
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
             "get_assignment",
         )
@@ -430,7 +427,6 @@ class InventoryReader(unittest.TestCase):
     def test_method(self, _get_source_module_data):
         """Get the source-code of an importable method."""
         _get_source_module_data.return_value = (
-            "https://ways.readthedocs.io/en/latest",
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
             "DataPlugin.get_groups",
         )
@@ -462,7 +458,6 @@ class InventoryReader(unittest.TestCase):
     def test_module(self, _get_source_module_data):
         """Get the source-code of an importable module."""
         _get_source_module_data.return_value = (
-            "https://ways.readthedocs.io/en/latest",
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
             "",
         )
