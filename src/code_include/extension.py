@@ -16,7 +16,15 @@ from . import source_code
 _SETTINGS = frontend.OptionParser().get_default_values()
 
 
-class Node(nodes.General, nodes.Element):
+class _DocumentationHyperlink(nodes.General, nodes.Element):
+    """A container that makes hyperlink text to a Python object's documentation."""
+
+    pass
+
+
+class _SourceCodeHyperlink(nodes.General, nodes.Element):
+    """A container that makes hyperlink text to source code."""
+
     pass
 
 
