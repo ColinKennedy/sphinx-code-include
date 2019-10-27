@@ -79,7 +79,49 @@ class Inputs(unittest.TestCase):
         )
 
 
-class Linking(unittest.TestCase):
+class ContentsStore(unittest.TestCase):
+    @staticmethod
+    def _get_fake_project_class():
+        return [u":class:`fake_project.basic.MyKlass`"]
+
+    @staticmethod
+    def _get_fake_project_function():
+        return [u":func:`fake_project.basic.set_function_thing`"]
+
+    @staticmethod
+    def _get_fake_project_module():
+        return [u":mod:`fake_project.basic`"]
+
+    @staticmethod
+    def _get_fake_project_nested_class():
+        return [u":class:`fake_project.nested_folder.another.MyKlass`"]
+
+    @staticmethod
+    def _get_fake_project_nested_function():
+        return [u":func:`fake_project.nested_folder.another.set_function_thing`"]
+
+    @staticmethod
+    def _get_fake_project_nested_private_function():
+        return [u":func:`fake_project.nested_folder.another._set_private_function_thing`"]
+
+    @staticmethod
+    def _get_fake_project_nested_method():
+        return [u":meth:`fake_project.nested_folder.another.MyKlass.get_method`"]
+
+    @staticmethod
+    def _get_fake_project_nested_module():
+        return [u":mod:`fake_project.nested_folder.another`"]
+
+    @staticmethod
+    def _get_fake_project_private_function():
+        return [u":func:`fake_project.basic._set_private_function_thing`"]
+
+    @staticmethod
+    def _get_fake_project_method():
+        return [u":meth:`fake_project.basic.MyKlass.get_method`"]
+
+
+class Linking(ContentsStore):
     """A class that checks if linking to source code and documentation works."""
 
     @staticmethod
@@ -135,7 +177,7 @@ class Linking(unittest.TestCase):
             ),
             "MyKlass.get_method",
         )
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        content = self._get_fake_project_method()
         nodes = self._get_nodes(data, content)  # pylint: disable=no-value-for-parameter
 
         self.assertEqual(2, len(nodes))
@@ -180,7 +222,7 @@ class Linking(unittest.TestCase):
             ),
             "MyKlass.get_method",
         )
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        content = self._get_fake_project_method()
         nodes = self._get_nodes(data, content)  # pylint: disable=no-value-for-parameter
 
         self.assertEqual(2, len(nodes))
@@ -190,7 +232,7 @@ class Linking(unittest.TestCase):
         )))
 
 
-class _Common(unittest.TestCase):
+class _Common(ContentsStore):
     """A base class which is used by sub-classes to make tests more concise."""
 
     @mock.patch("code_include.source_code._get_source_module_data")
@@ -249,7 +291,7 @@ class RenderText(_Common):
             ),
             "MyKlass.get_method",
         )
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        content = self._get_fake_project_method()
 
         expected = textwrap.dedent(
             '''\
@@ -272,7 +314,7 @@ class RenderText(_Common):
             ),
             "MyKlass",
         )
-        content = [u":class:`fake_project.basic.MyKlass`"]
+        content = self._get_fake_project_class()
 
         expected = textwrap.dedent(
             '''\
@@ -323,7 +365,7 @@ class RenderText(_Common):
             ),
             "set_function_thing",
         )
-        content = [u":func:`fake_project.basic.set_function_thing`"]
+        content = self._get_fake_project_function()
 
         expected = textwrap.dedent(
             '''\
@@ -353,7 +395,7 @@ class RenderText(_Common):
             ),
             "_set_private_function_thing",
         )
-        content = [u":func:`fake_project.basic._set_private_function_thing`"]
+        content = self._get_fake_project_private_function()
 
         expected = textwrap.dedent(
             '''\
@@ -383,7 +425,7 @@ class RenderText(_Common):
             ),
             "",
         )
-        content = [u":mod:`fake_project.basic`"]
+        content = self._get_fake_project_module()
 
         expected = textwrap.dedent(
             '''\
@@ -531,7 +573,7 @@ class RenderTextNested(_Common):
             ),
             "MyKlass.get_method",
         )
-        content = [u":meth:`fake_project.nested_folder.another.MyKlass.get_method`"]
+        content = self._get_fake_project_nested_method()
 
         expected = textwrap.dedent(
             '''\
@@ -555,7 +597,8 @@ class RenderTextNested(_Common):
             ),
             "MyKlass",
         )
-        content = [u":class:`fake_project.nested_folder.another.MyKlass`"]
+
+        content = self._get_fake_project_nested_class()
 
         expected = textwrap.dedent(
             '''\
@@ -607,7 +650,7 @@ class RenderTextNested(_Common):
             ),
             "set_function_thing",
         )
-        content = [u":func:`fake_project.nested_folder.another.set_function_thing`"]
+        content = self._get_fake_project_nested_function()
 
         expected = textwrap.dedent(
             '''\
@@ -638,7 +681,7 @@ class RenderTextNested(_Common):
             ),
             "_set_private_function_thing",
         )
-        content = [u":func:`fake_project.nested_folder.another._set_private_function_thing`"]
+        content = self._get_fake_project_nested_private_function()
 
         expected = textwrap.dedent(
             '''\
@@ -669,7 +712,8 @@ class RenderTextNested(_Common):
             ),
             "",
         )
-        content = [u":mod:`fake_project.nested_folder.another`"]
+
+        content = self._get_fake_project_nested_module()
 
         expected = textwrap.dedent(
             '''\
@@ -825,7 +869,8 @@ class Options(_Common):
             ),
             "MyKlass.get_method",
         )
-        content = [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        content = self._get_fake_project_method()
+
         expected = '''\
     def get_method(self):
         """int: Get some value."""
