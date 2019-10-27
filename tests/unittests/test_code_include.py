@@ -899,7 +899,7 @@ class Options(_Common):
             ),
             "set_function_thing",
         )
-        content = [u":func:`fake_project.basic.set_function_thing`"]
+        content = self._get_fake_project_function()
 
         expected = '''\
 def set_function_thing(value, another):
