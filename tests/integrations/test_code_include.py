@@ -3,7 +3,6 @@
 
 """A series of tests that access content outside of this repository."""
 
-import sys
 import textwrap
 import unittest
 
@@ -245,83 +244,21 @@ class SourceReader(unittest.TestCase):
 
     def test_import(self):
         """Get the source-code of an importable object."""
-        version = sys.version_info
+        expected = textwrap.dedent(
+            '''\
+            def fill(text, width=70, **kwargs):
+                """Fill a single paragraph of text, returning a new string.
 
-        if version.major < 3:
-            expected = textwrap.dedent(
-                '''\
-                def join(a, *p):
-                    """Join two or more pathname components, inserting '/' as needed.
-                    If any component is an absolute path, all previous path components
-                    will be discarded.  An empty last part will result in a path that
-                    ends with a separator."""
-                    path = a
-                    for b in p:
-                        if b.startswith('/'):
-                            path = b
-                        elif path == '' or path.endswith('/'):
-                            path +=  b
-                        else:
-                            path += '/' + b
-                    return path'''
-            )
-        elif version.major >= 3 and version.minor <= 5:
-            expected = textwrap.dedent(
-                '''\
-                def join(a, *p):
-                    """Join two or more pathname components, inserting '/' as needed.
-                    If any component is an absolute path, all previous path components
-                    will be discarded.  An empty last part will result in a path that
-                    ends with a separator."""
-                    sep = _get_sep(a)
-                    path = a
-                    try:
-                        if not p:
-                            path[:0] + sep  #23780: Ensure compatible data type even if p is null.
-                        for b in p:
-                            if b.startswith(sep):
-                                path = b
-                            elif not path or path.endswith(sep):
-                                path += b
-                            else:
-                                path += sep + b
-                    except (TypeError, AttributeError, BytesWarning):
-                        genericpath._check_arg_types('join', a, *p)
-                        raise
-                    return path'''
-            )
-        elif version.major >= 3 and version.minor >= 6:
-            expected = textwrap.dedent(
-                '''\
-                def join(a, *p):
-                    """Join two or more pathname components, inserting '/' as needed.
-                    If any component is an absolute path, all previous path components
-                    will be discarded.  An empty last part will result in a path that
-                    ends with a separator."""
-                    a = os.fspath(a)
-                    sep = _get_sep(a)
-                    path = a
-                    try:
-                        if not p:
-                            path[:0] + sep  #23780: Ensure compatible data type even if p is null.
-                        for b in map(os.fspath, p):
-                            if b.startswith(sep):
-                                path = b
-                            elif not path or path.endswith(sep):
-                                path += b
-                            else:
-                                path += sep + b
-                    except (TypeError, AttributeError, BytesWarning):
-                        genericpath._check_arg_types('join', a, *p)
-                        raise
-                    return path'''
-            )
-        else:
-            raise NotImplementedError(
-                'Version "{version}" is not supported.'.format(version=version)
-            )
+                Reformat the single paragraph in 'text' to fit in lines of no more
+                than 'width' columns, and return a new string containing the entire
+                wrapped paragraph.  As with wrap(), tabs are expanded and other
+                whitespace characters converted to space.  See TextWrapper class for
+                available keyword args to customize wrapping behaviour.
+                """
+                w = TextWrapper(width=width, **kwargs)
+                return w.fill(text)''')
 
-        content = [":func:`os.path.join`"]
+        content = [":func:`textwrap.fill`"]
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
 
