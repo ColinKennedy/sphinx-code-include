@@ -36,8 +36,8 @@ Overview
     :alt: Coverage Status
     :target: https://codecov.io/github/ColinKennedy/sphinx-code-include
 
-.. |codacy| image:: https://img.shields.io/codacy/grade/foo_bar_replace_later.svg
-    :target: https://www.codacy.com/app/ColinKennedy/sphinx-code-include
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/cd0e702ea8f744088d93c4addd3deeea
+    :target: https://www.codacy.com/manual/ColinKennedy/sphinx-code-include?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ColinKennedy/sphinx-code-include&amp;utm_campaign=Badge_Grade
     :alt: Codacy Code Quality Status
 
 .. |version| image:: https://img.shields.io/pypi/v/sphinx-code-include.svg
