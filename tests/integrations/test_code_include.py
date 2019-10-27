@@ -16,7 +16,7 @@ def _skip_from_ssl_error(url):
     """bool: Check if the given URL can be reached."""
     # This function is mostly meant for pypy3
     try:
-        from _cffi_ssl._stdssl import error  # pylint: disable=import-outside-toplevel
+        from _cffi_ssl._stdssl import error
     except ImportError:
         return False
 
