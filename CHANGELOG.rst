@@ -2,6 +2,12 @@
 Changelog
 =========
 
+1.1.1 (2019-10-26)
+------------------
+
+* Fixed the requirements of the PyPI package
+
+
 1.1.0 (2019-10-26)
 ------------------
 
