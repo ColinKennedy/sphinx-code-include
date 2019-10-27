@@ -69,7 +69,7 @@ class Inputs(unittest.TestCase):
         """Check that a bad tag like ":foo:" raises the expected exception."""
         self._test(  # pylint: disable=no-value-for-parameter
             [u":nonexistent:tag:`some.module.that.may.exist`"],
-            error_classes.MissingDirective,
+            error_classes.MissingTag,
         )
 
     def test_incorrect_namespace(self):
@@ -80,6 +80,13 @@ class Inputs(unittest.TestCase):
 
 
 class ContentsStore(unittest.TestCase):
+    """A class that provides input text for other unittest classes.
+
+    The text in this class mimics what the user would write in a regular
+    code-include block.
+
+    """
+
     @staticmethod
     def _get_fake_project_class():
         return [u":class:`fake_project.basic.MyKlass`"]
@@ -556,9 +563,7 @@ class RenderText(_Common):
 
 
 class RenderTextNested(_Common):
-    """A class that checks to make sure projects get and return the right code.
-
-    """
+    """A class that checks to make sure projects get and return the right code."""
 
     def test_get_from_html(self):
         """Check that a basic HTML file can be read."""

@@ -15,6 +15,7 @@ from six.moves import urllib
 from . import error_classes
 from . import helper
 
+_OBJ_TAG = "obj"
 APPLICATION = None
 SourceResult = collections.namedtuple(
     'SourceResult',
@@ -231,11 +232,11 @@ def _get_source_module_data(uri, directive):
     return (root + "/" + module_path, tag)
 
 
-def _get_source_code_from_inventory(directive, namespace):
+def _get_source_code_from_inventory(tag, namespace):
     """Get the raw code of some class, method, attribute, or function.
 
     Args:
-        directive (str):
+        tag (str):
             The Python type that `namespace` is. Example: "py:method".
         namespace (str):
             The importable Python location of some class, method, or function.
@@ -244,18 +245,88 @@ def _get_source_code_from_inventory(directive, namespace):
     Raises:
         RuntimeError:
             If no intersphinx inventory cache could be found.
-        :class:`.MissingDirective`:
-            If `directive` wasn't found in any Sphinx project in the
+        :class:`.MissingTag`:
+            If `tag` wasn't found in any Sphinx project in the
             intersphinx inventory cache.
         :class:`.MissingNamespace`:
-            If `directive` was in the intersphinx inventory cache but
+            If `tag` was in the intersphinx inventory cache but
             the no `namespace` could be found in any Sphinx project in
             the intersphinx inventory cache.
 
     Returns:
-        str: The found source-code for `namespace`, with a type of `directive`.
+        str: The found source-code for `namespace`, with a type of `tag`.
 
     """
+    def __get_uri(tag, cache):
+        """Find a URI, relative to the Sphinx project, that points to source code.
+
+        The basic logic of this function goes like this. If `tag`
+        is "obj", try every possible type of tag before raising an
+        exception. If it isn't "obj" then raise an exception as soon as
+        one is needed.
+
+        Args:
+            tag (str):
+                A type of marker used by Sphinx to find source code.
+                Examples: "py:class", "py:staticmethod", "py:function", "obj".
+            cache (dict[str, dict[str, tuple[str, str, str, str]]]):
+                Get all cached targets + namespaces.
+
+        Returns:
+            str:
+                The project-relative path.
+                Example: "api/fake_project.html#module-fake_project.basic".
+
+        """
+        tags = [tag]
+
+        if tag == "obj":
+            # If the user doesn't know the tag-type of `namespace` then we must
+            # check every possible type, manually.
+            #
+            tags = [
+                "py:attribute",
+                "py:function",
+                "py:classmethod",
+                "py:staticmethod",
+                "py:method",
+                "py:class",
+                "py:module",
+            ]
+
+        for tag_ in tags:
+            try:
+                typed_tag_data = cache[tag_]
+            except KeyError:
+                if tag != _OBJ_TAG:
+                    raise error_classes.MissingTag(
+                        'Tag "{tag_}" was invalid. Options were, "{options}".'.format(
+                            tag_=tag_, options=sorted(cache)
+                        )
+                    )
+
+                continue
+
+            try:
+                _, _, uri, _ = typed_tag_data[namespace]
+            except KeyError:
+                if tag != _OBJ_TAG:
+                    raise error_classes.MissingNamespace(
+                        'Namespace "{namespace}" was invalid. Options were, "{options}".'.format(
+                            namespace=namespace, options=sorted(typed_tag_data)
+                        )
+                    )
+
+                continue
+
+            return uri
+
+        raise error_classes.MissingNamespace(
+            'Namespace "{namespace}" cound not be found for any tag searched by :obj:.'.format(
+                namespace=namespace
+            )
+        )
+
     cache = _get_app_inventory()
 
     if not cache:
@@ -264,25 +335,8 @@ def _get_source_code_from_inventory(directive, namespace):
             "Did intersphinx have a chance to run?"
         )
 
-    try:
-        typed_directive_data = cache[directive]
-    except KeyError:
-        raise error_classes.MissingDirective(
-            'Directive "{directive}" was invalid. Options were, "{options}".'.format(
-                directive=directive, options=sorted(cache)
-            )
-        )
-
-    try:
-        _, _, uri, _ = typed_directive_data[namespace]
-    except KeyError:
-        raise error_classes.MissingNamespace(
-            'Namespace "{namespace}" was invalid. Options were, "{options}".'.format(
-                namespace=namespace, options=sorted(typed_directive_data)
-            )
-        )
-
-    module_url, tag = _get_source_module_data(uri, directive)
+    uri = __get_uri(tag, cache)
+    module_url, tag = _get_source_module_data(uri, tag)
     code = _get_source_code(module_url, tag)
     full_source_code_url = module_url + "#" + tag
 

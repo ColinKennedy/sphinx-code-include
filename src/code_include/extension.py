@@ -101,7 +101,7 @@ class Directive(rst.Directive):
             )
 
             raise
-        except error_classes.MissingDirective:
+        except error_classes.MissingTag:
             self.warning(
                 'Directive "{directive}" was not found in the intersphinx inventory.'.format(
                     directive=directive
@@ -149,7 +149,7 @@ class Directive(rst.Directive):
         directive = formatter.get_converted_directive(directive) or directive
 
         known_exceptions = (
-            error_classes.MissingDirective,
+            error_classes.MissingTag,
             error_classes.MissingNamespace,
             error_classes.NotFoundFile,
             error_classes.NotFoundUrl,

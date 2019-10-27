@@ -10,24 +10,24 @@ class MissingContent(Exception):
     pass
 
 
-class MissingDirective(Exception):
-    """If the user specifies a missing directive.
-
-    For example, the user might write a target like :mod:`foo`. If
-    ":mod:" is missing across all Sphinx projects in the interspinx
-    inventory, this exception raises.
-
-    """
-
-    pass
-
-
 class MissingNamespace(Exception):
     """If the user specifies a missing target.
 
     For example, the user might write a target like :mod:`foo`. If "foo"
     is missing across ":mod:" locations for all Sphinx projects found in
     the interspinx inventory, this exception raises.
+
+    """
+
+    pass
+
+
+class MissingTag(Exception):
+    """If the user specifies a missing directive.
+
+    For example, the user might write a target like :mod:`foo`. If
+    ":mod:" is missing across all Sphinx projects in the interspinx
+    inventory, this exception raises.
 
     """
 
