@@ -122,6 +122,7 @@ def load_cache_from_url(url):
 
         intersphinx_timeout = None  # type: int
         tls_verify = False
+        user_agent = ""
 
     class MockApplication(object):  # pylint: disable=too-few-public-methods
         """A fake state machine for intersphinx to consume and pass-through."""
