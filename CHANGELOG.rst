@@ -2,6 +2,12 @@
 Changelog
 =========
 
+1.1.2 (2023-04-22)
+------------------
+
+* Added missing ``user_agent`` information. See https://github.com/ColinKennedy/sphinx-code-include/issues/5
+
+
 1.1.1 (2019-10-26)
 ------------------
 

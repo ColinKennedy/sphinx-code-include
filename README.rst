@@ -56,9 +56,9 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/sphinx-code-include
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/ColinKennedy/sphinx-code-include/v1.1.1.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/ColinKennedy/sphinx-code-include/v1.1.2.svg
     :alt: Commits since latest release
-    :target: https://github.com/ColinKennedy/sphinx-code-include/compare/v1.1.1...master
+    :target: https://github.com/ColinKennedy/sphinx-code-include/compare/v1.1.2...master
 
 
 

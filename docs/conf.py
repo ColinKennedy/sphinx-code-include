@@ -20,7 +20,7 @@ project = u'Sphinx Code Include'
 year = '2019'
 author = u'Colin Kennedy'
 copyright = '{0}, {1}'.format(year, author)
-version = release = u'1.1.1'
+version = release = u'1.1.2'
 
 pygments_style = 'trac'
 templates_path = ['.']
