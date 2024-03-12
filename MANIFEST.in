@@ -10,6 +10,7 @@ include LICENSE
 include README.rst
 include pyproject.toml
 include requirements.txt
+include test_requirements.txt
 
 exclude .appveyor.yml
 exclude .bumpversion.cfg
@@ -17,6 +18,7 @@ exclude .codacy.yaml
 exclude .cookiecutterrc
 exclude .coveragerc
 exclude .editorconfig
+exclude .pylintrc
 exclude .travis.yml
 exclude tox.ini
 

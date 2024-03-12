@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# pylint: disable=line-too-long
 """A series of tests that access content outside of this repository."""
 
 import textwrap
@@ -16,7 +17,7 @@ def _skip_from_ssl_error(url):
     """bool: Check if the given URL can be reached."""
     # This function is mostly meant for pypy3
     try:
-        from _cffi_ssl._stdssl import error
+        from _cffi_ssl._stdssl import error  # pylint: disable=import-outside-toplevel
     except ImportError:
         return False
 
@@ -31,14 +32,14 @@ class SourceReader(unittest.TestCase):
 
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test_import(self, content, expected, _get_app_inventory):
-        """A generic test function. It tests for some source code from an importable Python object.
+        """Test for some source code from an importable Python object.
 
         Args:
             content (list[str]):
                 The lines that the user provides in a standard code-include block.
             expected (str):
                 The converted source-code text that will be tested for.
-            _get_app_inventory (:class:`mock.mock.MagicMock`):
+            _get_app_inventory (mock.mock.MagicMock):
                 The function that's normally used to query a Sphinx
                 project's inventory to find every HTML file-path and
                 tag-able header.
@@ -256,7 +257,8 @@ class SourceReader(unittest.TestCase):
                 available keyword args to customize wrapping behaviour.
                 """
                 w = TextWrapper(width=width, **kwargs)
-                return w.fill(text)''')
+                return w.fill(text)'''
+        )
 
         content = [":func:`textwrap.fill`"]
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter

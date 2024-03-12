@@ -2,6 +2,13 @@
 Changelog
 =========
 
+1.2.0 (2024-03-13)
+------------------
+
+* Added Python 3.10 support
+* Added initial GitHub workflow actions
+
+
 1.1.2 (2023-04-22)
 ------------------
 
