@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
+# NOTE: We don't need to worry about long lines in a non-source file
+# pylint: disable=line-too-long
+
 """The main module that sets up this repository as a Python/PyPI package."""
 
 from __future__ import absolute_import
@@ -59,6 +62,9 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Utilities",
@@ -69,12 +75,15 @@ setup(
         "Issue Tracker": "https://github.com/ColinKennedy/sphinx-code-include/issues",
     },
     keywords=[
-        "Sphinx", "code-include", "source-code", "source code", "include",
+        "Sphinx",
+        "code-include",
+        "source-code",
+        "source code",
+        "include",
     ],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
     install_requires=[
         read("requirements.txt").splitlines(),
     ],
-    extras_require={
-    },
+    extras_require={},
 )

@@ -118,9 +118,7 @@ def unindent_outer_whitespace(text):
             continue
 
         indent = len(line) - len(line.lstrip())
-
-        if indent < indent_size:
-            indent_size = indent
+        indent_size = min(indent_size, indent)
 
     if indent_size != sys.maxsize:
         lines = [line[indent_size:] for line in lines]

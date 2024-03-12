@@ -7,8 +7,6 @@
 class MissingContent(Exception):
     """If a user creates a code-include directive with no target."""
 
-    pass
-
 
 class MissingNamespace(Exception):
     """If the user specifies a missing target.
@@ -18,8 +16,6 @@ class MissingNamespace(Exception):
     the interspinx inventory, this exception raises.
 
     """
-
-    pass
 
 
 class MissingTag(Exception):
@@ -31,16 +27,10 @@ class MissingTag(Exception):
 
     """
 
-    pass
-
 
 class NotFoundFile(Exception):
     """An class to describe a local intersphinx project that does not exist."""
 
-    pass
-
 
 class NotFoundUrl(Exception):
     """An class to describe a URL intersphinx project that does not exist."""
-
-    pass

@@ -5,7 +5,6 @@
 
 import textwrap
 
-from docutils import frontend
 from docutils import nodes
 from docutils.parsers import rst
 
@@ -17,13 +16,9 @@ from . import source_code
 class _DocumentationHyperlink(nodes.General, nodes.Element):
     """A container that makes hyperlink text to a Python object's documentation."""
 
-    pass
-
 
 class _SourceCodeHyperlink(nodes.General, nodes.Element):
     """A container that makes hyperlink text to source code."""
-
-    pass
 
 
 class Directive(rst.Directive):
@@ -86,7 +81,9 @@ class Directive(rst.Directive):
 
         """
         try:
-            return source_code.get_source_code(directive, namespace, prefer_import=prefer_import)
+            return source_code.get_source_code(
+                directive, namespace, prefer_import=prefer_import
+            )
         except error_classes.NotFoundFile as error:
             self.warning('File "{error}" does not exist.'.format(error=error))
 
@@ -222,29 +219,39 @@ def setup(application):
         dict[str, bool]: Configuration settings about this extension.
 
     """
+
     def before_documentation(self, node):
         """Create a hyperlink with the given node."""
-        self.body.append(textwrap.dedent(
-            '''\
+        self.body.append(
+            textwrap.dedent(
+                """\
             <div style="text-align: right">
                 Documentation:
                 <a href="{node[href]}">{node[namespace]}</a>
             </div>
-            '''.format(node=node)))
+            """.format(
+                    node=node
+                )
+            )
+        )
 
     def before_source_code(self, node):
         """Create a hyperlink with the given node."""
-        self.body.append(textwrap.dedent(
-            '''\
+        self.body.append(
+            textwrap.dedent(
+                """\
             <div style="text-align: right">
                 Source code:
                 <a href="{node[href]}">{node[namespace]}</a>
             </div>
-            '''.format(node=node)))
+            """.format(
+                    node=node
+                )
+            )
+        )
 
     def after(self, node):  # pylint: disable=unused-argument
         """Do nothing on-exit."""
-        pass
 
     source_code.APPLICATION = application
 
