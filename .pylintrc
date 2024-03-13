@@ -1,0 +1,10 @@
+[MASTER]
+
+disable=
+    # Remove some of the disables once Python 2 support is dropped
+    consider-using-f-string,
+    duplicate-code,
+    fixme,
+    raise-missing-from,
+    super-with-arguments,
+    useless-object-inheritance,

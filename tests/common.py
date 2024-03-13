@@ -30,7 +30,7 @@ def make_mock_directive(content):
     line_number = 11
     content_offset = 10
     block_text = (
-        u".. code-include:: :meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`\n"
+        ".. code-include:: :meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`\n"
     )
     state = mock.MagicMock()
     state_machine = mock.MagicMock()
@@ -121,6 +121,7 @@ def load_cache_from_url(url):
         """A fake set of settings for intersphinx to pass-through."""
 
         intersphinx_timeout = None  # type: int
+        tls_cacerts = ""  # Needed for Python 3.10+
         tls_verify = False
         user_agent = ""
 

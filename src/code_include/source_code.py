@@ -6,6 +6,7 @@
 import collections
 import functools
 import inspect
+import io
 import os
 
 import bs4
@@ -18,7 +19,7 @@ from . import helper
 _OBJ_TAG = "obj"
 APPLICATION = None
 SourceResult = collections.namedtuple(
-    'SourceResult',
+    "SourceResult",
     "code namespace source_code_link documentation_link",
 )
 
@@ -109,6 +110,7 @@ def _get_page_preprocessor():
             The node that will be shown to the user.
 
     """
+
     def do_nothing(application):  # pylint: disable=missing-docstring,unused-argument
         pass
 
@@ -173,11 +175,13 @@ def _get_source_code(uri, tag):
         if not os.path.isfile(uri):
             raise error_classes.NotFoundFile(uri)
 
-        with open(uri, "r") as handler:
+        with io.open(uri, "r", encoding="utf-8") as handler:
             contents = handler.read()
     else:
         try:
-            contents = urllib.request.urlopen(uri).read()  # pylint: disable=no-member
+            handle = urllib.request.urlopen(uri)  # pylint: disable=consider-using-with
+            contents = handle.read()
+            handle.close()
         except Exception:
             raise error_classes.NotFoundUrl(uri)
 
@@ -257,6 +261,7 @@ def _get_source_code_from_inventory(tag, namespace):
         str: The found source-code for `namespace`, with a type of `tag`.
 
     """
+
     def __get_uri(tag, cache):
         """Find a URI, relative to the Sphinx project, that points to source code.
 
@@ -355,6 +360,7 @@ def _get_source_code_from_object(namespace):
         str: The found source code, assuming `namespace` describes an importable location.
 
     """
+
     def _recursively_find_first_importable_object(namespaces):
         """Find the closest Python module to import from.
 
@@ -402,7 +408,7 @@ def _get_source_code_from_object(namespace):
             return object_
 
         root_namespace = object_.__name__ + "."  # Example: `os.`
-        tail = namespace[len(root_namespace):]  # Example: `path.join`
+        tail = namespace[len(root_namespace) :]  # Example: `path.join`
 
         objects = tail.split(".")  # Example: ["path", "join"]
         parent = object_

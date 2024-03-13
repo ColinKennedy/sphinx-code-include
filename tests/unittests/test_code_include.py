@@ -48,7 +48,9 @@ class Inputs(unittest.TestCase):
                 this test will forcibly raise the found exception.
 
         """
-        data = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
+        data = common.load_cache(
+            os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv")
+        )
 
         _get_app_inventory.return_value = data
         _reraise_exception.return_value = True
@@ -68,14 +70,14 @@ class Inputs(unittest.TestCase):
     def test_incorrect_directive_target(self):
         """Check that a bad tag like ":foo:" raises the expected exception."""
         self._test(  # pylint: disable=no-value-for-parameter
-            [u":nonexistent:tag:`some.module.that.may.exist`"],
+            [":nonexistent:tag:`some.module.that.may.exist`"],
             error_classes.MissingTag,
         )
 
     def test_incorrect_namespace(self):
-        """Check that a valid tag but incorrect namespace raises the expected exception."""
+        """Fail to generate text because the tag's namespace is missing."""
         self._test(  # pylint: disable=no-value-for-parameter
-            [u":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace
+            [":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace
         )
 
 
@@ -89,43 +91,45 @@ class ContentsStore(unittest.TestCase):
 
     @staticmethod
     def _get_fake_project_class():
-        return [u":class:`fake_project.basic.MyKlass`"]
+        return [":class:`fake_project.basic.MyKlass`"]
 
     @staticmethod
     def _get_fake_project_function():
-        return [u":func:`fake_project.basic.set_function_thing`"]
+        return [":func:`fake_project.basic.set_function_thing`"]
 
     @staticmethod
     def _get_fake_project_module():
-        return [u":mod:`fake_project.basic`"]
+        return [":mod:`fake_project.basic`"]
 
     @staticmethod
     def _get_fake_project_nested_class():
-        return [u":class:`fake_project.nested_folder.another.MyKlass`"]
+        return [":class:`fake_project.nested_folder.another.MyKlass`"]
 
     @staticmethod
     def _get_fake_project_nested_function():
-        return [u":func:`fake_project.nested_folder.another.set_function_thing`"]
+        return [":func:`fake_project.nested_folder.another.set_function_thing`"]
 
     @staticmethod
     def _get_fake_project_nested_private_function():
-        return [u":func:`fake_project.nested_folder.another._set_private_function_thing`"]
+        return [
+            ":func:`fake_project.nested_folder.another._set_private_function_thing`"
+        ]
 
     @staticmethod
     def _get_fake_project_nested_method():
-        return [u":meth:`fake_project.nested_folder.another.MyKlass.get_method`"]
+        return [":meth:`fake_project.nested_folder.another.MyKlass.get_method`"]
 
     @staticmethod
     def _get_fake_project_nested_module():
-        return [u":mod:`fake_project.nested_folder.another`"]
+        return [":mod:`fake_project.nested_folder.another`"]
 
     @staticmethod
     def _get_fake_project_private_function():
-        return [u":func:`fake_project.basic._set_private_function_thing`"]
+        return [":func:`fake_project.basic._set_private_function_thing`"]
 
     @staticmethod
     def _get_fake_project_method():
-        return [u":meth:`fake_project.basic.MyKlass.get_method`"]
+        return [":meth:`fake_project.basic.MyKlass.get_method`"]
 
 
 class Linking(ContentsStore):
@@ -138,7 +142,9 @@ class Linking(ContentsStore):
     def _get_nodes(
         data, content, _inventory, _get_from_object, _get_source_module_data
     ):
-        cache = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
+        cache = common.load_cache(
+            os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv")
+        )
 
         _inventory.return_value = cache
         _get_source_module_data.return_value = data
@@ -188,10 +194,16 @@ class Linking(ContentsStore):
         nodes = self._get_nodes(data, content)  # pylint: disable=no-value-for-parameter
 
         self.assertEqual(2, len(nodes))
-        self.assertTrue(any(node for node in nodes if isinstance(
-            node,
-            extension._DocumentationHyperlink,  # pylint: disable=protected-access
-        )))
+        self.assertTrue(
+            any(
+                node
+                for node in nodes
+                if isinstance(
+                    node,
+                    extension._DocumentationHyperlink,  # pylint: disable=protected-access
+                )
+            )
+        )
 
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.extension.Directive._is_source_requested")
@@ -233,10 +245,16 @@ class Linking(ContentsStore):
         nodes = self._get_nodes(data, content)  # pylint: disable=no-value-for-parameter
 
         self.assertEqual(2, len(nodes))
-        self.assertTrue(any(node for node in nodes if isinstance(
-            node,
-            extension._SourceCodeHyperlink,  # pylint: disable=protected-access
-        )))
+        self.assertTrue(
+            any(
+                node
+                for node in nodes
+                if isinstance(
+                    node,
+                    extension._SourceCodeHyperlink,  # pylint: disable=protected-access
+                )
+            )
+        )
 
 
 class _Common(ContentsStore):
@@ -246,7 +264,13 @@ class _Common(ContentsStore):
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test(
-        self, data, content, expected, _inventory, _get_from_object, _get_source_module_data
+        self,
+        data,
+        content,
+        expected,
+        _inventory,
+        _get_from_object,
+        _get_source_module_data,
     ):
         """A generic function that tests a code-include directive for some text.
 
@@ -269,7 +293,9 @@ class _Common(ContentsStore):
                 point of this function - testing generated source-code.
 
         """
-        cache = common.load_cache(os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv"))
+        cache = common.load_cache(
+            os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv")
+        )
 
         _inventory.return_value = cache
         _get_source_module_data.return_value = data
@@ -849,7 +875,7 @@ class RenderTextNested(_Common):
 
 
 class Options(_Common):
-    """A generic class that tests options that users can add to a code-include directive."""
+    """Make sure code-include directive options work for :obj: tags."""
 
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.extension.Directive._needs_unindent")
@@ -887,6 +913,7 @@ class Options(_Common):
     @mock.patch("code_include.source_code._get_page_preprocessor")
     def test_preprocessor(self, _get_page_preprocessor, _get_source_code_from_object):
         """Check that the optional user-configuration function works correctly."""
+
         def _remove_comments_and_docstrings(node):
             for tag in node.find_all("span", {"class": ["c1", "sd"]}):
                 tag.decompose()
@@ -906,7 +933,7 @@ class Options(_Common):
         )
         content = self._get_fake_project_function()
 
-        expected = '''\
+        expected = """\
 def set_function_thing(value, another):
     
     
@@ -916,6 +943,6 @@ def set_function_thing(value, another):
         return 2
 
     
-    return 1'''
+    return 1"""
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
