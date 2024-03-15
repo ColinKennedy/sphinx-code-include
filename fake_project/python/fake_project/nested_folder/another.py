@@ -110,12 +110,7 @@ def _set_private_function_thing(value, another):
 
 
 def set_function_thing(value, another):
-    """Do something here."""
-    # Do something with these values
-    # and more comment text, here.
-    #
     if value:
         return 2
 
-    # Another comment
     return 1

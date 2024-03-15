@@ -12,26 +12,27 @@ from code_include import extension
 from code_include import helper
 
 
-def make_mock_directive(content):
+def make_mock_directive(content, options=None):
     """Create the main class which is translated and rendered as text.
 
     Args:
         content (list[str]):
             The lines that the user provides in a standard code-include block.
+        options (dict[str, object], optional):
+            Directive modifiers (e.g. ``{"fallback-text": "foo bar"}``).
 
     Returns:
         :class:`code_include.extension`:
             The class that is later translated by Sphinx into HTML tags.
 
     """
+    options = options or {}
+
     name = "code-include"
     arguments = []
-    options = {}
     line_number = 11
     content_offset = 10
-    block_text = (
-        ".. code-include:: :meth:`ways.asdf.base.plugin.DataPlugin.get_hierarchy`\n"
-    )
+    block_text = ""
     state = mock.MagicMock()
     state_machine = mock.MagicMock()
 

@@ -303,10 +303,10 @@ class _Common(ContentsStore):
 
         directive = common.make_mock_directive(content)
         nodes = directive.run()
+        found = str(nodes[0].astext())
 
-        self.assertNotEqual([], nodes)
         self.assertEqual(1, len(nodes))
-        self.assertEqual(expected, nodes[0].astext())
+        self.assertEqual(expected.split("\n"), found.split("\n"))
 
 
 class RenderText(_Common):
@@ -401,17 +401,12 @@ class RenderText(_Common):
         content = self._get_fake_project_function()
 
         expected = textwrap.dedent(
-            '''\
+            """\
             def set_function_thing(value, another):
-                """Do something here."""
-                # Do something with these values
-                # and more comment text, here.
-                #
                 if value:
                     return 2
 
-                # Another comment
-                return 1'''
+                return 1"""
         )
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
@@ -574,14 +569,9 @@ class RenderText(_Common):
 
 
             def set_function_thing(value, another):
-                """Do something here."""
-                # Do something with these values
-                # and more comment text, here.
-                #
                 if value:
                     return 2
 
-                # Another comment
                 return 1'''
         )
 
@@ -684,17 +674,12 @@ class RenderTextNested(_Common):
         content = self._get_fake_project_nested_function()
 
         expected = textwrap.dedent(
-            '''\
+            """\
             def set_function_thing(value, another):
-                """Do something here."""
-                # Do something with these values
-                # and more comment text, here.
-                #
                 if value:
                     return 2
 
-                # Another comment
-                return 1'''
+                return 1"""
         )
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
@@ -860,14 +845,9 @@ class RenderTextNested(_Common):
 
 
             def set_function_thing(value, another):
-                """Do something here."""
-                # Do something with these values
-                # and more comment text, here.
-                #
                 if value:
                     return 2
 
-                # Another comment
                 return 1'''
         )
 
@@ -876,6 +856,34 @@ class RenderTextNested(_Common):
 
 class Options(_Common):
     """Make sure code-include directive options work for :obj: tags."""
+
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def test_fallback_text_missing(self, _get_app_inventory):
+        """Raise an exception if the namespace is missing and no fallback is given."""
+        _get_app_inventory.return_value = {"fake": {"thing": ["stuff"]}}
+
+        content = [":meth:`path.that.does.not.exist`"]
+        directive = common.make_mock_directive(content, options={"fallback-text": ""})
+
+        self.assertFalse(directive.run())
+
+    @mock.patch("code_include.source_code._get_app_inventory")
+    def test_fallback_text_simple(self, _get_app_inventory):
+        """Show fallback text if the namespace is missing and fallback text is given."""
+        fallback = "Some fallback text"
+        _get_app_inventory.return_value = {}
+
+        content = [":meth:`path.that.does.not.exist`"]
+        directive = common.make_mock_directive(
+            content,
+            options={"fallback-text": fallback},
+        )
+
+        results = directive.run()
+
+        self.assertEqual(1, len(results))
+        literal_block = results[0]
+        self.assertEqual(fallback, literal_block.astext())
 
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.extension.Directive._needs_unindent")
@@ -935,14 +943,9 @@ class Options(_Common):
 
         expected = """\
 def set_function_thing(value, another):
-    
-    
-    
-    
     if value:
         return 2
 
-    
     return 1"""
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter

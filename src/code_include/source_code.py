@@ -29,10 +29,15 @@ def _get_all_intersphinx_roots():
     """set[str]: Every file path / URL that the user added to intersphinx's inventory."""
     roots = set()
 
+    if not hasattr(APPLICATION, "config") or not APPLICATION.config:
+        raise EnvironmentError(
+            'Application "{APPLICATION}" has no config.'.format(APPLICATION=APPLICATION)
+        )
+
     try:
         mappings = APPLICATION.config.intersphinx_mapping.items()
     except AttributeError:
-        raise EnvironmentError("sphinx.ext.intersphinx was not configured properly.")
+        return []
 
     for key, value in mappings:
         if not isinstance(value, six.string_types):
@@ -48,10 +53,24 @@ def _get_app_inventory():
     if not APPLICATION:
         raise EnvironmentError("code_include did not initialize properly.")
 
+    if not hasattr(APPLICATION, "builder") or not APPLICATION.builder:
+        raise EnvironmentError(
+            'Application "{APPLICATION} unexpectedly has no builder.'.format(
+                APPLICATION=APPLICATION,
+            ),
+        )
+
+    if not hasattr(APPLICATION.builder, "env") or not APPLICATION.builder.env:
+        raise EnvironmentError(
+            'Builder "{APPLICATION.builder} unexpectedly has no env.'.format(
+                APPLICATION=APPLICATION,
+            ),
+        )
+
     try:
         return APPLICATION.builder.env.intersphinx_inventory
     except AttributeError:
-        raise EnvironmentError("sphinx.ext.intersphinx was not configured properly.")
+        return {}
 
 
 def _get_module_tag(namespace, directive):
@@ -335,10 +354,7 @@ def _get_source_code_from_inventory(tag, namespace):
     cache = _get_app_inventory()
 
     if not cache:
-        raise RuntimeError(
-            "No application could be found. Cannot render this node. "
-            "Did intersphinx have a chance to run?"
-        )
+        return None
 
     uri = __get_uri(tag, cache)
     module_url, tag = _get_source_module_data(uri, tag)
@@ -453,6 +469,9 @@ def get_source_code(directive, namespace, prefer_import=False):
             The importable Python location of some class, method, or function.
             Example: "foo.bar.ClassName.get_method_data".
 
+    Raises:
+        NoMatchFound: If no code is findable.
+
     Returns:
         str: The found source code.
 
@@ -474,4 +493,11 @@ def get_source_code(directive, namespace, prefer_import=False):
         if code:
             return code
 
-    return None
+    raise error_classes.NoMatchFound(
+        "No importable data or intersphinx cache could be found. "
+        'Cannot directive / namespace "{directive} / {namespace}". '
+        "Make sure you've included intersphinx or the namespace is importable.".format(
+            directive=directive,
+            namespace=namespace,
+        )
+    )
