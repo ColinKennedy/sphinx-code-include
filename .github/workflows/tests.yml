@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - "master"
-      - "issues/9-add_better_ci"
   pull_request:
     branches:
       - "master"
