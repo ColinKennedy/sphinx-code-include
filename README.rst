@@ -10,35 +10,33 @@ Overview
     * - docs
       - |docs|
     * - tests
-      - | |travis| |appveyor| |requires|
+      - | |dependabot|
         | |codecov|
         | |codacy|
     * - package
-      - | |version| |wheel| |supported-versions| |supported-implementations|
+      - | |version| |wheel| |oses| |supported-versions| |supported-implementations|
         | |commits-since|
+
+
+.. |dependabot| image:: https://img.shields.io/badge/dependabot-025E8C?style=for-the-badge&logo=dependabot&logoColor=white
+    :target: https://img.shields.io/badge/dependabot-025E8C?style=for-the-badge&logo=dependabot&logoColor=white
+    :alt: Dependencies Auto-Checks are enabled
+
 .. |docs| image:: https://readthedocs.org/projects/sphinx-code-include/badge/?style=flat
     :target: https://readthedocs.org/projects/sphinx-code-include
     :alt: Documentation Status
-
-.. |travis| image:: https://api.travis-ci.org/ColinKennedy/sphinx-code-include.svg?branch=master
-    :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/ColinKennedy/sphinx-code-include
-
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ColinKennedy/sphinx-code-include?branch=master&svg=true
-    :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/ColinKennedy/sphinx-code-include
-
-.. |requires| image:: https://requires.io/github/ColinKennedy/sphinx-code-include/requirements.svg?branch=master
-    :alt: Requirements Status
-    :target: https://requires.io/github/ColinKennedy/sphinx-code-include/requirements/?branch=master
 
 .. |codecov| image:: https://codecov.io/github/ColinKennedy/sphinx-code-include/coverage.svg?branch=master
     :alt: Coverage Status
     :target: https://codecov.io/github/ColinKennedy/sphinx-code-include
 
-.. |codacy| image:: https://api.codacy.com/project/badge/Grade/cd0e702ea8f744088d93c4addd3deeea
-    :target: https://www.codacy.com/manual/ColinKennedy/sphinx-code-include?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ColinKennedy/sphinx-code-include&amp;utm_campaign=Badge_Grade
+.. |codacy| image:: https://app.codacy.com/project/badge/Grade/0ea5a564f6fe4f79bd956863943add4b
+    :target: https://app.codacy.com/gh/ColinKennedy/sphinx-code-include/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
     :alt: Codacy Code Quality Status
+
+.. |oses| image:: https://img.shields.io/badge/os-linux%20%7C%20macOS%20%7C%20windows-blue
+    :alt: Supported OSes
+    :target: https://img.shields.io/badge/os-linux%20%7C%20macOS%20%7C%20windows-blue
 
 .. |version| image:: https://img.shields.io/pypi/v/sphinx-code-include.svg
     :alt: PyPI Package latest release
@@ -56,9 +54,9 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/sphinx-code-include
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/ColinKennedy/sphinx-code-include/v1.3.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/ColinKennedy/sphinx-code-include/v1.4.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/ColinKennedy/sphinx-code-include/compare/v1.3.0...master
+    :target: https://github.com/ColinKennedy/sphinx-code-include/compare/v1.4.0...master
 
 
 

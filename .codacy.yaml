@@ -1,5 +1,5 @@
 ---
 exclude_paths:
-    - ci/**/*
-    - tests/unittests/fake_project/**
+    - docs/conf.py
     - fake_project/**
+    - tests/unittests/fake_project/**

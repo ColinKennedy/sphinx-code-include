@@ -2,6 +2,12 @@
 Changelog
 =========
 
+1.4.0 (2024-03-16)
+------------------
+
+* Added better CI, updated GitHub badges, various quality of life changes
+
+
 1.3.0 (2024-03-14)
 ------------------
 

@@ -8,6 +8,7 @@ Contents
    readme
    installation
    usage
+   troubleshooting
    contributing
    authors
    changelog
