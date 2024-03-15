@@ -132,7 +132,7 @@ class Directive(rst.Directive):
         target = self.content[0]
 
         if not target:
-            message = "No target for code-include directive is missing"
+            message = "No target for code-include. Directive is missing"
             self.error(message)
 
             if self._reraise_exception():

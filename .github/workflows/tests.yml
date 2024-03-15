@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - "master"
+      - "issues/9-add_better_ci"
   pull_request:
     branches:
       - "master"
 
 jobs:
-  check:
+  black:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,8 +23,68 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install tox and any other packages
         run: pip install tox
-      - name: Run tox
-        run: tox -e check
+      - name: Run tox black
+        run: tox -e check-black
+  check-manifest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox and any other packages
+        run: pip install tox
+      - name: Run tox check-manifest
+        run: tox -e check-check-manifest
+  isort:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox and any other packages
+        run: pip install tox
+      - name: Run tox isort
+        run: tox -e check-isort
+  pydocstyle:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox and any other packages
+        run: pip install tox
+      - name: Run tox pydocstyle
+        run: tox -e check-pydocstyle
+  pylint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox and any other packages
+        run: pip install tox
+      - name: Run tox pylint
+        run: tox -e check-pylint
   test-38-and-others:
     # Reference: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
     runs-on: ubuntu-20.04

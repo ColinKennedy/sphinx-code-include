@@ -2,6 +2,12 @@
 Changelog
 =========
 
+1.3.0 (2024-03-14)
+------------------
+
+* Added explicit, separate GitHub workflow actions
+
+
 1.2.0 (2024-03-13)
 ------------------
 
