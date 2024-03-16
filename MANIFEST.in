@@ -19,6 +19,7 @@ exclude .cookiecutterrc
 exclude .coveragerc
 exclude .editorconfig
 exclude .pylintrc
+exclude .readthedocs.yaml
 exclude .travis.yml
 exclude tox.ini
 

@@ -34,3 +34,7 @@ class NotFoundFile(Exception):
 
 class NotFoundUrl(Exception):
     """An class to describe a URL intersphinx project that does not exist."""
+
+
+class NoMatchFound(Exception):
+    """The directive and namespace were correct but no source code could be found."""

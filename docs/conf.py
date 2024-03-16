@@ -20,7 +20,7 @@ project = u'Sphinx Code Include'
 year = '2019'
 author = u'Colin Kennedy'
 copyright = '{0}, {1}'.format(year, author)
-version = release = u'1.3.0'
+version = release = u'1.4.0'
 
 pygments_style = 'trac'
 templates_path = ['.']
@@ -55,17 +55,12 @@ napoleon_use_param = False
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(root, "src"))
 
-# Add `code-include` so that the code-include directives used in this documentation work
-extensions += [
-    "code_include.extension",
-]
+extensions += ["code_include.extension", "sphinx.ext.intersphinx", "sphinx_rtd_theme"]
 
-# These next settings are required if you want to link to other Sphinx projects
-extensions += [
-    "sphinx.ext.intersphinx",
-]
+html_theme = "sphinx_rtd_theme"
 
 intersphinx_mapping = {
     "https://requests.kennethreitz.org/en/latest": None,

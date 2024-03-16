@@ -3,6 +3,7 @@
 
 """The main module that adds the code-include directive to Sphinx."""
 
+import logging
 import textwrap
 
 from docutils import nodes
@@ -11,6 +12,8 @@ from docutils.parsers import rst
 from . import error_classes
 from . import formatter
 from . import source_code
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class _DocumentationHyperlink(nodes.General, nodes.Element):
@@ -39,6 +42,7 @@ class Directive(rst.Directive):
         "link-to-documentation": rst.directives.flag,
         "link-to-source": rst.directives.flag,
         "no-unindent": rst.directives.flag,
+        "fallback-text": rst.directives.unchanged,
     }
 
     def _is_link_requested(self):
@@ -60,8 +64,10 @@ class Directive(rst.Directive):
             return False
 
         return (
-            hasattr(source_code.APPLICATION.config, "code_include_reraise")
-            and source_code.APPLICATION.config.code_include_reraise
+            source_code.APPLICATION.config._raw_config.get(  # pylint: disable=protected-access
+                "code_include_reraise",
+            )
+            or False
         )
 
     def _get_code(self, directive, namespace, prefer_import=True):
@@ -76,42 +82,130 @@ class Directive(rst.Directive):
                 Example: "some_package_name.module_name.KlassName.get_foo".
 
         Returns:
-            str:
-                The found source code.
+            SourceResult or None: The found source code.
 
         """
         try:
             return source_code.get_source_code(
                 directive, namespace, prefer_import=prefer_import
             )
-        except error_classes.NotFoundFile as error:
-            self.warning('File "{error}" does not exist.'.format(error=error))
+        except Exception as error:  # pylint: disable=broad-exception-caught
+            _LOGGER.warning(
+                "code-include failed to find source code. Now trying fallback logic.",
+            )
+            self._log_exception_context(error, directive, namespace)
 
-            raise
-        except error_classes.NotFoundUrl as error:
-            self.warning(
-                'Website "{error}" does not exist or is not reachable.'.format(
-                    error=error
-                )
+            text = self._get_fallback_text()
+
+            if text:
+                _LOGGER.info('code-include will use "%s" fallback text.', text)
+
+                return source_code.SourceResult(text, "", "", "")
+
+            if self._reraise_exception():
+                raise
+
+        return None
+
+    def _get_fallback_text(self):
+        """str: Some text to render if the Sphinx namespace cannot be found."""
+        if "fallback-text" in self.options:
+            return self.options["fallback-text"]
+
+        return ""
+
+    def _add_documentation_link(self, result, results):
+        """Add ``result`` as a hyperlink to ``results`` according to user preferences.
+
+        This method adds a link specifically to some Python documentation.
+
+        Args:
+            SourceResult or None: The found source code.
+            result (SourceResult): The source code description to insert or append.
+            results (list[docutils.nodes.General]): Blobs of text to render, later.
+
+        """
+        hyperlink = _DocumentationHyperlink()
+        hyperlink["namespace"] = result.namespace
+        hyperlink["href"] = result.documentation_link
+
+        if "link-at-bottom" not in self.options:
+            results.insert(0, hyperlink)
+        else:
+            results.append(hyperlink)
+
+    def _add_source_code_link(self, result, results):
+        """Add ``result`` as a hyperlink to ``results`` according to user preferences.
+
+        This method adds a link specifically to a namespace's source code,
+        assuming it exists. (Intersphinx required).
+
+        Args:
+            SourceResult or None: The found source code.
+            result (SourceResult): The source code description to insert or append.
+            results (list[docutils.nodes.General]): Blobs of text to render, later.
+
+        """
+        hyperlink = _SourceCodeHyperlink()
+        hyperlink["namespace"] = result.namespace
+        hyperlink["href"] = result.source_code_link
+
+        if "link-at-bottom" not in self.options:
+            results.insert(0, hyperlink)
+        else:
+            results.append(hyperlink)
+
+    def _log_exception_context(self, error, directive, namespace):
+        """Handle exception ``error`` with a useful warning message.
+
+        Args:
+            error (Exception):
+                The Python exception to catch and (we assume) log with a unique message.
+            directive (str):
+                The tag / target that the user expects the namespace to be.
+                e.g. "func", "py:class", "class", etc.
+            namespace (str):
+                The identifier string that locates this code.
+                Example: "some_package_name.module_name.KlassName.get_foo".
+
+        """
+        if isinstance(error, error_classes.NotFoundFile):
+            _LOGGER.warning('File "%s" does not exist.', error)
+
+            return
+        if isinstance(error, error_classes.NotFoundUrl):
+            _LOGGER.warning('Website "%s" does not exist or is not reachable.', error)
+
+            return
+        if isinstance(error, error_classes.MissingTag):
+            _LOGGER.warning(
+                'Directive "%s" was not found in the intersphinx inventory.',
+                directive,
             )
 
-            raise
-        except error_classes.MissingTag:
-            self.warning(
-                'Directive "{directive}" was not found in the intersphinx inventory.'.format(
-                    directive=directive
-                )
+            return
+        if isinstance(error, error_classes.MissingNamespace):
+            _LOGGER.warning(
+                'Namespace "%s" was not found in the intersphinx inventory.',
+                namespace,
             )
 
-            raise
-        except error_classes.MissingNamespace:
-            self.warning(
-                'Namespace "{namespace}" was not found in the intersphinx inventory.'.format(
-                    namespace=namespace
-                )
+            return
+
+        if isinstance(error, error_classes.NoMatchFound):
+            _LOGGER.warning(
+                'Directive / Namespace "%s / %s" has no matching source code.',
+                directive,
+                namespace,
             )
 
-            raise
+            return
+
+        _LOGGER.warning(
+            'Namespace "%s" has unknown error "%s" class.',
+            namespace,
+            type(error),
+        )
 
     def run(self):
         """Create the code block, if it can.
@@ -127,16 +221,19 @@ class Directive(rst.Directive):
                 code-blocks, instead.
 
         """
+        _LOGGER.info("code-block directive is now executing.")
+
         self.assert_has_content()
 
         target = self.content[0]
 
         if not target:
             message = "No target for code-include. Directive is missing"
-            self.error(message)
 
             if self._reraise_exception():
                 raise error_classes.MissingContent(message)
+
+            _LOGGER.error(message)
 
             return []
 
@@ -153,6 +250,11 @@ class Directive(rst.Directive):
         is_source_requested = self._is_source_requested()
         is_link_requested = self._is_link_requested()
 
+        _LOGGER.debug('directive="%s"', directive)
+        _LOGGER.debug('namespace="%s"', namespace)
+        _LOGGER.debug('is_source_requested="%s"', is_source_requested)
+        _LOGGER.debug('is_link_requested="%s"', is_link_requested)
+
         try:
             result = self._get_code(
                 directive,
@@ -163,9 +265,22 @@ class Directive(rst.Directive):
             if self._reraise_exception():
                 raise
 
+            _LOGGER.warning('"Get Code" logic failed. Returning nothing')
+
+            return []
+
+        if not result:
+            _LOGGER.warning(
+                'No source code was found for directive / namespace "%s / %s".',
+                directive,
+                namespace,
+            )
+
             return []
 
         if self._needs_unindent():
+            _LOGGER.debug('Unindenting "%s" namespace code.', result.namespace)
+
             result = result.__class__(
                 formatter.unindent_outer_whitespace(result.code),
                 result.namespace,
@@ -181,24 +296,16 @@ class Directive(rst.Directive):
         results = [node]
 
         if result.documentation_link and is_link_requested:
-            hyperlink = _DocumentationHyperlink()
-            hyperlink["namespace"] = result.namespace
-            hyperlink["href"] = result.documentation_link
+            _LOGGER.debug("Adding documentation link to code-include.")
 
-            if "link-at-bottom" not in self.options:
-                results.insert(0, hyperlink)
-            else:
-                results.append(hyperlink)
+            self._add_documentation_link(result, results)
 
         if result.source_code_link and is_source_requested:
-            hyperlink = _SourceCodeHyperlink()
-            hyperlink["namespace"] = result.namespace
-            hyperlink["href"] = result.source_code_link
+            _LOGGER.debug("Adding source link to code-include.")
 
-            if "link-at-bottom" not in self.options:
-                results.insert(0, hyperlink)
-            else:
-                results.append(hyperlink)
+            self._add_source_code_link(result, results)
+
+        _LOGGER.debug('Returning "%s" results', repr(results))
 
         return results
 
