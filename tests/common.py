@@ -4,8 +4,8 @@
 """Useful functions that other testing modules use."""
 
 import warnings
+from unittest import mock
 
-from six.moves import mock
 from sphinx.ext import intersphinx
 
 from code_include import extension

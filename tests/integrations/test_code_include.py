@@ -6,9 +6,9 @@
 
 import textwrap
 import unittest
-
-from six.moves import mock
-from six.moves import urllib
+import urllib.error
+import urllib.request
+from unittest  import mock
 
 from .. import common
 
@@ -319,8 +319,7 @@ class InventoryReader(unittest.TestCase):
         content = [":class:`ways.base.plugin.Plugin`"]
         expected = textwrap.dedent(
             """\
-            @six.add_metaclass(PluginRegistry)
-            class Plugin(object):
+            class Plugin(metaclass=PluginRegistry):
 
                 '''An add-on that is later retrieved by Context to gather its data.'''
 
@@ -417,9 +416,6 @@ class InventoryReader(unittest.TestCase):
             # IMPORT STANDARD LIBRARIES
             import uuid
 
-            # IMPORT THIRD-PARTY LIBRARIES
-            import six
-
             # IMPORT WAYS LIBRARIES
             import ways
 
@@ -456,8 +452,7 @@ class InventoryReader(unittest.TestCase):
 
 
             # pylint: disable=too-few-public-methods
-            @six.add_metaclass(PluginRegistry)
-            class Plugin(object):
+            class Plugin(metaclass=PluginRegistry):
 
                 '''An add-on that is later retrieved by Context to gather its data.'''
 

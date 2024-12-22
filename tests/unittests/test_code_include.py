@@ -7,8 +7,7 @@
 import os
 import textwrap
 import unittest
-
-from six.moves import mock
+from unittest import mock
 
 from code_include import error_classes
 from code_include import extension

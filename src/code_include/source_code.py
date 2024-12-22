@@ -8,10 +8,9 @@ import functools
 import inspect
 import io
 import os
+import urllib.request
 
 import bs4
-import six
-from six.moves import urllib
 
 from . import error_classes
 from . import helper
@@ -40,7 +39,7 @@ def _get_all_intersphinx_roots():
         return []
 
     for key, value in mappings:
-        if not isinstance(value, six.string_types):
+        if not isinstance(value, str):
             roots.add(list(value)[0])
         else:
             roots.add(key)
