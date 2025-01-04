@@ -5,9 +5,12 @@
 
 import logging
 import textwrap
+import typing
 
 from docutils import nodes
 from docutils.parsers import rst
+from sphinx import application as application_
+from sphinx.writers import html5
 
 from . import error_classes
 from . import formatter
@@ -45,20 +48,20 @@ class Directive(rst.Directive):
         "fallback-text": rst.directives.unchanged,
     }
 
-    def _is_link_requested(self):
+    def _is_link_requested(self) -> bool:
         """bool: Check if the user wants to link to the Python documentation."""
         return "link-to-documentation" in self.options
 
-    def _is_source_requested(self):
+    def _is_source_requested(self) -> bool:
         """bool: Check if the user wants to link to the original Python source-code."""
         return "link-to-source" in self.options
 
-    def _needs_unindent(self):
+    def _needs_unindent(self) -> bool:
         """bool: Check if the user doesn't want to unindent the discovered code."""
         return "no-unindent" not in self.options
 
     @staticmethod
-    def _reraise_exception():
+    def _reraise_exception() -> bool:
         """bool: Check if the user wants to force-raise any found exceptions."""
         if not source_code.APPLICATION:
             return False
@@ -70,19 +73,28 @@ class Directive(rst.Directive):
             or False
         )
 
-    def _get_code(self, directive, namespace, prefer_import=True):
+    def _get_code(
+        self,
+        directive: str,
+        namespace: str,
+        prefer_import: bool = True,
+    ) -> typing.Optional[source_code.SourceResult]:
         """Get the source code that the user requested.
 
         Args:
-            directive (str):
+            directive:
                 The tag / target that the user expects the namespace to be.
                 e.g. "func", "py:class", "class", etc.
-            namespace (str):
+            namespace:
                 The identifier string that locates this code.
                 Example: "some_package_name.module_name.KlassName.get_foo".
+            prefer_import:
+                If ``False``, look for source code from Sphinx before and if not found,
+                do a real Python import for the source code. If ``True`` then do a
+                Python import first, instead.
 
         Returns:
-            SourceResult or None: The found source code.
+            The found source code, if any.
 
         """
         try:
@@ -107,22 +119,25 @@ class Directive(rst.Directive):
 
         return None
 
-    def _get_fallback_text(self):
+    def _get_fallback_text(self) -> str:
         """str: Some text to render if the Sphinx namespace cannot be found."""
         if "fallback-text" in self.options:
-            return self.options["fallback-text"]
+            return typing.cast(str, self.options["fallback-text"])
 
         return ""
 
-    def _add_documentation_link(self, result, results):
+    def _add_documentation_link(
+        self,
+        result: source_code.SourceResult,
+        results: list[nodes.General],
+    ) -> None:
         """Add ``result`` as a hyperlink to ``results`` according to user preferences.
 
         This method adds a link specifically to some Python documentation.
 
         Args:
-            SourceResult or None: The found source code.
-            result (SourceResult): The source code description to insert or append.
-            results (list[docutils.nodes.General]): Blobs of text to render, later.
+            result: The source code description to insert or append.
+            results: Blobs of text to render, later.
 
         """
         hyperlink = _DocumentationHyperlink()
@@ -134,16 +149,19 @@ class Directive(rst.Directive):
         else:
             results.append(hyperlink)
 
-    def _add_source_code_link(self, result, results):
+    def _add_source_code_link(
+        self,
+        result: source_code.SourceResult,
+        results: list[nodes.General],
+    ) -> None:
         """Add ``result`` as a hyperlink to ``results`` according to user preferences.
 
         This method adds a link specifically to a namespace's source code,
         assuming it exists. (Intersphinx required).
 
         Args:
-            SourceResult or None: The found source code.
-            result (SourceResult): The source code description to insert or append.
-            results (list[docutils.nodes.General]): Blobs of text to render, later.
+            result: The source code description to insert or append.
+            results: Blobs of text to render, later.
 
         """
         hyperlink = _SourceCodeHyperlink()
@@ -155,16 +173,21 @@ class Directive(rst.Directive):
         else:
             results.append(hyperlink)
 
-    def _log_exception_context(self, error, directive, namespace):
+    def _log_exception_context(
+        self,
+        error: Exception,
+        directive: str,
+        namespace: str,
+    ) -> None:
         """Handle exception ``error`` with a useful warning message.
 
         Args:
-            error (Exception):
+            error:
                 The Python exception to catch and (we assume) log with a unique message.
-            directive (str):
+            directive:
                 The tag / target that the user expects the namespace to be.
                 e.g. "func", "py:class", "class", etc.
-            namespace (str):
+            namespace:
                 The identifier string that locates this code.
                 Example: "some_package_name.module_name.KlassName.get_foo".
 
@@ -207,7 +230,7 @@ class Directive(rst.Directive):
             type(error),
         )
 
-    def run(self):
+    def run(self) -> list[nodes.literal_block]:
         """Create the code block, if it can.
 
         Raises:
@@ -215,10 +238,9 @@ class Directive(rst.Directive):
                 If the user forgot to write a target for the code-include directive.
 
         Returns:
-            list[:class:`docutils.nodes.literal_block`]:
-                The code-blocks that this class generates. If any URLs
-                are missing, this function warns the user and returns no
-                code-blocks, instead.
+            The code-blocks that this class generates. If any URLs
+            are missing, this function warns the user and returns no
+            code-blocks, instead.
 
         """
         _LOGGER.info("code-block directive is now executing.")
@@ -310,7 +332,7 @@ class Directive(rst.Directive):
         return results
 
 
-def setup(application):
+def setup(application: application_.Sphinx) -> dict[str, bool]:
     """Add the code-include directive to Sphinx.
 
     Important:
@@ -319,15 +341,15 @@ def setup(application):
         function.
 
     Args:
-        application (:class:`sphinx.application.Sphinx`):
+        application:
             The main class that code-include will register into.
 
     Returns:
-        dict[str, bool]: Configuration settings about this extension.
+        Configuration settings about this extension.
 
     """
 
-    def before_documentation(self, node):
+    def before_documentation(self: html5.HTML5Translator, node: str) -> None:
         """Create a hyperlink with the given node."""
         self.body.append(
             textwrap.dedent(
@@ -342,7 +364,7 @@ def setup(application):
             )
         )
 
-    def before_source_code(self, node):
+    def before_source_code(self: html5.HTML5Translator, node: str) -> None:
         """Create a hyperlink with the given node."""
         self.body.append(
             textwrap.dedent(
@@ -357,7 +379,9 @@ def setup(application):
             )
         )
 
-    def after(self, node):  # pylint: disable=unused-argument
+    def after(
+        self: html5.HTML5Translator, node: typing.Any  # pylint: disable=unused-argument
+    ) -> None:
         """Do nothing on-exit."""
 
     source_code.APPLICATION = application

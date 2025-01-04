@@ -13,6 +13,5 @@ _LOGGER.addHandler(_HANDLER)
 
 _LEVEL = os.getenv("LOG_LEVEL")
 
-if _LEVEL is not None:
-    _LEVEL = min(0, int(_LEVEL))
-    _LOGGER.setLevel(_LEVEL)
+if _LEVEL:
+    _LOGGER.setLevel(min(0, int(_LEVEL)))

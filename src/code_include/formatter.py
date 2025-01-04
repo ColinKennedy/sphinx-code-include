@@ -12,7 +12,7 @@ _NAMED_DIRECTIVE_EXPRESSION = re.compile(
 )
 
 
-def get_converted_directive(directive):
+def get_converted_directive(directive: str) -> str:
     """Change the user-provided directive target to one that this extension understands.
 
     The goal of this function is to always return a target that one
@@ -28,14 +28,13 @@ def get_converted_directive(directive):
     function should be able to support every key found.
 
     Args:
-        directive (str):
+        directive:
             Some user-provided target that the user writes in
             documentation, like ":attr:", ":func:", etc.
 
     Returns:
-        str:
-            The converted directive. If no directive is found, then
-            return an empty string.
+        The converted directive. If no directive is found, then
+        return an empty string.
 
     """
     directive = directive.strip(":")
@@ -56,11 +55,11 @@ def get_converted_directive(directive):
         return ""
 
 
-def get_raw_content(text):
+def get_raw_content(text: str) -> tuple[str, str]:
     """Split some code-include target into its most important parts.
 
     Args:
-        text (str):
+        text:
             The user-provided target from a `.. code-include::` directive.
             Example: ":func:`ways.base.plugin.get_assignment`".
 
@@ -69,8 +68,7 @@ def get_raw_content(text):
             If the given text wasn't a valid target convention.
 
     Returns:
-        tuple[str, str]:
-            The target's type + the Python namespace for where the object lives.
+        The target's type + the Python namespace for where the object lives.
 
     """
     match = _DIRECTIVE_EXPRESSION.match(text) or _NAMED_DIRECTIVE_EXPRESSION.match(text)
@@ -86,7 +84,7 @@ def get_raw_content(text):
     return match.group("directive"), match.group("namespace")
 
 
-def unindent_outer_whitespace(text):
+def unindent_outer_whitespace(text: str) -> str:
     r"""Unindent some text until the outter-most line has no leading whitespace.
 
     Example:
@@ -103,11 +101,10 @@ def unindent_outer_whitespace(text):
         >>> #     pass
 
     Args:
-        text (str):
-            The text to remove unnecessary whitespace from.
+        text: The text to remove unnecessary whitespace from.
 
     Returns:
-        str: The converted text.
+        The converted text.
 
     """
     indent_size = sys.maxsize

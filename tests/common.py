@@ -3,33 +3,43 @@
 
 """Useful functions that other testing modules use."""
 
-import warnings
+from __future__ import annotations
 
-from six.moves import mock
+import typing
+import warnings
+from unittest import mock
+
+from docutils import statemachine
+from sphinx import application
 from sphinx.ext import intersphinx
 
 from code_include import extension
 from code_include import helper
 
+if typing.TYPE_CHECKING:
+    from sphinx.util.typing import Inventory
 
-def make_mock_directive(content, options=None):
+
+def make_mock_directive(
+    content: list[str],
+    options: typing.Optional[dict[str, object]] = None,
+) -> extension.Directive:
     """Create the main class which is translated and rendered as text.
 
     Args:
-        content (list[str]):
+        content:
             The lines that the user provides in a standard code-include block.
-        options (dict[str, object], optional):
+        options:
             Directive modifiers (e.g. ``{"fallback-text": "foo bar"}``).
 
     Returns:
-        :class:`code_include.extension`:
-            The class that is later translated by Sphinx into HTML tags.
+        The class that is later translated by Sphinx into HTML tags.
 
     """
     options = options or {}
 
     name = "code-include"
-    arguments = []
+    arguments: list[str] = []
     line_number = 11
     content_offset = 10
     block_text = ""
@@ -40,7 +50,7 @@ def make_mock_directive(content, options=None):
         name,
         arguments,
         options,
-        content,
+        statemachine.StringList(content),
         line_number,
         content_offset,
         block_text,
@@ -50,26 +60,25 @@ def make_mock_directive(content, options=None):
 
 
 @helper.memoize
-def load_cache(path):
+def load_cache(path: str) -> Inventory:
     """Load some inventory file as raw data.
 
     Args:
-        path (str):
+        path:
             The absolute path where an inventory file can be found.
 
     Returns:
-        dict[str, dict[str, tuple[str, str, str, str]]]:
-            Each directive target type, its namespace, and it's file-path/URL information.
-            e.g. {
-                "py:method": {
-                    "fake_project.basic.MyKlass.get_method": (
-                        "fake_project",
-                        "",
-                        "api/fake_project.html#fake_project.basic.MyKlass.get_method",
-                        "-",
-                    )
-                }
+        Each directive target type, its namespace, and it's file-path/URL information.
+        e.g. {
+            "py:method": {
+                "fake_project.basic.MyKlass.get_method": (
+                    "fake_project",
+                    "",
+                    "api/fake_project.html#fake_project.basic.MyKlass.get_method",
+                    "-",
+                )
             }
+        }
 
     """
 
@@ -86,35 +95,38 @@ def load_cache(path):
         config = MockConfiguration()
 
         @staticmethod
-        def warn(message):
+        def warn(message: str) -> None:
             """Send a warning if bad-formatted text is encountered."""
             warnings.warn(message)
 
-    return intersphinx.fetch_inventory(MockApplication(), "", path)
+    return intersphinx.fetch_inventory(
+        typing.cast(application.Sphinx, MockApplication()),
+        "",
+        path,
+    )
 
 
 @helper.memoize
-def load_cache_from_url(url):
+def load_cache_from_url(url: str) -> Inventory:
     """Load some inventory file as raw data.
 
     Args:
-        url (str):
+        url:
             The website address that points to a objects.inv file.
             e.g. "https://foo_bar_name.readthedocs.io/en/latest/objects.inv".
 
     Returns:
-        dict[str, dict[str, tuple[str, str, str, str]]]:
-            Each directive target type, its namespace, and it's file-path/URL information.
-            e.g. {
-                "py:method": {
-                    "fake_project.basic.MyKlass.get_method": (
-                        "fake_project",
-                        "",
-                        "api/fake_project.html#fake_project.basic.MyKlass.get_method",
-                        "-",
-                    )
-                }
+        Each directive target type, its namespace, and it's file-path/URL information.
+        e.g. {
+            "py:method": {
+                "fake_project.basic.MyKlass.get_method": (
+                    "fake_project",
+                    "",
+                    "api/fake_project.html#fake_project.basic.MyKlass.get_method",
+                    "-",
+                )
             }
+        }
 
     """
 
@@ -133,8 +145,12 @@ def load_cache_from_url(url):
         config = MockConfiguration()
 
         @staticmethod
-        def warn(message):
+        def warn(message: str) -> None:
             """Send a warning if bad-formatted text is encountered."""
             warnings.warn(message)
 
-    return intersphinx.fetch_inventory(MockApplication(), "", url)
+    return intersphinx.fetch_inventory(
+        typing.cast(application.Sphinx, MockApplication()),
+        "",
+        url,
+    )
