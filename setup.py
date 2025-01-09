@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name="sphinx-code-include",
-    version="2.0.0",
+    version="2.0.1",
     license="BSD-2-Clause",
     description="Include source code from any Sphinx project using only its import path",
     long_description="%s\n%s"
