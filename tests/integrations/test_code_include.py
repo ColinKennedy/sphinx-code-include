@@ -6,24 +6,27 @@
 
 import textwrap
 import unittest
-
-from six.moves import mock
-from six.moves import urllib
+from unittest import mock
+from urllib import error as urllib_error
+from urllib import request as urllib_request
 
 from .. import common
 
 
-def _skip_from_ssl_error(url):
-    """bool: Check if the given URL can be reached."""
+def _skip_from_ssl_error(url: str) -> bool:
+    """Check if the given URL can be reached."""
     # This function is mostly meant for pypy3
     try:
-        from _cffi_ssl._stdssl import error  # pylint: disable=import-outside-toplevel
+        from _cffi_ssl._stdssl import error  # type: ignore # pylint: disable=import-outside-toplevel
     except ImportError:
         return False
 
     try:
-        return urllib.request.urlopen(url).getcode() == 200  # 200 means "URL not found"
-    except (error.SSLError, urllib.error.URLError):
+        with urllib_request.urlopen(url) as handler:
+            result = handler.getcode()
+
+        return result == 200  # 200 means "URL not found"
+    except (error.SSLError, urllib_error.URLError):
         return True
 
 
@@ -31,15 +34,20 @@ class SourceReader(unittest.TestCase):
     """Check that external queries work."""
 
     @mock.patch("code_include.source_code._get_app_inventory")
-    def _test_import(self, content, expected, _get_app_inventory):
+    def _test_import(
+        self,
+        content: list[str],
+        expected: str,
+        _get_app_inventory: mock.MagicMock,
+    ) -> None:
         """Test for some source code from an importable Python object.
 
         Args:
-            content (list[str]):
+            content:
                 The lines that the user provides in a standard code-include block.
-            expected (str):
+            expected:
                 The converted source-code text that will be tested for.
-            _get_app_inventory (mock.mock.MagicMock):
+            _get_app_inventory:
                 The function that's normally used to query a Sphinx
                 project's inventory to find every HTML file-path and
                 tag-able header.
@@ -61,18 +69,21 @@ class SourceReader(unittest.TestCase):
         "URL could not be reached",
     )
     def test_url(
-        self, _get_app_inventory, _get_source_code_from_object, _get_source_module_data
-    ):
+        self,
+        _get_app_inventory: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+        _get_source_module_data: mock.MagicMock,
+    ) -> None:
         """Get the source-code of some project from a URL.
 
         Args:
-            _get_app_inventory (:class:`mock.mock.MagicMock`):
+            _get_app_inventory:
                 The function that's normally used to query a Sphinx
                 project's inventory to find every HTML file-path and
                 tag-able header.
-            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+            _get_source_code_from_object:
                 Force this function to get the code from intersphinx.
-            _get_source_module_data (:class:`mock.mock.MagicMock`):
+            _get_source_module_data:
                 A function that is mocked so that we can skip some of
                 the less important tag-parsing functions and get to the
                 point of this function - testing generated source-code.
@@ -243,7 +254,7 @@ class SourceReader(unittest.TestCase):
         self.assertEqual(1, len(nodes))
         self.assertEqual(expected, nodes[0].astext())
 
-    def test_import(self):
+    def test_import(self) -> None:
         """Get the source-code of an importable object."""
         expected = textwrap.dedent(
             '''\
@@ -275,22 +286,22 @@ class InventoryReader(unittest.TestCase):
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test_import(
         self,
-        content,
-        expected,
-        _get_app_inventory,
-        _get_source_code_from_object,
-    ):
+        content: list[str],
+        expected: str,
+        _get_app_inventory: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+    ) -> None:
         """A generic test function. It tests for some source code from an inventory.
 
         Args:
-            content (list[str]):
+            content:
                 The lines that the user provides in a standard code-include block.
-            expected (str):
+            expected:
                 The converted source-code text that will be tested for.
-            _get_app_inventory (:class:`mock.mock.MagicMock`):
+            _get_app_inventory:
                 The function that gets dictionary information (which
                 later finds the Sphinx Python source-code).
-            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+            _get_source_code_from_object:
                 The function that's used to import a Python object to
                 get its source-code to find every HTML file-path and
                 tag-able header.
@@ -309,7 +320,7 @@ class InventoryReader(unittest.TestCase):
         self.assertEqual(expected, nodes[0].astext())
 
     @mock.patch("code_include.source_code._get_source_module_data")
-    def test_class(self, _get_source_module_data):
+    def test_class(self, _get_source_module_data: mock.MagicMock) -> None:
         """Get the source-code of an importable class."""
         _get_source_module_data.return_value = (
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
@@ -346,7 +357,7 @@ class InventoryReader(unittest.TestCase):
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
     @mock.patch("code_include.source_code._get_source_module_data")
-    def test_function(self, _get_source_module_data):
+    def test_function(self, _get_source_module_data: mock.MagicMock) -> None:
         """Get the source-code of an importable function."""
         _get_source_module_data.return_value = (
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
@@ -367,7 +378,7 @@ class InventoryReader(unittest.TestCase):
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
     @mock.patch("code_include.source_code._get_source_module_data")
-    def test_method(self, _get_source_module_data):
+    def test_method(self, _get_source_module_data: mock.MagicMock) -> None:
         """Get the source-code of an importable method."""
         _get_source_module_data.return_value = (
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",
@@ -398,7 +409,10 @@ class InventoryReader(unittest.TestCase):
         self._test_import(content, expected)  # pylint: disable=no-value-for-parameter
 
     @mock.patch("code_include.source_code._get_source_module_data")
-    def test_module(self, _get_source_module_data):
+    def test_module(
+        self,
+        _get_source_module_data: mock.MagicMock,
+    ) -> None:
         """Get the source-code of an importable module."""
         _get_source_module_data.return_value = (
             "https://ways.readthedocs.io/en/latest/_modules/ways/base/plugin.html",

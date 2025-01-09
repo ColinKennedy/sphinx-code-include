@@ -6,9 +6,12 @@
 
 import os
 import textwrap
+import typing
 import unittest
+from unittest import mock
 
-from six.moves import mock
+import bs4
+from docutils import nodes as nodes_
 
 from code_include import error_classes
 from code_include import extension
@@ -26,24 +29,24 @@ class Inputs(unittest.TestCase):
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test(
         self,
-        content,
-        exception_class,
-        _get_app_inventory,
-        _get_source_code_from_object,
-        _reraise_exception,
-    ):
+        content: list[str],
+        exception_class: typing.Type[Exception],
+        _get_app_inventory: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+        _reraise_exception: mock.MagicMock,
+    ) -> None:
         """A generic function that checks a code-include directive for issues.
 
         Args:
-            content (list[str]):
+            content:
                 The lines that the user provides in a standard code-include block.
-            exception_class (Exception):
+            exception_class:
                 The exception that should be raised, when given `content`.
-            _get_app_inventory (:class:`mock.mock.MagicMock`):
+            _get_app_inventory:
                 The function that's normally used to query a Sphinx
                 project's inventory to find every HTML file-path and
                 tag-able header.
-            _reraise_exception (:class:`mock.mock.MagicMock`):
+            _reraise_exception:
                 A function that must be set to return `True` so that
                 this test will forcibly raise the found exception.
 
@@ -61,20 +64,20 @@ class Inputs(unittest.TestCase):
         with self.assertRaises(exception_class):
             directive.run()
 
-    def test_no_required_argument(self):
+    def test_no_required_argument(self) -> None:
         """Check that missing content raises the expected exception."""
         self._test(  # pylint: disable=no-value-for-parameter
             [""], error_classes.MissingContent
         )
 
-    def test_incorrect_directive_target(self):
+    def test_incorrect_directive_target(self) -> None:
         """Check that a bad tag like ":foo:" raises the expected exception."""
         self._test(  # pylint: disable=no-value-for-parameter
             [":nonexistent:tag:`some.module.that.may.exist`"],
             error_classes.MissingTag,
         )
 
-    def test_incorrect_namespace(self):
+    def test_incorrect_namespace(self) -> None:
         """Fail to generate text because the tag's namespace is missing."""
         self._test(  # pylint: disable=no-value-for-parameter
             [":meth:`path.that.does.not.exist`"], error_classes.MissingNamespace
@@ -90,45 +93,45 @@ class ContentsStore(unittest.TestCase):
     """
 
     @staticmethod
-    def _get_fake_project_class():
+    def _get_fake_project_class() -> list[str]:
         return [":class:`fake_project.basic.MyKlass`"]
 
     @staticmethod
-    def _get_fake_project_function():
+    def _get_fake_project_function() -> list[str]:
         return [":func:`fake_project.basic.set_function_thing`"]
 
     @staticmethod
-    def _get_fake_project_module():
+    def _get_fake_project_module() -> list[str]:
         return [":mod:`fake_project.basic`"]
 
     @staticmethod
-    def _get_fake_project_nested_class():
+    def _get_fake_project_nested_class() -> list[str]:
         return [":class:`fake_project.nested_folder.another.MyKlass`"]
 
     @staticmethod
-    def _get_fake_project_nested_function():
+    def _get_fake_project_nested_function() -> list[str]:
         return [":func:`fake_project.nested_folder.another.set_function_thing`"]
 
     @staticmethod
-    def _get_fake_project_nested_private_function():
+    def _get_fake_project_nested_private_function() -> list[str]:
         return [
             ":func:`fake_project.nested_folder.another._set_private_function_thing`"
         ]
 
     @staticmethod
-    def _get_fake_project_nested_method():
+    def _get_fake_project_nested_method() -> list[str]:
         return [":meth:`fake_project.nested_folder.another.MyKlass.get_method`"]
 
     @staticmethod
-    def _get_fake_project_nested_module():
+    def _get_fake_project_nested_module() -> list[str]:
         return [":mod:`fake_project.nested_folder.another`"]
 
     @staticmethod
-    def _get_fake_project_private_function():
+    def _get_fake_project_private_function() -> list[str]:
         return [":func:`fake_project.basic._set_private_function_thing`"]
 
     @staticmethod
-    def _get_fake_project_method():
+    def _get_fake_project_method() -> list[str]:
         return [":meth:`fake_project.basic.MyKlass.get_method`"]
 
 
@@ -140,8 +143,12 @@ class Linking(ContentsStore):
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_app_inventory")
     def _get_nodes(
-        data, content, _inventory, _get_from_object, _get_source_module_data
-    ):
+        data: str,
+        content: list[str],
+        _inventory: mock.MagicMock,
+        _get_from_object: mock.MagicMock,
+        _get_source_module_data: mock.MagicMock,
+    ) -> list[nodes_.literal_block]:
         cache = common.load_cache(
             os.path.join(_CURRENT_DIRECTORY, "fake_project", "objects.inv")
         )
@@ -159,18 +166,18 @@ class Linking(ContentsStore):
     @mock.patch("code_include.extension.Directive._needs_unindent")
     def test_link_to_documentation(
         self,
-        _needs_unindent,
-        _is_link_requested,
-        _get_source_code_from_object,
-    ):
+        _needs_unindent: mock.MagicMock,
+        _is_link_requested: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+    ) -> None:
         """Link to the original page where Python source-code was found.
 
         Args:
-            _needs_unindent (:class:`mock.mock.MagicMock`):
+            _needs_unindent:
                 The patched function that controls indentation of code-include.
-            _is_link_requested (:class:`mock.mock.MagicMock`):
+            _is_link_requested:
                 This adds a hyperlink to the original Python documentation.
-            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+            _get_source_code_from_object:
                 Disable reading from source-code. This forces
                 sphinx-code-include to read from a Sphinx inventory
                 file.
@@ -210,18 +217,18 @@ class Linking(ContentsStore):
     @mock.patch("code_include.extension.Directive._needs_unindent")
     def test_link_to_source(
         self,
-        _needs_unindent,
-        _is_source_requested,
-        _get_source_code_from_object,
-    ):
+        _needs_unindent: mock.MagicMock,
+        _is_source_requested: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+    ) -> None:
         """Link to the original page where Python source-code was found.
 
         Args:
-            _needs_unindent (:class:`mock.mock.MagicMock`):
+            _needs_unindent:
                 The patched function that controls indentation of code-include.
-            _is_source_requested (:class:`mock.mock.MagicMock`):
+            _is_source_requested:
                 This adds a hyperlink to the original Python source-code.
-            _get_source_code_from_object (:class:`mock.mock.MagicMock`):
+            _get_source_code_from_object:
                 Disable reading from source-code. This forces
                 sphinx-code-include to read from a Sphinx inventory
                 file.
@@ -265,29 +272,29 @@ class _Common(ContentsStore):
     @mock.patch("code_include.source_code._get_app_inventory")
     def _test(
         self,
-        data,
-        content,
-        expected,
-        _inventory,
-        _get_from_object,
-        _get_source_module_data,
-    ):
+        data: tuple[str, str],
+        content: list[str],
+        expected: str,
+        _inventory: mock.MagicMock,
+        _get_from_object: mock.MagicMock,
+        _get_source_module_data: mock.MagicMock,
+    ) -> None:
         """A generic function that tests a code-include directive for some text.
 
         Args:
-            data (tuple[str, str]):
+            data:
                 The absolute path to an HTML file and the "#foo" tag that
                 would normally be used as a permalink to some header in the
                 HTML file.
-            content (list[str]):
+            content:
                 The lines that the user provides in a standard code-include block.
-            expected (str):
+            expected:
                 The converted source-code text that will be tested for.
-            _inventory (:class:`mock.mock.MagicMock`):
+            _inventory:
                 The function that's normally used to query a Sphinx
                 project's inventory to find every HTML file-path and
                 tag-able header.
-            _get_source_module_data (:class:`mock.mock.MagicMock`):
+            _get_source_module_data:
                 A function that is mocked so that we can skip some of
                 the less important tag-parsing functions and get to the
                 point of this function - testing generated source-code.
@@ -312,7 +319,7 @@ class _Common(ContentsStore):
 class RenderText(_Common):
     """A class that checks to make sure projects get and return the right code."""
 
-    def test_get_from_html(self):
+    def test_get_from_html(self) -> None:
         """Check that a basic HTML file can be read."""
         data = (
             os.path.join(
@@ -335,7 +342,7 @@ class RenderText(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_class(self):
+    def test_class(self) -> None:
         """Check that a class is read properly."""
         data = (
             os.path.join(
@@ -386,7 +393,7 @@ class RenderText(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_function(self):
+    def test_function(self) -> None:
         """Check that a module's function is read properly."""
         data = (
             os.path.join(
@@ -411,7 +418,7 @@ class RenderText(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_private_function(self):
+    def test_private_function(self) -> None:
         """Check that a module's function is read properly."""
         data = (
             os.path.join(
@@ -441,7 +448,7 @@ class RenderText(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_module(self):
+    def test_module(self) -> None:
         """Check that a module is read properly."""
         data = (
             os.path.join(
@@ -581,7 +588,7 @@ class RenderText(_Common):
 class RenderTextNested(_Common):
     """A class that checks to make sure projects get and return the right code."""
 
-    def test_get_from_html(self):
+    def test_get_from_html(self) -> None:
         """Check that a basic HTML file can be read."""
         data = (
             os.path.join(
@@ -605,7 +612,7 @@ class RenderTextNested(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_class(self):
+    def test_class(self) -> None:
         """Check that a class is read properly."""
         data = (
             os.path.join(
@@ -658,7 +665,7 @@ class RenderTextNested(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_function(self):
+    def test_function(self) -> None:
         """Check that a module's function is read properly."""
         data = (
             os.path.join(
@@ -684,7 +691,7 @@ class RenderTextNested(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_private_function(self):
+    def test_private_function(self) -> None:
         """Check that a module's function is read properly."""
         data = (
             os.path.join(
@@ -715,7 +722,7 @@ class RenderTextNested(_Common):
 
         self._test(data, content, expected)  # pylint: disable=no-value-for-parameter
 
-    def test_module(self):
+    def test_module(self) -> None:
         """Check that a module is read properly."""
         data = (
             os.path.join(
@@ -858,7 +865,10 @@ class Options(_Common):
     """Make sure code-include directive options work for :obj: tags."""
 
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_fallback_text_missing(self, _get_app_inventory):
+    def test_fallback_text_missing(
+        self,
+        _get_app_inventory: mock.MagicMock,
+    ) -> None:
         """Raise an exception if the namespace is missing and no fallback is given."""
         _get_app_inventory.return_value = {"fake": {"thing": ["stuff"]}}
 
@@ -868,7 +878,10 @@ class Options(_Common):
         self.assertFalse(directive.run())
 
     @mock.patch("code_include.source_code._get_app_inventory")
-    def test_fallback_text_simple(self, _get_app_inventory):
+    def test_fallback_text_simple(
+        self,
+        _get_app_inventory: mock.MagicMock,
+    ) -> None:
         """Show fallback text if the namespace is missing and fallback text is given."""
         fallback = "Some fallback text"
         _get_app_inventory.return_value = {}
@@ -887,11 +900,15 @@ class Options(_Common):
 
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.extension.Directive._needs_unindent")
-    def test_no_unindent(self, _needs_unindent, _get_source_code_from_object):
+    def test_no_unindent(
+        self,
+        _needs_unindent: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+    ) -> None:
         """Check that code-include doesn't remove leading whitespace, when selected.
 
         Args:
-            _needs_unindent (:class:`mock.mock.MagicMock`):
+            _needs_unindent:
                 The patched function that controls indentation of code-include.
 
         """
@@ -919,10 +936,14 @@ class Options(_Common):
 
     @mock.patch("code_include.source_code._get_source_code_from_object")
     @mock.patch("code_include.source_code._get_page_preprocessor")
-    def test_preprocessor(self, _get_page_preprocessor, _get_source_code_from_object):
+    def test_preprocessor(
+        self,
+        _get_page_preprocessor: mock.MagicMock,
+        _get_source_code_from_object: mock.MagicMock,
+    ) -> None:
         """Check that the optional user-configuration function works correctly."""
 
-        def _remove_comments_and_docstrings(node):
+        def _remove_comments_and_docstrings(node: bs4.BeautifulSoup) -> None:
             for tag in node.find_all("span", {"class": ["c1", "sd"]}):
                 tag.decompose()
 

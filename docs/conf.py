@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import os
 
@@ -16,9 +15,9 @@ extensions = [
 ]
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'Sphinx Code Include'
+project = 'Sphinx Code Include'
 year = '2019'
-author = u'Colin Kennedy'
+author = 'Colin Kennedy'
 copyright = '{0}, {1}'.format(year, author)
 version = release = u'1.4.0'
 
